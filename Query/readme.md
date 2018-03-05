@@ -1,4 +1,9 @@
-﻿## Queries
+﻿# Query
+A library for building strongly-typed queries. 
+
+Queries can be initiated by calling `GraphQuery.Vertices()`, `GraphQuery.Vertex(...)`, `GraphQuery.AddVertex(...)`, or `GraphQuery.Edge(...)`. 
+
+## Query Types
 The following strongly-typed queries are supported:
 - **Graph** - Returns a collection of objects
   - **Vertex** - Returns a collection of GraphSON verticies
@@ -9,7 +14,6 @@ The following strongly-typed queries are supported:
 - **Terminal** - Does not return any objects
 
 ## Steps
-----
 The following table shows the supported steps
 
 Step | Mapping | Implemented
@@ -24,7 +28,7 @@ Barrier | | :x:
 By | | :x:
 Cap | | :x:
 Coalesce | | :x:
-Count | Graph -> ValueQuery | :white_check_mark:
+Count | Graph -> Value | :white_check_mark:
 Choose | | :x:
 Coin | Graph -> Graph | :white_check_mark:
 Constant | | :x:
