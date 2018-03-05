@@ -10,7 +10,6 @@ The following strongly-typed queries are supported:
   - **Edge** - Returns a collection of GraphSON edges
   - **Value** - Returns a collection of values (strings, booleans, and numbers)
   - **FlatMap** - Returns a collection of enumerable lists
-    - **Dictionary** - Returns a collection of dictionaries
 - **Terminal** - Does not return any objects
 
 ## Steps
@@ -57,7 +56,7 @@ Range | Graph -> Graph | :white_check_mark:
 Repeat | | :x:
 Sack | | :x:
 Sample | | :x:
-Select | Graph -> Dictionary | :white_check_mark:
+Select | Graph -> FlatMap | :white_check_mark:
 SimplePath | Vertex -> Vertex<br/>Edge -> Edge | :white_check_mark:
 Store | | :x:
 Subgraph | | :x:
