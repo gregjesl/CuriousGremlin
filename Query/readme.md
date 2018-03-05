@@ -13,7 +13,7 @@ The following strongly-typed queries are supported:
 The following table shows the supported steps
 
 Step | Mapping | Implemented
----- | ----- | ------ | -----------
+---- | ------- | -----------
 AddEdge | -> Edge | :white_check_mark:
 AddVertex | -> Vertex | :white_check_mark:
 AddProperty | Vertex -> Vertex<br/>Edge -> Edge | :white_check_mark:
