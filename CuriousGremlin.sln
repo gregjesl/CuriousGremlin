@@ -1,0 +1,31 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Query", "Query\Query.csproj", "{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphSON", "GraphSON\GraphSON.csproj", "{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCosmosDB", "AzureCosmosDB\AzureCosmosDB.csproj", "{9D348F8F-5F34-45FE-A583-6202833E3E67}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{C5A71BE6-2590-4B00-9150-8078DEA4715D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
