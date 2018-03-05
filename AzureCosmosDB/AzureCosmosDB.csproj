@@ -2,6 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>CuriousGremlin.AzureCosmosDB</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="1.20.2" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="1.8.2" />
+    <PackageReference Include="Microsoft.Azure.Graphs" Version="0.3.1-preview" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GraphSON\GraphSON.csproj" />
+    <ProjectReference Include="..\Query\Query.csproj" />
+  </ItemGroup>
 
 </Project>
