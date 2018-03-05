@@ -1,12 +1,12 @@
 ﻿## Queries
 The following strongly-typed queries are supported:
-- **GraphQuery** - Returns a collection of objects
-  - **VertexQuery** - Returns a collection of GraphSON verticies
-  - **EdgeQuery** - Returns a collection of GraphSON edges
-  - **ValueQuery** - Returns a collection of values (strings, booleans, and numbers)
-  - **FlatMapQuery** - Returns a collection of enumerable lists
-    - **DictionaryQuery** - Returns a collection of dictionaries
-- **TerminalQuery** - Does not return any objects
+- **Graph** - Returns a collection of objects
+  - **Vertex** - Returns a collection of GraphSON verticies
+  - **Edge** - Returns a collection of GraphSON edges
+  - **Value** - Returns a collection of values (strings, booleans, and numbers)
+  - **FlatMap** - Returns a collection of enumerable lists
+    - **Dictionary** - Returns a collection of dictionaries
+- **Terminal** - Does not return any objects
 
 ## Steps
 ----
