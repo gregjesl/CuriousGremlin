@@ -10,10 +10,13 @@ The following strongly-typed queries are supported:
   - **Edge** - Returns a collection of GraphSON edges
   - **Value** - Returns a collection of values (strings, booleans, and numbers)
   - **FlatMap** - Returns a collection of enumerable lists
+- **Boolean** - Returns true or false
 - **Terminal** - Does not return any objects
 
+Note that subqueries (queries that start with `__`) can be generated from a graph query or any derivative thereof. 
+
 ## Steps
-The following table shows the supported steps
+The following table shows the supported steps:
 
 Step | Mapping | Implemented
 ---- | ------- | -----------
@@ -39,7 +42,7 @@ Group | | :x:
 GroupCount | | :x:
 Has | Vertex -> Vertex<br/>Edge -> Edge | :white_check_mark:
 Inject | | :x:
-Is | | :x:
+Is | Graph -> Boolean | :white_check_mark:
 Limit | Graph -> Graph | :white_check_mark:
 Local | | :x:
 MapKeys | | :x:
