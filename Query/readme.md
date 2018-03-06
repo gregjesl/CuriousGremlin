@@ -53,7 +53,7 @@ Inject | | :x:
 In | Vertex -> Vertex | :white_check_mark:
 InE | Vertex -> Edge | :white_check_mark:
 InV | Edge -> Vertex | :white_check_mark:
-Is  | | :x:
+Is  | Collection -> Boolean | :x:
 Limit | Collection -> Collection | :white_check_mark:
 Local | | :x:
 MapKeys |  | :x:
