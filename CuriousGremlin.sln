@@ -10,9 +10,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureCosmosDB", "AzureCosmo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{C5A71BE6-2590-4B00-9150-8078DEA4715D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.GraphSON", "UnitTests\UnitTests.GraphSON\UnitTests.GraphSON.csproj", "{94D6F783-74B6-4D6F-B33D-468CFED2F415}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.GraphSON", "UnitTests\UnitTests.GraphSON\UnitTests.GraphSON.csproj", "{94D6F783-74B6-4D6F-B33D-468CFED2F415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.AzureCosmosDB", "UnitTests\UnitTests.AzureCosmosDB\UnitTests.AzureCosmosDB.csproj", "{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.AzureCosmosDB", "UnitTests\UnitTests.AzureCosmosDB\UnitTests.AzureCosmosDB.csproj", "{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9BB80DF4-F633-4223-A879-AABE47B55A5B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

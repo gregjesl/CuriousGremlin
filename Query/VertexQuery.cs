@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public class VertexQuery : GraphQuery
+    public class VertexQuery : ElementQuery<VertexQuery>
     {
         internal VertexQuery(string query) : base(query) { }
 
@@ -16,62 +16,80 @@ namespace CuriousGremlin.Query
 
         public VertexQuery Out()
         {
-            throw new NotImplementedException();
+            Query += ".out()";
+            return this;
         }
 
         public VertexQuery Out(string label)
         {
-            throw new NotImplementedException();
+            Query += ".out('" + Sanitize(label) + "')";
+            return this;
         }
 
         public VertexQuery In()
         {
-            throw new NotImplementedException();
+            Query += ".in()";
+            return this;
         }
 
         public VertexQuery In(string label)
         {
-            throw new NotImplementedException();
+            Query += ".in('" + Sanitize(label) + "')";
+            return this;
         }
 
         public VertexQuery Both()
         {
-            throw new NotImplementedException();
+            Query += ".both()";
+            return this;
         }
 
         public VertexQuery Both(string label)
         {
-            throw new NotImplementedException();
+            Query += ".both('" + Sanitize(label) + "')";
+            return this;
         }
 
         public EdgeQuery OutE()
         {
-            throw new NotImplementedException();
+            Query += ".outE()";
+            return new EdgeQuery(Query);
         }
 
         public EdgeQuery OutE(string label)
         {
-            throw new NotImplementedException();
+            Query += ".outE('" + Sanitize(label) + "')";
+            return new EdgeQuery(Query);
         }
 
         public EdgeQuery InE()
         {
-            throw new NotImplementedException();
+            Query += ".inE()";
+            return new EdgeQuery(Query);
         }
 
         public EdgeQuery InE(string label)
         {
-            throw new NotImplementedException();
+            Query += ".inE('" + Sanitize(label) + "')";
+            return new EdgeQuery(Query);
         }
 
         public EdgeQuery BothE()
         {
-            throw new NotImplementedException();
+            Query += ".bothE()";
+            return new EdgeQuery(Query);
         }
 
         public EdgeQuery BothE(string label)
         {
-            throw new NotImplementedException();
+            Query += ".bothE('" + Sanitize(label) + "')";
+            return new EdgeQuery(Query);
+        }
+
+        public VertexQuery AddListProperty(string key, string value)
+        {
+            Query += ".property(list, '" + Sanitize(key) + "', " + GetObjectString(value) + ")";
+            return this;
         }
     }
 }

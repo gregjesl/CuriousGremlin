@@ -6,6 +6,6 @@ namespace CuriousGremlin.Query
 {
     public interface IGraphQuery
     {
-        string Query { get; }
+        string QueryString { get; }
     }
 }

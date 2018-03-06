@@ -4,8 +4,8 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public class TerminalQuery : GraphQuery
+    public class BooleanQuery : GraphQuery
     {
-        internal TerminalQuery(string query) : base(query) { }
+        internal BooleanQuery(string query) : base(query) { }
     }
 }

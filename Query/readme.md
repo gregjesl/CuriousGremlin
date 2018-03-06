@@ -6,12 +6,15 @@ Queries can be initiated by calling `GraphQuery.Vertices()`, `GraphQuery.Vertex(
 ## Query Types
 The following strongly-typed queries are supported:
 - **Graph** - Returns a collection of objects
-  - **Vertex** - Returns a collection of GraphSON verticies
-  - **Edge** - Returns a collection of GraphSON edges
+  - **CollectionQuery** - Returns a collection of objects
+    - **ElementQuery** - Returns a collection of elements
+      - **Vertex** - Returns a collection of GraphSON verticies
+      - **Edge** - Returns a collection of GraphSON edges
+    - **ListQuery** - Returns a collection of enumerable lists
+	  - **DictionaryQuery** - Returns a collection of dictionaries
   - **Value** - Returns a collection of values (strings, booleans, and numbers)
-  - **FlatMap** - Returns a collection of enumerable lists
-- **Boolean** - Returns true or false
-- **Terminal** - Does not return any objects
+  - **Boolean** - Returns true or false
+  - **Terminal** - Does not return any objects
 
 Note that subqueries (queries that start with `__`) can be generated from a graph query or any derivative thereof. 
 
@@ -20,32 +23,40 @@ The following table shows the supported steps:
 
 Step | Mapping | Implemented
 ---- | ------- | -----------
-AddEdge | -> Edge | :white_check_mark:
-AddVertex | -> Vertex | :white_check_mark:
-AddProperty | Vertex -> Vertex<br/>Edge -> Edge | :white_check_mark:
-Aggregate | Graph -> Graph | :white_check_mark:
+AddEdge | Edge | :white_check_mark:
+AddVertex | Vertex | :white_check_mark:
+AddProperty | Element -> Element | :white_check_mark:
+AddListProperty | Vertex -> Vertex | :white_check_mark:
+Aggregate | Collection -> Collection | :white_check_mark:
 And | | :x:
-As | Graph -> Graph | :white_check_mark:
+As | Collection -> Collection | :white_check_mark:
 Barrier | | :x:
+Both | Vertex -> Vertex | :white_check_mark:
+BothE | Vertex -> Edge | :white_check_mark:
+BothV | Edge -> Vertex | :white_check_mark:
 By | | :x:
 Cap | | :x:
 Coalesce | | :x:
-Count | Graph -> Value | :white_check_mark:
-Choose | | :x:
-Coin | Graph -> Graph | :white_check_mark:
-Constant | | :x:
-CyclicPath | Vertex -> Vertex<br/>Edge -> Edge | :white_check_mark:
-Dedup | Graph -> Graph | :white_check_mark:
-Drop | Graph -> Terminal | :white_check_mark:
-Fold | Graph -> FlatMap | :white_check_mark:
+Count | Collection -> Value | :white_check_mark:
+Choose | Collection -> Graph | :white_check_mark:
+Coin | Collection -> Collection | :white_check_mark:
+Constant | Collection -> Collection | :white_check_mark:
+CyclicPath | Collection -> Collection | :white_check_mark:
+Dedup | Collection -> Collection | :white_check_mark:
+Drop | Collection -> Terminal | :white_check_mark:
+Fold | Collection -> List | :white_check_mark:
 Group | | :x:
 GroupCount | | :x:
-Has | Vertex -> Vertex<br/>Edge -> Edge | :white_check_mark:
+Has | Element -> Element | :white_check_mark:
+HasLabel | Element -> Element | :white_check_mark:
 Inject | | :x:
-Is | Graph -> Boolean | :white_check_mark:
-Limit | Graph -> Graph | :white_check_mark:
+In | Vertex -> Vertex | :white_check_mark:
+InE | Vertex -> Edge | :white_check_mark:
+InV | Edge -> Vertex | :white_check_mark:
+Is  | | :x:
+Limit | Collection -> Collection | :white_check_mark:
 Local | | :x:
-MapKeys | | :x:
+MapKeys |  | :x:
 MapValues | | :x:
 Match | | :x:
 Max | Value -> Value | :white_check_mark:
@@ -53,23 +64,26 @@ Mean | Value -> Value | :white_check_mark:
 Min | Value -> Value | :white_check_mark:
 Or | | :x:
 Order | Value -> Value | :white_check_mark:
-Path | Vertex -> FlatMap<br/>Edge -> FlatMap | :x:
+Out | Vertex -> Vertex | :white_check_mark:
+OutE | Vertex -> Edge | :white_check_mark:
+OutV | Edge -> Vertex | :white_check_mark:
+Path | Collection -> List | :x:
 Profile | | :x:
 Range | Graph -> Graph | :white_check_mark:
 Repeat | | :x:
 Sack | | :x:
 Sample | | :x:
 Select | Graph -> FlatMap | :white_check_mark:
-SimplePath | Vertex -> Vertex<br/>Edge -> Edge | :white_check_mark:
+SimplePath | Element -> Element | :white_check_mark:
 Store | | :x:
 Subgraph | | :x:
 Sum | Values -> Values | :white_check_mark:
-Tail | Value -> Value | :white_check_mark:
-TimeLimit | | :x:
+Tail | Collection -> Collection | :white_check_mark:
+TimeLimit | Graph -> Graph | :x:
 Tree | | :x:
-Unfold | FlatMap -> Graph | :white_check_mark:
+Unfold | | :x:
 Union | | :x:
 ValueMap | | :x:
-Values | Vertex -> Value<br/>Edge -> Value | :white_check_mark:
-Vertex | -> Vertex | :white_check_mark:
+Values | Element -> Element | :white_check_mark:
+Vertex | Vertex | :white_check_mark:
 Where | | :x:

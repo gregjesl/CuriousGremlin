@@ -28,10 +28,10 @@ namespace UnitTests.AzureCosmosDB
                 client.Open("test_db", "test_collection").Wait();
 
                 // Kill it with fire
-                client.Execute(GraphQuery.Vertices().Drop().Query).Wait();
+                client.Execute(GraphQuery.Vertices().Drop().ToString()).Wait();
 
                 // Assert that the database is clean
-                Assert.AreEqual(client.Execute(GraphQuery.Vertices().Query).Result.Count, 0);
+                Assert.AreEqual(client.Execute(GraphQuery.Vertices().ToString()).Result.Count, 0);
 
                 // Insert an object
                 VertexQuery insert_query = GraphQuery.AddVertex("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value") as VertexQuery;
@@ -61,11 +61,13 @@ namespace UnitTests.AzureCosmosDB
                 Assert.IsTrue(connect_result[0].properties.ContainsValue("test_value"));
 
                 // Reload the first object to check for edges
-                VertexQuery first_vertex_query = GraphQuery.Vertex(insert_result[0].id);
-                var first_vertex_result = client.Execute(first_vertex_query).Result;
-                Assert.AreEqual(first_vertex_result.Count, 0);
+                VertexQuery out_query = GraphQuery.Vertex(insert_result[0].id).Out();
+                var out_result = client.Execute(out_query).Result;
+                Assert.AreEqual(out_result.Count, 1);
+                Assert.AreEqual(out_result[0].id, second_vertex_result[0].id);
 
-                throw new Exception("Check new object for edges");
+                // Check the edge query
+                var count_result = client.Execute("g.V()").Result;
             }
         }
     }

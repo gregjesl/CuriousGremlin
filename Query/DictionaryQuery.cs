@@ -4,8 +4,8 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public class TerminalQuery : GraphQuery
+    public class DictionaryQuery : ListQuery
     {
-        internal TerminalQuery(string query) : base(query) { }
+        internal DictionaryQuery(string query) : base(query) { }
     }
 }

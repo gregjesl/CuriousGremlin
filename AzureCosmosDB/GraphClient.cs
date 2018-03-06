@@ -61,7 +61,7 @@ namespace CuriousGremlin.AzureCosmosDB
         public async Task<List<Vertex>> Execute(VertexQuery query)
         {
             var vertices = new List<Vertex>();
-            var results = await Execute(query.Query);
+            var results = await Execute(query.ToString());
             foreach(Newtonsoft.Json.Linq.JObject result in results)
             {
                 vertices.Add(result.ToObject<Vertex>());
@@ -72,7 +72,7 @@ namespace CuriousGremlin.AzureCosmosDB
         public async Task<List<Edge>> Execute(EdgeQuery query)
         {
             var edges = new List<Edge>();
-            var results = await Execute(query.Query);
+            var results = await Execute(query.ToString());
             foreach (Newtonsoft.Json.Linq.JObject result in results)
             {
                 edges.Add(result.ToObject<Edge>());

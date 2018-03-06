@@ -4,16 +4,16 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class GraphQuery : IGraphQuery
+    public abstract class GraphQuery
     {
-        public string Query { protected set; get; }
+        protected string Query;
 
-        internal GraphQuery(string query)
+        protected GraphQuery(string query)
         {
-            this.Query = query;
+            Query = query;
         }
 
-        public static string Sanitize(string input)
+        protected static string Sanitize(string input)
         {
             return input.Replace("'", "\'");
         }
@@ -24,7 +24,7 @@ namespace CuriousGremlin.Query
             switch (prop_type)
             {
                 case "system.string":
-                    return "'" + GraphQuery.Sanitize(item as string) + "'";
+                    return "'" + Sanitize(item as string) + "'";
                 case "system.boolean":
                     return (bool)item ? "true" : "false";
                 case "system.float":
@@ -36,13 +36,13 @@ namespace CuriousGremlin.Query
                 case "system.int64":
                     return string.Format("%li", (long)item);
                 case "system.datetime":
-                    return "'" + GraphQuery.Sanitize((item as DateTime?).Value.ToString("s")) + "'";
+                    return "'" + Sanitize((item as DateTime?).Value.ToString("s")) + "'";
                 default:
                     return GetObjectString(item.ToString());
             }
         }
 
-        internal static string SeralizeProperties(Dictionary<string,object> properties)
+        protected static string SeralizeProperties(Dictionary<string,object> properties)
         {
             List<string> outputs = new List<string>();
             foreach (var property in properties)
@@ -86,102 +86,27 @@ namespace CuriousGremlin.Query
             return new VertexQuery(query);
         }
 
-        public GraphQuery AddProperty(string key, object value)
-        {
-            this.Query += ".property('" + Sanitize(key) + "', " + GetObjectString(value) + ")";
-            return this;
-        }
-
-        public GraphQuery Aggregate(string label)
-        {
-            this.Query += ".aggregate('" + Sanitize(label) + "')";
-            return this;
-        }
-
-        public GraphQuery Coin(double probability)
-        {
-            if (probability < 0.0 || probability > 1.0)
-                throw new ArgumentException("Probability must be between 0 and 1");
-            Query += string.Format(".coin({0})", probability);
-            return this;
-        }
-
-        public GraphQuery CyclicPath()
-        {
-            Query += ".cyclicPath()";
-            return this;
-        }
-
-        public GraphQuery Dedup()
-        {
-            Query += ".dedup()";
-            return this;
-        }
-
-        public TerminalQuery Drop()
-        {
-            Query += ".drop()";
-            return new TerminalQuery(Query);
-        }
-
-        public GraphQuery Has(string key, object value)
-        {
-            Query += ".has('" + Sanitize(key) + "', " + GetObjectString(value) + ")";
-            return this;
-        }
-
-        public GraphQuery HasLabel(string label)
-        {
-            Query += ".hasLabel('" + Sanitize(label) + "')";
-            return this;
-        }
-
-        public GraphQuery Limit(int limit)
-        {
-            if (limit < 0)
-                throw new ArgumentException("Limit must be at least 0");
-            Query += string.Format(".limit({0})", limit);
-            return this;
-        }
-
-        public GraphQuery OrderBy(string property, bool ascending = true)
-        {
-            Query += ".order().by('" + Sanitize(property) + "', ";
-            Query += ascending ? "incr" : "decr";
-            Query += ")";
-            return this;
-        }
-
-        public GraphQuery Range(int lowerBound, int upperBound)
-        {
-            if (lowerBound < 0)
-                throw new ArgumentException("Lower bound cannot be less than zero");
-            if (upperBound < lowerBound)
-                throw new ArgumentException("Upper bound must be greater than or equal to the lower bound");
-            Query += string.Format(".range({0},{1})", lowerBound, upperBound);
-            return this;
-        }
-
-        public GraphQuery SimplePath()
-        {
-            Query += ".simplePath()";
-            return this;
-        }
-
-        public GraphQuery Tail(int limit)
-        {
-            if (limit < 0)
-                throw new ArgumentException("Limit cannot be less than zero");
-            Query += string.Format(".tail({0})", limit);
-            return this;
-        }
-
         public GraphQuery TimeLimit(int milliseconds)
         {
             if (milliseconds <= 0)
                 throw new ArgumentException("Time must be greater than zero");
             Query += string.Format(".timeLimit({0})", milliseconds);
             return this;
+        }
+
+        public override string ToString()
+        {
+            return Query;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (string)obj == Query;
+        }
+
+        public override int GetHashCode()
+        {
+            return Query.GetHashCode();
         }
     }
 }

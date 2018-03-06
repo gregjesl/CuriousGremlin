@@ -4,28 +4,28 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public class EdgeQuery : GraphQuery
+    public class EdgeQuery : ElementQuery<EdgeQuery>
     {
         internal EdgeQuery(string query) : base(query) { }
 
         public VertexQuery OutV()
         {
-            throw new NotImplementedException();
+            return new VertexQuery(Query + ".outV()");
         }
 
         public VertexQuery InV()
         {
-            throw new NotImplementedException();
+            return new VertexQuery(Query + ".inV()");
         }
 
         public VertexQuery BothV()
         {
-            throw new NotImplementedException();
+            return new VertexQuery(Query + ".bothV()");
         }
 
         public VertexQuery OtherV()
         {
-            throw new NotImplementedException();
+            return new VertexQuery(Query + ".otherV()");
         }
     }
 }
