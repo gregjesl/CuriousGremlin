@@ -31,6 +31,8 @@ namespace CuriousGremlin.Query
                     return string.Format("%f", (float)item);
                 case "system.double":
                     return string.Format("%f", (double)item);
+                case "system.decimal":
+                    return ((decimal)item).ToString();
                 case "system.int":
                     return string.Format("%i", (int)item);
                 case "system.int64":

@@ -1,12 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query
 {
     public class ValueQuery : GraphQuery
     {
         internal ValueQuery(string query) : base(query) { }
+
+        public BooleanQuery Is(float value)
+        {
+            Query += ".is(" + GetObjectString(value) + ")";
+            return new BooleanQuery(Query);
+        }
+
+        public BooleanQuery Is(double value)
+        {
+            Query += ".is(" + GetObjectString(value) + ")";
+            return new BooleanQuery(Query);
+        }
+
+        public BooleanQuery Is(decimal value)
+        {
+            Query += ".is(" + GetObjectString(value) + ")";
+            return new BooleanQuery(Query);
+        }
+
+        public BooleanQuery Is(int value)
+        {
+            Query += ".is(" + GetObjectString(value) + ")";
+            return new BooleanQuery(Query);
+        }
+
+        public BooleanQuery Is(long value)
+        {
+            Query += ".is(" + GetObjectString(value) + ")";
+            return new BooleanQuery(Query);
+        }
+
+        public BooleanQuery Is(GraphPredicate predicate)
+        {
+            Query += ".is(" + predicate.ToString() + ")";
+            return new BooleanQuery(Query);
+        }
 
         public ValueQuery Max()
         {

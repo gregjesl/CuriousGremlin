@@ -54,7 +54,7 @@ Inject | | :x:
 In | Vertex -> Vertex | :white_check_mark:
 InE | Vertex -> Edge | :white_check_mark:
 InV | Edge -> Vertex | :white_check_mark:
-Is  | Collection -> Boolean | :x:
+Is  | Value -> Boolean | :white_check_mark:
 Limit | Collection -> Collection | :white_check_mark:
 Local | | :x:
 MapKeys |  | :x:
@@ -69,12 +69,12 @@ Order | Value -> Value | :white_check_mark:
 Out | Vertex -> Vertex | :white_check_mark:
 OutE | Vertex -> Edge | :white_check_mark:
 OutV | Edge -> Vertex | :white_check_mark:
-Path | Collection -> List | :x:
+Path | Collection -> List | :white_check_mark:
 Profile | | :x:
 Range | Graph -> Graph | :white_check_mark:
 Repeat | | :x:
 Sack | | :x:
-Sample | | :x:
+Sample | Collection -> Collection | :white_check_mark:
 Select | Graph -> FlatMap | :white_check_mark:
 SimplePath | Element -> Element | :white_check_mark:
 Store | | :x:
