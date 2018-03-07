@@ -144,6 +144,17 @@ namespace CuriousGremlin.AzureCosmosDB
             return items;
         }
 
+        public async Task<List<List<object>>> Execute(ListQuery query)
+        {
+            var items = new List<List<object>>();
+            var results = await Execute(query.ToString());
+            foreach (Newtonsoft.Json.Linq.JObject result in results)
+            {
+                items.Add(result.ToObject<List<object>>());
+            }
+            return items;
+        }
+
         public async Task<List<Dictionary<string,object>>> Execute(DictionaryQuery query)
         {
             var items = new List<Dictionary<string,object>>();
