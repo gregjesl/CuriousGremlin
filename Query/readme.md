@@ -49,6 +49,7 @@ Group | | :x:
 GroupCount | | :x:
 Has | Element -> Element | :white_check_mark:
 HasLabel | Element -> Element | :white_check_mark:
+HasNext | Collection -> Boolean | :white_check_mark:
 Inject | | :x:
 In | Vertex -> Vertex | :white_check_mark:
 InE | Vertex -> Edge | :white_check_mark:
@@ -62,6 +63,7 @@ Match | | :x:
 Max | Value -> Value | :white_check_mark:
 Mean | Value -> Value | :white_check_mark:
 Min | Value -> Value | :white_check_mark:
+Next | Collection -> Collection | :white_check_mark:
 Or | | :x:
 Order | Value -> Value | :white_check_mark:
 Out | Vertex -> Vertex | :white_check_mark:
@@ -80,6 +82,9 @@ Subgraph | | :x:
 Sum | Values -> Values | :white_check_mark:
 Tail | Collection -> Collection | :white_check_mark:
 TimeLimit | Graph -> Graph | :x:
+ToBulkSet | Collection -> Collection | :white_check_mark:
+ToList | Collection -> Collection | :white_check_mark:
+ToSet | Collection -> Collection | :white_check_mark:
 Tree | | :x:
 Unfold | | :x:
 Union | | :x:

@@ -81,11 +81,31 @@ namespace CuriousGremlin.Query
             return new ListQuery(Query);
         }
 
+        public BooleanQuery HasNext()
+        {
+            Query += ".hasNext()";
+            return new BooleanQuery(Query);
+        }
+
         public T Limit(int limit)
         {
             if (limit < 0)
                 throw new ArgumentException("Limit must be at least 0");
             Query += string.Format(".limit({0})", limit);
+            return this as T;
+        }
+
+        public T Next()
+        {
+            Query += ".next()";
+            return this as T;
+        }
+
+        public T Next(int count)
+        {
+            if (count < 1)
+                throw new ArgumentException("Count must be greater than zero");
+            Query += string.Format(".next('{0}')", count);
             return this as T;
         }
 
@@ -165,6 +185,24 @@ namespace CuriousGremlin.Query
             if (limit < 0)
                 throw new ArgumentException("Limit cannot be less than zero");
             Query += string.Format(".tail({0})", limit);
+            return this as T;
+        }
+
+        public T ToBulkSet()
+        {
+            Query += ".toBulkSet()";
+            return this as T;
+        }
+
+        public T ToList()
+        {
+            Query += ".toList()";
+            return this as T;
+        }
+
+        public T TOSet()
+        {
+            Query += ".toSet()";
             return this as T;
         }
 

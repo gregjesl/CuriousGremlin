@@ -25,5 +25,11 @@ namespace CuriousGremlin.Query
             Query += ".hasLabel('" + Sanitize(label) + "')";
             return this as T;
         }
+
+        public T Values(string name)
+        {
+            Query += ".values('" + Sanitize(name) + "')";
+            return this as T;
+        }
     }
 }
