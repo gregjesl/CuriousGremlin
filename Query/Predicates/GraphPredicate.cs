@@ -49,6 +49,10 @@ namespace CuriousGremlin.Query.Predicates
     {
         protected override string Command { get { return "eq"; } }
         public GPEquals(object item) : base(item) { }
+        public override string ToString()
+        {
+            return Predicate;
+        }
     }
 
     public class GPNotEqual : GraphPredicate

@@ -200,7 +200,7 @@ namespace CuriousGremlin.Query
             return this as T;
         }
 
-        public T TOSet()
+        public T ToSet()
         {
             Query += ".toSet()";
             return this as T;

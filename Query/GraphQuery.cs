@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query
 {
@@ -15,7 +16,7 @@ namespace CuriousGremlin.Query
 
         protected static string Sanitize(string input)
         {
-            return input.Replace("'", "\'");
+            return input.Replace("'", @"\'");
         }
 
         internal static string GetObjectString(object item)
@@ -27,16 +28,16 @@ namespace CuriousGremlin.Query
                     return "'" + Sanitize(item as string) + "'";
                 case "system.boolean":
                     return (bool)item ? "true" : "false";
-                case "system.float":
-                    return string.Format("%f", (float)item);
+                case "system.single":
+                    return ((float)item).ToString();
                 case "system.double":
-                    return string.Format("%f", (double)item);
+                    return ((double)item).ToString();
                 case "system.decimal":
                     return ((decimal)item).ToString();
-                case "system.int":
-                    return string.Format("%i", (int)item);
+                case "system.int32":
+                    return ((int)item).ToString();
                 case "system.int64":
-                    return string.Format("%li", (long)item);
+                    return ((long)item).ToString();
                 case "system.datetime":
                     return "'" + Sanitize((item as DateTime?).Value.ToString("s")) + "'";
                 default:
@@ -49,7 +50,7 @@ namespace CuriousGremlin.Query
             List<string> outputs = new List<string>();
             foreach (var property in properties)
             {
-                outputs.Add("'" + Sanitize(property.Key) + "', '" + GetObjectString(property.Value) + "'");
+                outputs.Add("'" + Sanitize(property.Key) + "', " + GetObjectString(property.Value));
             }
             return string.Join(",", outputs);
         }
@@ -86,6 +87,13 @@ namespace CuriousGremlin.Query
             }
             query += ")";
             return new VertexQuery(query);
+        }
+
+        public static VertexQuery AddVertex(IVertexObject vertex)
+        {
+            var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
+            properties.Remove("VertexLabel");
+            return AddVertex(vertex.VertexLabel, properties);
         }
 
         public GraphQuery TimeLimit(int milliseconds)
