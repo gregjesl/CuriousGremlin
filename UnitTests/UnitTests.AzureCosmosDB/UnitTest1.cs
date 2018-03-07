@@ -12,21 +12,15 @@ namespace UnitTests.AzureCosmosDB
         [TestMethod]
         public void TestMethod1()
         {
-            GraphClient client;
-            try
+            GraphClientPool pool = new GraphClientPool(
+                "https://localhost:8081/",
+                "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+                "test_db",
+                "test_collection"
+                );
+            
+            using (GraphClient client = pool.GetClient().Result)
             {
-                client = new GraphClient("https://localhost:8081/", "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
-            }
-            catch(Exception ex)
-            {
-                throw new Exception("Unable to connect to Azure CosmosDB emulator", ex);
-            }
-
-            using (client)
-            {
-                // Open the connection
-                client.Open("test_db", "test_collection").Wait();
-
                 // Kill it with fire
                 client.Execute(GraphQuery.Vertices().Drop().ToString()).Wait();
 
@@ -69,6 +63,9 @@ namespace UnitTests.AzureCosmosDB
                 // Check the edge query
                 var count_result = client.Execute("g.V()").Result;
             }
+
+            Assert.IsTrue(pool.PoolSize > 0);
+            pool.Dispose();
         }
     }
 }

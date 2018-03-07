@@ -15,6 +15,7 @@ namespace CuriousGremlin.AzureCosmosDB
     public class GraphClient : IDisposable
     {
         public bool IsOpen { get; private set; } = false;
+        internal GraphClientPool pool;
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         private DocumentClient client;
         private DocumentCollection graph;
@@ -22,6 +23,12 @@ namespace CuriousGremlin.AzureCosmosDB
         public GraphClient(string endpoint, string authKey)
         {
             client = new DocumentClient(new Uri(endpoint), authKey);
+        }
+
+        internal GraphClient(GraphClientPool pool)
+        {
+            this.pool = pool;
+            client = new DocumentClient(new Uri(pool.Endpoint), pool.AuthKey);
         }
 
         ~GraphClient()
@@ -32,17 +39,29 @@ namespace CuriousGremlin.AzureCosmosDB
 
         public async Task Open(string database, string graph)
         {
-            this.graph = await client.ReadDocumentCollectionAsync("/dbs/" + database + "/colls/" + graph);
+            if(!IsOpen)
+            {
+                this.graph = await client.ReadDocumentCollectionAsync("/dbs/" + database + "/colls/" + graph);
+                this.IsOpen = true;
+            }
         }
 
         public void Dispose()
-        {
-            client.Dispose();
-            IsOpen = false;
+        { 
+            if (pool != null)
+                pool.ReturnToPool(this);
+            else
+            {
+                IsOpen = false;
+                client.Dispose();
+            }
         }
 
         public async Task<FeedResponse<object>> Execute(string queryString)
         {
+            if (!IsOpen)
+                throw new Exception("Client must be opened prior to executing a query");
+
             // Generate the query from the query string
             var query = GraphExtensions.CreateGremlinQuery(client, graph, queryString);
 
@@ -78,6 +97,44 @@ namespace CuriousGremlin.AzureCosmosDB
                 edges.Add(result.ToObject<Edge>());
             }
             return edges;
+        }
+
+        public async Task<List<object>> Execute(ValueQuery query)
+        {
+            var items = new List<object>();
+            var results = await Execute(query.ToString());
+            foreach (Newtonsoft.Json.Linq.JObject result in results)
+            {
+                items.Add(result.ToObject<object>());
+            }
+            return items;
+        }
+
+        public async Task<List<Dictionary<string,object>>> Execute(DictionaryQuery query)
+        {
+            var items = new List<Dictionary<string,object>>();
+            var results = await Execute(query.ToString());
+            foreach (Newtonsoft.Json.Linq.JObject result in results)
+            {
+                items.Add(result.ToObject<Dictionary<string, object>>());
+            }
+            return items;
+        }
+
+        public async Task<bool> Execute(BooleanQuery query)
+        {
+            var items = new List<bool>();
+            var results = await Execute(query.ToString());
+            foreach (Newtonsoft.Json.Linq.JObject result in results)
+            {
+                items.Add(result.ToObject<bool>());
+            }
+            return items[0];
+        }
+
+        public async Task Execute(TerminalQuery query)
+        {
+            var results = await Execute(query.ToString());
         }
     }
 }
