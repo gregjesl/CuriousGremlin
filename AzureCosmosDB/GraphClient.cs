@@ -56,7 +56,41 @@ namespace CuriousGremlin.AzureCosmosDB
                 client.Dispose();
             }
         }
+        #region Database Operations
+        public async Task CreateDatabaseAsync(string database)
+        {
+            await client.CreateDatabaseAsync(new Database { Id = database });
+        }
 
+        public async Task CreateDatabaseIfNotExistsAsync(string database)
+        {
+            await client.CreateDatabaseIfNotExistsAsync(new Database { Id = database });
+        }
+
+        public async Task DeleteDatabaseAsync(string database)
+        {
+            await client.DeleteDatabaseAsync("/dbs/" + database);
+        }
+        #endregion
+
+        #region Collection Operations
+        public async Task CreateDocumentCollectionAsync(string database, string collection)
+        {
+            await client.CreateDocumentCollectionAsync("/dbs/" + database, new DocumentCollection { Id = collection });
+        }
+
+        public async Task CreateDatabaseIfNotExistsAsync(string database, string collection)
+        {
+            await client.CreateDocumentCollectionIfNotExistsAsync("/dbs/" + database, new DocumentCollection { Id = collection });
+        }
+
+        public async Task DeleteCollectionAsync(string database, string collection)
+        {
+            await client.DeleteDocumentCollectionAsync("/dbs/" + database + "/colls/" + collection);
+        }
+        #endregion
+
+        #region Queries
         public async Task<FeedResponse<object>> Execute(string queryString)
         {
             if (!IsOpen)
@@ -136,5 +170,6 @@ namespace CuriousGremlin.AzureCosmosDB
         {
             var results = await Execute(query.ToString());
         }
+        #endregion
     }
 }
