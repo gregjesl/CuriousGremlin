@@ -22,8 +22,8 @@ Collections can be deleted by calling `DeleteCollectionAsync(string database, st
 
 ## Executing Queries
 
-The `GraphClient` class provides an `Execute` method for executing queries. The method is overloaded for the different query types available in the [Query](../Query) package. 
+The `GraphClient` class provides an `Execute` method for executing a query. The method is overloaded for the different query types available in the [Query](../Query) package; these overloads return specific object types based on the kind of query supplied. 
 
 ## Client Pool
 
-Clients can also be retrieved from a pool of clients. A client pool is instantiated by calling `GraphClient.CreatePool(string endpoint, string authKey, string database, string graph)`. Once instantiated, a client can be retrieved by calling `GraphClient.FromPool()`. _**Note that the client pool should be disposed when no longer needed by calling `GraphClient.DisposePool()`**_.
+Clients can also be retrieved from a pool of clients. A client pool is instantiated by calling `GraphClient.CreatePool(string endpoint, string authKey, string database, string graph)`. Once instantiated, a client can be retrieved by calling `GraphClient.FromPool()`. _**Note that the client pool should be disposed when no longer needed by calling**_ `GraphClient.DisposePool()`.
