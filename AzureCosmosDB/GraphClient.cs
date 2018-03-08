@@ -14,6 +14,28 @@ namespace CuriousGremlin.AzureCosmosDB
 {
     public class GraphClient : IDisposable
     {
+        private static GraphClientPool Pool;
+
+        public static void CreatePool(string endpoint, string authKey, string database, string graph)
+        {
+            Pool = new GraphClientPool(endpoint, authKey, database, graph);
+        }
+
+        public static void DisposePool()
+        {
+            if (Pool == null)
+                throw new NullReferenceException("The client pool has not been insantiated");
+            Pool.Dispose();
+            Pool = null;
+        }
+
+        public static async Task<GraphClient> FromPool()
+        {
+            if (Pool == null)
+                throw new NullReferenceException("The client pool has not been insantiated");
+            return await Pool.GetClient();
+        }
+
         public bool IsOpen { get; private set; } = false;
         internal GraphClientPool pool;
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
@@ -57,19 +79,19 @@ namespace CuriousGremlin.AzureCosmosDB
             }
         }
         #region Database Operations
-        public async Task CreateDatabaseAsync(string database)
+        public async Task CreateDatabaseAsync(string id)
         {
-            await client.CreateDatabaseAsync(new Database { Id = database });
+            await client.CreateDatabaseAsync(new Database { Id = id });
         }
 
-        public async Task CreateDatabaseIfNotExistsAsync(string database)
+        public async Task CreateDatabaseIfNotExistsAsync(string id)
         {
-            await client.CreateDatabaseIfNotExistsAsync(new Database { Id = database });
+            await client.CreateDatabaseIfNotExistsAsync(new Database { Id = id });
         }
 
-        public async Task DeleteDatabaseAsync(string database)
+        public async Task DeleteDatabaseAsync(string id)
         {
-            await client.DeleteDatabaseAsync("/dbs/" + database);
+            await client.DeleteDatabaseAsync("/dbs/" + id);
         }
         #endregion
 
@@ -79,7 +101,7 @@ namespace CuriousGremlin.AzureCosmosDB
             await client.CreateDocumentCollectionAsync("/dbs/" + database, new DocumentCollection { Id = collection });
         }
 
-        public async Task CreateDatabaseIfNotExistsAsync(string database, string collection)
+        public async Task CreateDocumentCollectionIfNotExistsAsync(string database, string collection)
         {
             await client.CreateDocumentCollectionIfNotExistsAsync("/dbs/" + database, new DocumentCollection { Id = collection });
         }
