@@ -7,10 +7,10 @@ using System;
 namespace UnitTests.AzureCosmosDB
 {
     [TestClass]
-    public class UnitTest1
+    public class ElementManipulation
     {
         [TestMethod]
-        public void TestMethod1()
+        public void AzureCosmosDB_Insert_and_Delete()
         {
             GraphClientPool pool = new GraphClientPool(
                 "https://localhost:8081/",
