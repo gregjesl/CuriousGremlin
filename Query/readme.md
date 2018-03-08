@@ -5,18 +5,22 @@ Queries can be initiated by calling `GraphQuery.Vertices()`, `GraphQuery.Vertex(
 
 ## Query Types
 The following strongly-typed queries are supported:
-- **Graph** - Returns a collection of objects
-  - **CollectionQuery** - Returns a collection of objects
-    - **ElementQuery** - Returns a collection of elements
-      - **Vertex** - Returns a collection of GraphSON verticies
-      - **Edge** - Returns a collection of GraphSON edges
+- **GraphQuery** - Returns a collection of objects (Abstract)
+  - **CollectionQuery** - Returns a collection of objects (Abstract)
+    - **ElementQuery** - Returns a collection of elements (Abstract)
+      - **VertexQuery** - Returns a collection of GraphSON verticies
+      - **EdgeQuery** - Returns a collection of GraphSON edges
     - **ListQuery** - Returns a collection of enumerable lists
 	  - **DictionaryQuery** - Returns a collection of dictionaries
-  - **Value** - Returns a collection of values (strings, booleans, and numbers)
-  - **Boolean** - Returns true or false
-  - **Terminal** - Does not return any objects
+  - **ValueQuery** - Returns a collection of values (strings, booleans, and numbers)
+  - **BooleanQuery** - Returns true or false
+  - **TerminalQuery** - Does not return any objects
 
 Note that subqueries (queries that start with `__`) can be generated from a graph query or any derivative thereof. 
+
+## Vertex Serialization
+
+If an object implements the `IVertexObject` interface, the object can be automatically mapped to a vertex by calling `GraphQuery.AddVertex(object)`. The vertex can then be mapped back to the object using the `Vertex.Deserialize<objecttype>()` method in the [GraphSON](../GraphSON) package. 
 
 ## Steps
 The following table shows the supported steps:
@@ -75,20 +79,20 @@ Range | Graph -> Graph | :white_check_mark:
 Repeat | | :x:
 Sack | | :x:
 Sample | Collection -> Collection | :white_check_mark:
-Select | Graph -> FlatMap | :white_check_mark:
+Select | Collection -> List | :white_check_mark:
 SimplePath | Element -> Element | :white_check_mark:
 Store | | :x:
 Subgraph | | :x:
-Sum | Values -> Values | :white_check_mark:
+Sum | Value -> Value | :white_check_mark:
 Tail | Collection -> Collection | :white_check_mark:
 TimeLimit | Graph -> Graph | :x:
 ToBulkSet | Collection -> Collection | :white_check_mark:
-ToList | Collection -> Collection | :white_check_mark:
+ToList | Collection -> List | :white_check_mark:
 ToSet | Collection -> Collection | :white_check_mark:
 Tree | | :x:
 Unfold | | :x:
 Union | | :x:
 ValueMap | | :x:
-Values | Element -> Element | :white_check_mark:
+Values | Element -> Value | :white_check_mark:
 Vertex | Vertex | :white_check_mark:
 Where | | :x:
