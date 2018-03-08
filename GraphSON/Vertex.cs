@@ -20,7 +20,10 @@ namespace CuriousGremlin.GraphSON
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             foreach (var property in properties)
             {
-                dictionary.Add(property.Key, property.Value.Find(k => k.Key.Equals(value)).Value);
+                object propertyValue = property.Value.Find(k => k.Key.Equals(value)).Value;
+                if (propertyValue is string)
+                    propertyValue = ((string)propertyValue).Replace(@"\'", @"'");
+                dictionary.Add(property.Key, propertyValue);
             }
             var jobject = JObject.FromObject(dictionary);
             return jobject.ToObject<T>();
