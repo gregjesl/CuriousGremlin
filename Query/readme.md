@@ -5,9 +5,9 @@ Queries can be initiated by calling `GraphQuery.Vertices()`, `GraphQuery.Vertex(
 
 ## Query Types
 The following strongly-typed queries are supported:
-- **GraphQuery** - Returns a collection of objects (Abstract)
-  - **CollectionQuery** - Returns a collection of objects (Abstract)
-    - **ElementQuery** - Returns a collection of elements (Abstract)
+- **GraphQuery** - Returns a collection of objects _(Abstract)_
+  - **CollectionQuery** - Returns a collection of objects _(Abstract)_
+    - **ElementQuery** - Returns a collection of elements _(Abstract)_
       - **VertexQuery** - Returns a collection of GraphSON verticies
       - **EdgeQuery** - Returns a collection of GraphSON edges
     - **ListQuery** - Returns a collection of enumerable lists
