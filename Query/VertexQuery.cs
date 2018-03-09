@@ -8,6 +8,21 @@ namespace CuriousGremlin.Query
     {
         internal VertexQuery(string query) : base(query) { }
 
+        public static VertexQuery Find(string label)
+        {
+            return Vertices().HasLabel(label);
+        }
+
+        public static VertexQuery Find(Dictionary<string, object> properties)
+        {
+            return Vertices().Has(properties);
+        }
+
+        public static VertexQuery Find(string label, Dictionary<string, object> properties)
+        {
+            return Find(label).Has(properties);
+        }
+
         public EdgeQuery AddEdge(string label, string to)
         {
             Query += ".addE('" + Sanitize(label) + "').to(g.V('" + Sanitize(to) + "'))";
