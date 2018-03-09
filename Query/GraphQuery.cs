@@ -11,16 +11,22 @@ namespace CuriousGremlin.Query
 
         protected GraphQuery(string query)
         {
+            if (query is null)
+                throw new ArgumentNullException("Query cannot be null");
             Query = query;
         }
 
         protected static string Sanitize(string input)
         {
+            if (input is null)
+                throw new ArgumentNullException("Input cannot be null");
             return input.Replace("'", @"\'");
         }
 
         internal static string GetObjectString(object item)
         {
+            if (item is null)
+                throw new ArgumentNullException("Provided object is null");
             string prop_type = item.GetType().ToString().ToLower();
             switch (prop_type)
             {
@@ -50,6 +56,8 @@ namespace CuriousGremlin.Query
             List<string> outputs = new List<string>();
             foreach (var property in properties)
             {
+                if (property.Value is null)
+                    continue;
                 outputs.Add("'" + Sanitize(property.Key) + "', " + GetObjectString(property.Value));
             }
             return string.Join(",", outputs);
@@ -92,6 +100,11 @@ namespace CuriousGremlin.Query
         public static VertexQuery AddVertex(IVertexObject vertex)
         {
             var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
+            foreach(var item in properties)
+            {
+                if (item.Value is null)
+                    properties.Remove(item.Key);
+            }
             properties.Remove("VertexLabel");
             return AddVertex(vertex.VertexLabel, properties);
         }
