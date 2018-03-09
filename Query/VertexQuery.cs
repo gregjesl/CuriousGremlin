@@ -23,10 +23,26 @@ namespace CuriousGremlin.Query
             return Find(label).Has(properties);
         }
 
-        public EdgeQuery AddEdge(string label, string to)
+        public EdgeQuery AddEdge(string label, string vertexID)
         {
-            Query += ".addE('" + Sanitize(label) + "').to(g.V('" + Sanitize(to) + "'))";
+            return AddEdge(label, Vertex(vertexID));
+        }
+
+        public EdgeQuery AddEdge(string label, string vertexID, Dictionary<string, object> properties)
+        {
+            return AddEdge(label, Vertex(vertexID), properties);
+        }
+
+        public EdgeQuery AddEdge(string label, VertexQuery vertices)
+        {
+            Query += ".addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")";
             return new EdgeQuery(Query);
+        }
+
+        public EdgeQuery AddEdge(string label, VertexQuery vertices, Dictionary<string, object> properties)
+        {
+            Query += ".addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")";
+            return (new EdgeQuery(Query)).AddProperties(properties);
         }
 
         public VertexQuery Out()
