@@ -20,6 +20,15 @@ namespace CuriousGremlin.Query
             return this as T;
         }
 
+        public T Has(Dictionary<string, object> properties)
+        {
+            foreach(var item in properties)
+            {
+                Has(item.Key, item.Value);
+            }
+            return this as T;
+        }
+
         public T HasLabel(string label)
         {
             Query += ".hasLabel('" + Sanitize(label) + "')";
