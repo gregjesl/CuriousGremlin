@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query
 {
@@ -13,15 +14,20 @@ namespace CuriousGremlin.Query
             //     throw new ArgumentException("Generic type must be the same type as the instance");
         }
 
-        public T As(string label)
-        {
-            Query += "as('" + Sanitize(label) + "')";
-            return this as T;
-        }
-
         public T Aggregate(string label)
         {
             Query += ".aggregate('" + Sanitize(label) + "')";
+            return this as T;
+        }
+
+        public BooleanQuery Any()
+        {
+            return Count().Is(new GPGreaterThanOrEqualTo(1));
+        }
+
+        public T As(string label)
+        {
+            Query += "as('" + Sanitize(label) + "')";
             return this as T;
         }
 
