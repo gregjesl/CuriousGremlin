@@ -96,3 +96,9 @@ ValueMap | | :x:
 Values | Element -> Value | :white_check_mark:
 Vertex | Vertex | :white_check_mark:
 Where | | :x:
+
+## Recipies
+
+In addition to the steps listed, the following recipies are also provided:
+- `_CollectionQuery_.Any()` - Creates a BooleanQuery that returns true if the collection contains at least one item and false if the collection is empty
+- `VertexQuery.Find(...)` - Creates a VertexQuery that returns vertices matching the provided constraints
