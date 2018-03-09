@@ -14,6 +14,15 @@ namespace CuriousGremlin.Query
             return this as T;
         }
 
+        public T AddProperties(Dictionary<string, object> properties)
+        {
+            foreach(var item in properties)
+            {
+                AddProperty(item.Key, item.Value);
+            }
+            return this as T;
+        }
+
         public T Has(string key, object value)
         {
             Query += ".has('" + Sanitize(key) + "', " + GetObjectString(value) + ")";
