@@ -8,65 +8,65 @@ namespace CuriousGremlin.Query
 {
     public class ValueQuery<From> : CollectionQuery<From,GraphValue,ValueQuery<From>>
     {
-        internal ValueQuery(IGraphQuery query) : base(query) { }
+        internal ValueQuery(ITraversalQuery query) : base(query) { }
 
-        public BooleanQuery Is(float value)
+        public BooleanQuery<From> Is(float value)
         {
-            Query += ".is(" + GetObjectString(value) + ")";
-            return new BooleanQuery(Query);
+            Steps.Add("is(" + GetObjectString(value) + ")");
+            return new BooleanQuery<From>(this);
         }
 
-        public BooleanQuery Is(double value)
+        public BooleanQuery<From> Is(double value)
         {
-            Query += ".is(" + GetObjectString(value) + ")";
-            return new BooleanQuery(Query);
+            Steps.Add("is(" + GetObjectString(value) + ")");
+            return new BooleanQuery<From>(this);
         }
 
-        public BooleanQuery Is(decimal value)
+        public BooleanQuery<From> Is(decimal value)
         {
-            Query += ".is(" + GetObjectString(value) + ")";
-            return new BooleanQuery(Query);
+            Steps.Add("is(" + GetObjectString(value) + ")");
+            return new BooleanQuery<From>(this);
         }
 
-        public BooleanQuery Is(int value)
+        public BooleanQuery<From> Is(int value)
         {
-            Query += ".is(" + GetObjectString(value) + ")";
-            return new BooleanQuery(Query);
+            Steps.Add("is(" + GetObjectString(value) + ")");
+            return new BooleanQuery<From>(this);
         }
 
-        public BooleanQuery Is(long value)
+        public BooleanQuery<From> Is(long value)
         {
-            Query += ".is(" + GetObjectString(value) + ")";
-            return new BooleanQuery(Query);
+            Steps.Add("is(" + GetObjectString(value) + ")");
+            return new BooleanQuery<From>(this);
         }
 
-        public BooleanQuery Is(GraphPredicate predicate)
+        public BooleanQuery<From> Is(GraphPredicate predicate)
         {
-            Query += ".is(" + predicate.ToString() + ")";
-            return new BooleanQuery(Query);
+            Steps.Add("is(" + predicate.ToString() + ")");
+            return new BooleanQuery<From>(this);
         }
 
-        public ValueQuery Max()
+        public ValueQuery<From> Max()
         {
-            Query += ".max()";
+            Steps.Add("max()");
             return this;
         }
 
-        public ValueQuery Mean()
+        public ValueQuery<From> Mean()
         {
-            Query += ".mean()";
+            Steps.Add("mean()");
             return this;
         }
 
-        public ValueQuery Min()
+        public ValueQuery<From> Min()
         {
-            Query += ".min()";
+            Steps.Add("min()");
             return this;
         }
 
-        public ValueQuery Sum()
+        public ValueQuery<From> Sum()
         {
-            Query += ".sum()";
+            Steps.Add("sum()");
             return this;
         }
     }

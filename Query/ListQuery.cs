@@ -6,7 +6,7 @@ namespace CuriousGremlin.Query
 {
     public class ListQuery<From> : CollectionQuery<From,List<object>,ListQuery<From>>
     {
-        internal ListQuery(IGraphQuery query) : base(query) { }
+        internal ListQuery(ITraversalQuery query) : base(query) { }
 
         public object Unfold()
         {

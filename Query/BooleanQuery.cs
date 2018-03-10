@@ -4,8 +4,8 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public class BooleanQuery<From> : GraphQuery<From,bool,BooleanQuery<From>>
+    public class BooleanQuery<From> : TraversalQuery<From,bool,BooleanQuery<From>>
     {
-        internal BooleanQuery(IGraphQuery query) : base(query) { }
+        internal BooleanQuery(ITraversalQuery query) : base(query) { }
     }
 }

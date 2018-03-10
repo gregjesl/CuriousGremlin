@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CuriousGremlin.Query.Predicates
 {
-    public abstract class GraphPredicate
+    public abstract class GraphPredicate : GraphQuery
     {
         protected string Predicate;
         protected abstract string Command { get; }

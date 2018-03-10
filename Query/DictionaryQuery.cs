@@ -6,6 +6,6 @@ namespace CuriousGremlin.Query
 {
     public class DictionaryQuery<From> : ListQuery<From>
     {
-        internal DictionaryQuery(IGraphQuery query) : base(query) { }
+        internal DictionaryQuery(ITraversalQuery query) : base(query) { }
     }
 }

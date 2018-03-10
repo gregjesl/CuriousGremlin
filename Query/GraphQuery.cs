@@ -6,22 +6,8 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class GraphQuery<From,To,Query> : IGraphQuery
+    public abstract class GraphQuery
     {
-        public StepList Steps { set; get; }
-
-        internal GraphQuery(IGraphQuery query)
-        {
-            if (query is null)
-                throw new ArgumentNullException("Step list cannot be null");
-            Steps = query.Steps;
-        }
-
-        protected GraphQuery()
-        {
-            Steps = new StepList();
-        }
-
         protected static string Sanitize(string input)
         {
             if (input is null)
@@ -119,21 +105,6 @@ namespace CuriousGremlin.Query
             }
             properties.Remove("VertexLabel");
             return AddVertex(vertex.VertexLabel, properties);
-        }
-
-        public override string ToString()
-        {
-            return Steps.ToString();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj.ToString() == Steps.ToString();
-        }
-
-        public override int GetHashCode()
-        {
-            return Steps.ToString().GetHashCode();
         }
     }
 }

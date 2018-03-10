@@ -6,7 +6,7 @@ namespace CuriousGremlin.Query
 {
     public abstract class ElementQuery<From,To,Query> : CollectionQuery<From,To,Query> where Query: ElementQuery<From,To,Query>
     {
-        internal ElementQuery(IGraphQuery query) : base(query) { }
+        internal ElementQuery(ITraversalQuery query) : base(query) { }
 
         protected ElementQuery() : base() { }
 

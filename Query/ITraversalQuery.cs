@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    internal interface IGraphQuery
+    internal interface ITraversalQuery
     {
         StepList Steps { get; }
     }

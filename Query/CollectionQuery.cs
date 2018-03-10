@@ -5,9 +5,9 @@ using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query
 {
-    public class CollectionQuery<From,To,Query> : GraphQuery<From,To,Query> where Query: CollectionQuery<From,To,Query>
+    public class CollectionQuery<From,To,Query> : TraversalQuery<From,To,Query> where Query: CollectionQuery<From,To,Query>
     {
-        internal CollectionQuery(IGraphQuery query) : base(query) { }
+        internal CollectionQuery(ITraversalQuery query) : base(query) { }
 
         protected CollectionQuery() : base() { }
 
