@@ -8,6 +8,8 @@ namespace CuriousGremlin.Query
     {
         internal ElementQuery(IGraphQuery query) : base(query) { }
 
+        protected ElementQuery() : base() { }
+
         public Query AddProperty(string key, object value)
         {
             Steps.Add("property('" + Sanitize(key) + "', " + GetObjectString(value) + ")");
@@ -38,16 +40,16 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public T HasLabel(string label)
+        public Query HasLabel(string label)
         {
-            Query += ".hasLabel('" + Sanitize(label) + "')";
-            return this as T;
+            Steps.Add("hasLabel('" + Sanitize(label) + "')");
+            return this as Query;
         }
 
-        public T Values(string name)
+        public Query Values(string key)
         {
-            Query += ".values('" + Sanitize(name) + "')";
-            return this as T;
+            Steps.Add("values('" + Sanitize(key) + "')");
+            return this as Query;
         }
     }
 }

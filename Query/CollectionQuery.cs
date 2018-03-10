@@ -9,6 +9,8 @@ namespace CuriousGremlin.Query
     {
         internal CollectionQuery(IGraphQuery query) : base(query) { }
 
+        protected CollectionQuery() : base() { }
+
         public Query Aggregate(string label)
         {
             Steps.Add("aggregate('" + Sanitize(label) + "')");
@@ -190,6 +192,14 @@ namespace CuriousGremlin.Query
             if (limit < 0)
                 throw new ArgumentException("Limit cannot be less than zero");
             Steps.Add(string.Format("tail({0})", limit));
+            return this as Query;
+        }
+
+        public Query TimeLimit(int milliseconds)
+        {
+            if (milliseconds <= 0)
+                throw new ArgumentException("Time must be greater than zero");
+            Steps.Add(string.Format("timeLimit({0})", milliseconds));
             return this as Query;
         }
 

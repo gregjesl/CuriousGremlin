@@ -17,7 +17,7 @@ namespace CuriousGremlin.Query
             Steps = query.Steps;
         }
 
-        private GraphQuery()
+        protected GraphQuery()
         {
             Steps = new StepList();
         }
@@ -69,41 +69,47 @@ namespace CuriousGremlin.Query
             return string.Join(",", outputs);
         }
 
-        public static VertexQuery Vertex(string id)
+        public static VertexQuery<Graph> Vertex(string id)
         {
-            return new VertexQuery("g.V('" + Sanitize(id) + "')");
+            var query = new VertexQuery<Graph>();
+            query.Steps.Add("V('" + Sanitize(id) + "')");
+            return query;
         }
 
-        public static VertexQuery Vertices()
+        public static VertexQuery<Graph> Vertices()
         {
-            return new VertexQuery("g.V()");
+            var query = new VertexQuery<Graph>();
+            query.Steps.Add("V()");
+            return query;
         }
 
-        public static VertexQuery AddVertex(string label)
+        public static VertexQuery<Graph> AddVertex(string label)
         {
             return AddVertex(label, new Dictionary<string, object>());
         }
 
-        public static VertexQuery AddVertex(Dictionary<string, object> properties)
+        public static VertexQuery<Graph> AddVertex(Dictionary<string, object> properties)
         {
             return AddVertex(null, properties);
         }
 
-        public static VertexQuery AddVertex(string label, Dictionary<string, object> properties)
+        public static VertexQuery<Graph> AddVertex(string label, Dictionary<string, object> properties)
         {
-            string query = "g.addV(";
+            var query = new VertexQuery<Graph>();
+            string step = "addV(";
             if(label != null && label != "")
-                query += "'" + Sanitize(label) + "'";
+                step += "'" + Sanitize(label) + "'";
 
             if(properties.Count > 0)
             {
-                query += ", " + SeralizeProperties(properties);
+                step += ", " + SeralizeProperties(properties);
             }
-            query += ")";
-            return new VertexQuery(query);
+            step += ")";
+            query.Steps.Add(step);
+            return query;
         }
 
-        public static VertexQuery AddVertex(IVertexObject vertex)
+        public static VertexQuery<Graph> AddVertex(IVertexObject vertex)
         {
             var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
             foreach(var item in properties)
@@ -115,27 +121,19 @@ namespace CuriousGremlin.Query
             return AddVertex(vertex.VertexLabel, properties);
         }
 
-        public GraphQuery TimeLimit(int milliseconds)
-        {
-            if (milliseconds <= 0)
-                throw new ArgumentException("Time must be greater than zero");
-            Query += string.Format(".timeLimit({0})", milliseconds);
-            return this;
-        }
-
         public override string ToString()
         {
-            return Query;
+            return Steps.ToString();
         }
 
         public override bool Equals(object obj)
         {
-            return (string)obj == Query;
+            return obj.ToString() == Steps.ToString();
         }
 
         public override int GetHashCode()
         {
-            return Query.GetHashCode();
+            return Steps.ToString().GetHashCode();
         }
     }
 }

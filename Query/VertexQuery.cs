@@ -5,122 +5,124 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class VertexQuery<From> : ElementQuery<From,GraphVertex,VertexQuery<From>>
+    public class VertexQuery<From> : ElementQuery<From, GraphVertex, VertexQuery<From>>
     {
         internal VertexQuery(IGraphQuery query) : base(query) { }
 
-        public static VertexQuery Find(string label)
+        internal VertexQuery() : base() { }
+
+        public static VertexQuery<From> Find(string label)
         {
             return Vertices().HasLabel(label);
         }
 
-        public static VertexQuery Find(Dictionary<string, object> properties)
+        public static VertexQuery<From> Find(Dictionary<string, object> properties)
         {
             return Vertices().Has(properties);
         }
 
-        public static VertexQuery Find(string label, Dictionary<string, object> properties)
+        public static VertexQuery<From> Find(string label, Dictionary<string, object> properties)
         {
             return Find(label).Has(properties);
         }
 
-        public EdgeQuery AddEdge(string label, string vertexID)
+        public EdgeQuery<From> AddEdge(string label, string vertexID)
         {
-            return AddEdge(label, Vertex(vertexID));
+            return AddEdge(label, Vertex<From>(vertexID));
         }
 
-        public EdgeQuery AddEdge(string label, string vertexID, Dictionary<string, object> properties)
+        public EdgeQuery<From> AddEdge(string label, string vertexID, Dictionary<string, object> properties)
         {
             return AddEdge(label, Vertex(vertexID), properties);
         }
 
-        public EdgeQuery AddEdge(string label, VertexQuery vertices)
+        public EdgeQuery<From> AddEdge(string label, VertexQuery<From> vertices)
         {
-            Query += ".addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")";
-            return new EdgeQuery(Query);
+            Steps.Add("addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")");
+            return new EdgeQuery<From>(this);
         }
 
-        public EdgeQuery AddEdge(string label, VertexQuery vertices, Dictionary<string, object> properties)
+        public EdgeQuery<From> AddEdge(string label, VertexQuery<From> vertices, Dictionary<string, object> properties)
         {
-            Query += ".addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")";
-            return (new EdgeQuery(Query)).AddProperties(properties);
+            Steps.Add("addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")");
+            return (new EdgeQuery<From>(this)).AddProperties(properties);
         }
 
-        public VertexQuery Out()
+        public VertexQuery<From> Out()
         {
-            Query += ".out()";
+            Steps.Add("out()");
             return this;
         }
 
-        public VertexQuery Out(string label)
+        public VertexQuery<From> Out(string label)
         {
-            Query += ".out('" + Sanitize(label) + "')";
+            Steps.Add("out('" + Sanitize(label) + "')");
             return this;
         }
 
-        public VertexQuery In()
+        public VertexQuery<From> In()
         {
-            Query += ".in()";
+            Steps.Add("in()");
             return this;
         }
 
-        public VertexQuery In(string label)
+        public VertexQuery<From> In(string label)
         {
-            Query += ".in('" + Sanitize(label) + "')";
+            Steps.Add("in('" + Sanitize(label) + "')");
             return this;
         }
 
-        public VertexQuery Both()
+        public VertexQuery<From> Both()
         {
-            Query += ".both()";
+            Steps.Add("both()");
             return this;
         }
 
-        public VertexQuery Both(string label)
+        public VertexQuery<From> Both(string label)
         {
-            Query += ".both('" + Sanitize(label) + "')";
+            Steps.Add("both('" + Sanitize(label) + "')");
             return this;
         }
 
-        public EdgeQuery OutE()
+        public EdgeQuery<From> OutE()
         {
-            Query += ".outE()";
-            return new EdgeQuery(Query);
+            Steps.Add("outE()");
+            return new EdgeQuery<From>(this);
         }
 
-        public EdgeQuery OutE(string label)
+        public EdgeQuery<From> OutE(string label)
         {
-            Query += ".outE('" + Sanitize(label) + "')";
-            return new EdgeQuery(Query);
+            Steps.Add("outE('" + Sanitize(label) + "')");
+            return new EdgeQuery<From>(this);
         }
 
-        public EdgeQuery InE()
+        public EdgeQuery<From> InE()
         {
-            Query += ".inE()";
-            return new EdgeQuery(Query);
+            Steps.Add("inE()");
+            return new EdgeQuery<From>(this);
         }
 
-        public EdgeQuery InE(string label)
+        public EdgeQuery<From> InE(string label)
         {
-            Query += ".inE('" + Sanitize(label) + "')";
-            return new EdgeQuery(Query);
+            Steps.Add("inE('" + Sanitize(label) + "')");
+            return new EdgeQuery<From>(this);
         }
 
-        public EdgeQuery BothE()
+        public EdgeQuery<From> BothE()
         {
-            Query += ".bothE()";
-            return new EdgeQuery(Query);
+            Steps.Add("bothE()");
+            return new EdgeQuery<From>(this);
         }
 
-        public EdgeQuery BothE(string label)
+        public EdgeQuery<From> BothE(string label)
         {
-            Query += ".bothE('" + Sanitize(label) + "')";
-            return new EdgeQuery(Query);
+            Steps.Add("bothE('" + Sanitize(label) + "')");
+            return new EdgeQuery<From>(this);
         }
 
-        public VertexQuery AddListProperty(string key, string value)
+        public VertexQuery<From> AddListProperty(string key, string value)
         {
-            Query += ".property(list, '" + Sanitize(key) + "', " + GetObjectString(value) + ")";
+            Steps.Add(".property(list, '" + Sanitize(key) + "', " + GetObjectString(value) + ")");
             return this;
         }
     }
