@@ -1,31 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class EdgeQuery : ElementQuery<EdgeQuery>
+    public class EdgeQuery<From> : ElementQuery<From,GraphEdge,EdgeQuery<From>>
     {
-        internal EdgeQuery(string query) : base(query) { }
+        internal EdgeQuery(IGraphQuery query) : base(query) { }
 
-        public VertexQuery OutV()
+        public VertexQuery<From> OutV()
         {
-            return new VertexQuery(Query + ".outV()");
+            Steps.Add("outV()");
+            return new VertexQuery<From>(this);
         }
 
-        public VertexQuery InV()
+        public VertexQuery<From> InV()
         {
-            return new VertexQuery(Query + ".inV()");
+            Steps.Add("inV()");
+            return new VertexQuery<From>(this);
         }
 
-        public VertexQuery BothV()
+        public VertexQuery<From> BothV()
         {
-            return new VertexQuery(Query + ".bothV()");
+            Steps.Add("bothV()");
+            return new VertexQuery<From>(this);
         }
 
-        public VertexQuery OtherV()
+        public VertexQuery<From> OtherV()
         {
-            return new VertexQuery(Query + ".otherV()");
+            Steps.Add("otherV()");
+            return new VertexQuery<From>(this);
         }
     }
 }

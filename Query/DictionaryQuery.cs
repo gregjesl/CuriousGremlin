@@ -4,8 +4,8 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public class DictionaryQuery : ListQuery
+    public class DictionaryQuery<From> : ListQuery<From>
     {
-        internal DictionaryQuery(string query) : base(query) { }
+        internal DictionaryQuery(IGraphQuery query) : base(query) { }
     }
 }

@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class GraphQuery
+    public abstract class GraphQuery<From,To,Query> : IGraphQuery
     {
-        protected string Query;
+        public StepList Steps { set; get; }
 
-        protected GraphQuery(string query)
+        internal GraphQuery(IGraphQuery query)
         {
             if (query is null)
-                throw new ArgumentNullException("Query cannot be null");
-            Query = query;
+                throw new ArgumentNullException("Step list cannot be null");
+            Steps = query.Steps;
+        }
+
+        private GraphQuery()
+        {
+            Steps = new StepList();
         }
 
         protected static string Sanitize(string input)

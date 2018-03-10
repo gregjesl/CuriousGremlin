@@ -4,38 +4,38 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class ElementQuery<T> : CollectionQuery<T> where T: ElementQuery<T>
+    public abstract class ElementQuery<From,To,Query> : CollectionQuery<From,To,Query> where Query: ElementQuery<From,To,Query>
     {
-        protected ElementQuery(string query) : base(query) { }
+        internal ElementQuery(IGraphQuery query) : base(query) { }
 
-        public T AddProperty(string key, object value)
+        public Query AddProperty(string key, object value)
         {
-            Query += ".property('" + Sanitize(key) + "', " + GetObjectString(value) + ")";
-            return this as T;
+            Steps.Add("property('" + Sanitize(key) + "', " + GetObjectString(value) + ")");
+            return this as Query;
         }
 
-        public T AddProperties(Dictionary<string, object> properties)
+        public Query AddProperties(Dictionary<string, object> properties)
         {
             foreach(var item in properties)
             {
                 AddProperty(item.Key, item.Value);
             }
-            return this as T;
+            return this as Query;
         }
 
-        public T Has(string key, object value)
+        public Query Has(string key, object value)
         {
-            Query += ".has('" + Sanitize(key) + "', " + GetObjectString(value) + ")";
-            return this as T;
+            Steps.Add("has('" + Sanitize(key) + "', " + GetObjectString(value) + ")");
+            return this as Query;
         }
 
-        public T Has(Dictionary<string, object> properties)
+        public Query Has(Dictionary<string, object> properties)
         {
             foreach(var item in properties)
             {
                 Has(item.Key, item.Value);
             }
-            return this as T;
+            return this as Query;
         }
 
         public T HasLabel(string label)

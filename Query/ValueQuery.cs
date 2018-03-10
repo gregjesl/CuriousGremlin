@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Predicates;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class ValueQuery : GraphQuery
+    public class ValueQuery<From> : CollectionQuery<From,GraphValue,ValueQuery<From>>
     {
-        internal ValueQuery(string query) : base(query) { }
+        internal ValueQuery(IGraphQuery query) : base(query) { }
 
         public BooleanQuery Is(float value)
         {

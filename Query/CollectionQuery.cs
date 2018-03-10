@@ -5,217 +5,210 @@ using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query
 {
-    public class CollectionQuery<T> : GraphQuery where T: CollectionQuery<T>
+    public class CollectionQuery<From,To,Query> : GraphQuery<From,To,Query> where Query: CollectionQuery<From,To,Query>
     {
-        internal CollectionQuery(string query) : base(query)
+        internal CollectionQuery(IGraphQuery query) : base(query) { }
+
+        public Query Aggregate(string label)
         {
-            // Type shouldBeType = typeof(CollectionQuery<T>);
-            // if (GetType() != shouldBeType)
-            //     throw new ArgumentException("Generic type must be the same type as the instance");
+            Steps.Add("aggregate('" + Sanitize(label) + "')");
+            return this as Query;
         }
 
-        public T Aggregate(string label)
-        {
-            Query += ".aggregate('" + Sanitize(label) + "')";
-            return this as T;
-        }
-
-        public BooleanQuery Any()
+        public BooleanQuery<From> Any()
         {
             return Count().Is(new GPGreaterThanOrEqualTo(1));
         }
 
-        public T As(string label)
+        public Query As(string label)
         {
-            Query += "as('" + Sanitize(label) + "')";
-            return this as T;
+            Steps.Add("as('" + Sanitize(label) + "')");
+            return this as Query;
         }
 
-        public T Barrier()
+        public Query Barrier()
         {
-            Query += ".barrier()";
-            return this as T;
+            Steps.Add("barrier()");
+            return this as Query;
         }
 
-        public ValueQuery Count()
+        public ValueQuery<From> Count()
         {
-            Query += ".count()";
-            return new ValueQuery(Query);
+            Steps.Add("count()");
+            return new ValueQuery<From>(this);
         }
 
+        /*
         public GraphQuery Choose(BooleanQuery condition, GraphQuery TrueQuery, GraphQuery FalseQuery)
         {
-            Query += ".choose(" + condition.ToString() + ", " + TrueQuery.ToString() + ", " + FalseQuery.ToString() + ")";
-            return this;
+            throw new NotImplementedException();
         }
+        */
 
-        public ValueQuery Constant(string value)
+        public ValueQuery<From> Constant(string value)
         {
-            Query += ".constant('" + Sanitize(value) + "')";
-            return new ValueQuery(Query);
+            Steps.Add("constant('" + Sanitize(value) + "')");
+            return new ValueQuery<From>(this);
         }
 
-        public T Coin(double probability)
+        public Query Coin(double probability)
         {
             if (probability < 0.0 || probability > 1.0)
                 throw new ArgumentException("Probability must be between 0 and 1");
-            Query += string.Format(".coin({0})", probability);
-            return this as T;
+            Steps.Add(string.Format("coin({0})", probability));
+            return this as Query;
         }
 
-        public T CyclicPath()
+        public Query CyclicPath()
         {
-            Query += ".cyclicPath()";
-            return this as T;
+            Steps.Add("cyclicPath()");
+            return this as Query;
         }
 
-        public T Dedup()
+        public Query Dedup()
         {
-            Query += ".dedup()";
-            return this as T;
+            Steps.Add("dedup()");
+            return this as Query;
         }
 
-        public TerminalQuery Drop()
+        public TerminalQuery<From> Drop()
         {
-            Query += ".drop()";
-            return new TerminalQuery(Query);
+            Steps.Add("drop()");
+            return new TerminalQuery<From>(this);
         }
 
-        public ListQuery Fold()
+        public ListQuery<From> Fold()
         {
-            Query += ".fold()";
-            return new ListQuery(Query);
+            Steps.Add("fold()");
+            return new ListQuery<From>(this);
         }
 
-        public BooleanQuery HasNext()
+        public BooleanQuery<From> HasNext()
         {
-            Query += ".hasNext()";
-            return new BooleanQuery(Query);
+            Steps.Add("hasNext()");
+            return new BooleanQuery<From>(this);
         }
 
-        public T Limit(int limit)
+        public Query Limit(int limit)
         {
             if (limit < 0)
                 throw new ArgumentException("Limit must be at least 0");
-            Query += string.Format(".limit({0})", limit);
-            return this as T;
+            Steps.Add(string.Format("limit({0})", limit));
+            return this as Query;
         }
 
-        public T Next()
+        public Query Next()
         {
-            Query += ".next()";
-            return this as T;
+            Steps.Add("next()");
+            return this as Query;
         }
 
-        public T Next(int count)
+        public Query Next(int count)
         {
             if (count < 1)
                 throw new ArgumentException("Count must be greater than zero");
-            Query += string.Format(".next('{0}')", count);
-            return this as T;
+            Steps.Add(string.Format("next({0})", count));
+            return this as Query;
         }
 
-        public T OrderBy(string property, bool ascending = true)
+        public Query OrderBy(string property, bool ascending = true)
         {
-            Query += ".order().by('" + Sanitize(property) + "', ";
-            Query += ascending ? "incr" : "decr";
-            Query += ")";
-            return this as T;
+            string step = "order().by('" + Sanitize(property) + "', ";
+            step += ascending ? "incr" : "decr";
+            step += ")";
+            Steps.Add(step);
+            return this as Query;
         }
 
-        public ListQuery Path()
+        public ListQuery<From> Path()
         {
-            Query += ".path()";
-            return new ListQuery(Query);
+            Steps.Add("path()");
+            return new ListQuery<From>(this);
         }
 
-        public T Range(int lowerBound, int upperBound)
+        public Query Range(int lowerBound, int upperBound)
         {
             if (lowerBound < 0)
                 throw new ArgumentException("Lower bound cannot be less than zero");
             if (upperBound < lowerBound)
                 throw new ArgumentException("Upper bound must be greater than or equal to the lower bound");
-            Query += string.Format(".range({0},{1})", lowerBound, upperBound);
-            return this as T;
+            Steps.Add(string.Format("range({0},{1})", lowerBound, upperBound));
+            return this as Query;
         }
 
-        public T Sample(int samples)
+        public Query Sample(int samples)
         {
             if (samples < 1)
                 throw new ArgumentException("Number of samples must be greater than zero");
-            Query += string.Format(".sample({0})", samples);
-            return this as T;
+            Steps.Add(string.Format("sample({0})", samples));
+            return this as Query;
         }
 
-        public DictionaryQuery Select(params string[] items)
+        public DictionaryQuery<From> Select(params string[] items)
         {
             if (items.Length < 1)
                 throw new ArgumentException("Must have at least one item to select");
-            Query += ".select(";
+            string step = "select(";
             var itemList = new List<string>();
             foreach(var item in items)
             {
                 itemList.Add("'" + Sanitize(item) + "'");
             }
-            Query += string.Join(", ", itemList);
-            Query += ")";
-            return new DictionaryQuery(Query);
+            step += string.Join(", ", itemList);
+            step += ")";
+            Steps.Add(step);
+            return new DictionaryQuery<From>(this);
         }
 
-        public DictionaryQuery SelectBy(string label, params string[] items)
+        public DictionaryQuery<From> SelectBy(string label, params string[] items)
         {
             if (label == null || label == "")
                 throw new ArgumentException("Label cannot be empty or null");
             if (items.Length < 1)
                 throw new ArgumentException("Must have at least one item to select");
-            Query += ".select(";
+            string step = "select(";
             var itemList = new List<string>();
             foreach (var item in items)
             {
                 itemList.Add("'" + Sanitize(item) + "'");
             }
-            Query += string.Join(", ", itemList);
-            Query += ")";
-            Query += ".by('" + Sanitize(label) + "')";
-            return new DictionaryQuery(Query);
+            step += string.Join(", ", itemList);
+            step += ")";
+            step += ".by('" + Sanitize(label) + "')";
+            Steps.Add(step);
+            return new DictionaryQuery<From>(this);
         }
 
-        public T SimplePath()
+        public Query SimplePath()
         {
-            Query += ".simplePath()";
-            return this as T;
+            Steps.Add("simplePath()");
+            return this as Query;
         }
 
-        public T Tail(int limit)
+        public Query Tail(int limit)
         {
             if (limit < 0)
                 throw new ArgumentException("Limit cannot be less than zero");
-            Query += string.Format(".tail({0})", limit);
-            return this as T;
+            Steps.Add(string.Format("tail({0})", limit));
+            return this as Query;
         }
 
-        public T ToBulkSet()
+        public Query ToBulkSet()
         {
-            Query += ".toBulkSet()";
-            return this as T;
+            Steps.Add("toBulkSet()");
+            return this as Query;
         }
 
-        public T ToList()
+        public Query ToList()
         {
-            Query += ".toList()";
-            return this as T;
+            Steps.Add("toList()");
+            return this as Query;
         }
 
-        public T ToSet()
+        public Query ToSet()
         {
-            Query += ".toSet()";
-            return this as T;
-        }
-
-        public T SubQuery()
-        {
-            var subquery = new CollectionQuery<T>("__");
-            return subquery as T;
+            Steps.Add("toSet()");
+            return this as Query;
         }
     }
 }

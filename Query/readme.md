@@ -42,7 +42,7 @@ By | | :x:
 Cap | | :x:
 Coalesce | | :x:
 Count | Collection -> Value | :white_check_mark:
-Choose | Collection -> Graph | :white_check_mark:
+Choose | Collection -> Graph | :x:
 Coin | Collection -> Collection | :white_check_mark:
 Constant | Collection -> Collection | :white_check_mark:
 CyclicPath | Collection -> Collection | :white_check_mark:

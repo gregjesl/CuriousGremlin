@@ -4,10 +4,9 @@ using System.Text;
 
 namespace CuriousGremlin.Query
 {
-    public class ListQuery : CollectionQuery<ListQuery>
+    public class ListQuery<From> : CollectionQuery<From,List<object>,ListQuery<From>>
     {
-        internal ListQuery(string query) : base(query) { }
-
+        internal ListQuery(IGraphQuery query) : base(query) { }
 
         public object Unfold()
         {

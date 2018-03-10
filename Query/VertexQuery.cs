@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class VertexQuery : ElementQuery<VertexQuery>
+    public class VertexQuery<From> : ElementQuery<From,GraphVertex,VertexQuery<From>>
     {
-        internal VertexQuery(string query) : base(query) { }
+        internal VertexQuery(IGraphQuery query) : base(query) { }
 
         public static VertexQuery Find(string label)
         {
