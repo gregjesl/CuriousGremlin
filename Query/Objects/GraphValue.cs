@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CuriousGremlin.Query.Objects
 {
-    public class GraphValue
+    public class GraphValue : IGraphOutput
     {
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class ElementQuery<From,To,Query> : CollectionQuery<From,To,Query> where Query: ElementQuery<From,To,Query>
+    public abstract class ElementQuery<From,To,Query> : CollectionQuery<From,To,Query> where Query: ElementQuery<IGraphObject,IGraphOutput,Query>
     {
-        internal ElementQuery(ITraversalQuery query) : base(query) { }
+        internal ElementQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
 
         protected ElementQuery() : base() { }
 

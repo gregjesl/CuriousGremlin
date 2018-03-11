@@ -1,19 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
 using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query
 {
-    public class CollectionQuery<From,To,Query> : TraversalQuery<From,To,Query> where Query: CollectionQuery<From,To,Query>
+    public abstract class CollectionQuery<From, To, Query> : TraversalQuery<IGraphObject, IGraphOutput, Query> where Query : CollectionQuery<From, To, Query>
     {
-        internal CollectionQuery(ITraversalQuery query) : base(query) { }
+        public enum RepeatTypeEnum { DoWhile, WhileDo };
+
+        internal CollectionQuery(ITraversalQuery<IGraphObject, IGraphOutput> query) : base(query) { }
 
         protected CollectionQuery() : base() { }
 
         public Query Aggregate(string label)
         {
             Steps.Add("aggregate('" + Sanitize(label) + "')");
+            return this as Query;
+        }
+
+        public Query And(params CollectionQuery<To>[] conditions)
+        {
+            return And(conditions);
+        }
+
+        public Query And(IEnumerable<CollectionQuery<To>> conditions)
+        {
+            string step = "and(";
+            List<string> stepStrings = new List<string>();
+            foreach(var condition in conditions)
+            {
+                stepStrings.Add(condition.ToString());
+            }
+            step += string.Join(",", stepStrings);
+            step += ")";
+            return this as Query;
+        }
+
+        public Query And(BooleanQuery<To> condition)
+        {
+            Steps.Add(condition.ToString());
             return this as Query;
         }
 
@@ -138,6 +165,36 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        public Query Repeat(ITraversalQuery<To,To> traversal, int count)
+        {
+            if (count < 1)
+                throw new ArgumentException("Repeat count must be greater than 0");
+            if (traversal.Steps.Count < 1)
+                throw new ArgumentException("Provided traversal must contain at least one step");
+            Steps.Add("repeat(" + traversal.ToString() + ").times(" + count.ToString() + ")");
+            return this as Query;
+        }
+
+        public Query Repeat(ITraversalQuery<To, To> traversal, BooleanQuery<To> condition, RepeatTypeEnum type)
+        {
+            if (traversal.Steps.Count < 1)
+                throw new ArgumentException("Provided traversal must contain at least one step");
+            if (condition.Steps.Count < 1)
+                throw new ArgumentException("Provided condition must have at least one step");
+            string until = "until(" + condition.ToString() + ")";
+            string repeat = "repeat(" + traversal.ToString() + ")";
+            switch(type)
+            {
+                case RepeatTypeEnum.DoWhile:
+                    Steps.Add(repeat + "." + until);
+                    break;
+                case RepeatTypeEnum.WhileDo:
+                    Steps.Add(until + "." + repeat);
+                    break;
+            }   
+            return this as Query;
+        }
+
         public Query Sample(int samples)
         {
             if (samples < 1)
@@ -209,6 +266,11 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        public CollectionQuery<From> ToCollectionQuery()
+        {
+            return new CollectionQuery<From>(this);
+        }
+
         public Query ToList()
         {
             Steps.Add("toList()");
@@ -219,6 +281,18 @@ namespace CuriousGremlin.Query
         {
             Steps.Add("toSet()");
             return this as Query;
+        }
+    }
+
+    public class CollectionQuery<From> : CollectionQuery<IGraphObject,IGraphOutput,CollectionQuery<From>>
+    {
+        internal CollectionQuery(ITraversalQuery<IGraphObject, IGraphOutput> query) : base(query) { }
+
+        internal CollectionQuery() : base() { }
+
+        public CollectionQuery<GraphCollection> CreateSubQuery()
+        {
+            return new CollectionQuery<GraphCollection>();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace CuriousGremlin.Query
 {
     public class VertexQuery<From> : ElementQuery<From, GraphVertex, VertexQuery<From>>
     {
-        internal VertexQuery(ITraversalQuery query) : base(query) { }
+        internal VertexQuery(ITraversalQuery<From,GraphVertex> query) : base(query) { }
 
         internal VertexQuery() : base() { }
 
@@ -124,6 +124,11 @@ namespace CuriousGremlin.Query
         {
             Steps.Add(".property(list, '" + Sanitize(key) + "', " + GetObjectString(value) + ")");
             return this;
+        }
+
+        public VertexQuery<GraphVertex> CreateSubQuery()
+        {
+            return new VertexQuery<GraphVertex>();
         }
     }
 }

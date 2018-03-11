@@ -7,7 +7,7 @@ namespace CuriousGremlin.Query
 {
     public class EdgeQuery<From> : ElementQuery<From,GraphEdge,EdgeQuery<From>>
     {
-        internal EdgeQuery(ITraversalQuery query) : base(query) { }
+        internal EdgeQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
 
         public VertexQuery<From> OutV()
         {
