@@ -5,9 +5,12 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class ElementQuery<From,To,Query> : CollectionQuery<From,To,Query> where Query: ElementQuery<IGraphObject,IGraphOutput,Query>
+    public abstract class ElementQuery<From, To, Query> : CollectionQuery<GraphElement, From, To, Query> 
+        where From: IGraphObject
+        where To: IGraphOutput
+        where Query: ElementQuery<From,To,Query>
     {
-        internal ElementQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
+        internal ElementQuery(ITraversalQuery query) : base(query) { }
 
         protected ElementQuery() : base() { }
 

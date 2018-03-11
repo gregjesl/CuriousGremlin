@@ -98,7 +98,7 @@ namespace CuriousGremlin.Query
         public static VertexQuery<Graph> AddVertex(IVertexObject vertex)
         {
             var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
-            foreach(var item in properties)
+            foreach (var item in properties)
             {
                 if (item.Value is null)
                     properties.Remove(item.Key);

@@ -5,8 +5,9 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class BooleanQuery<From> : TraversalQuery<From,IGraphOutput,BooleanQuery<From>>
+    public class BooleanQuery<From> : TraversalQuery<From,GraphBoolean>
+        where From: IGraphObject
     {
-        internal BooleanQuery(ITraversalQuery<From,IGraphOutput> query) : base(query) { }
+        internal BooleanQuery(ITraversalQuery query) : base(query) { }
     }
 }

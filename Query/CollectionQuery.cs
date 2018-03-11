@@ -6,13 +6,13 @@ using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class CollectionQuery<From, To, Query> : TraversalQuery<From, To, Query> where Query : CollectionQuery<From, To, Query>
+    public abstract class CollectionQuery<T, From, To, Query> : TraversalQuery<From, GraphCollection<T>> where Query : CollectionQuery<T, From, To, Query>
         where From : IGraphObject
         where To : IGraphOutput
     {
         public enum RepeatTypeEnum { DoWhile, WhileDo };
 
-        internal CollectionQuery(ITraversalQuery<IGraphObject, IGraphOutput> query) : base(query) { }
+        internal CollectionQuery(ITraversalQuery query) : base(query) { }
 
         protected CollectionQuery() : base() { }
 
@@ -22,12 +22,12 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public Query And(params CollectionQuery<To>[] conditions)
+        public Query And(params CollectionQuery<T, To>[] conditions)
         {
             return And(conditions);
         }
 
-        public Query And(IEnumerable<CollectionQuery<To>> conditions)
+        public Query And(IEnumerable<CollectionQuery<T, To>> conditions)
         {
             string step = "and(";
             List<string> stepStrings = new List<string>();
@@ -63,10 +63,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public ValueQuery<From> Count()
+        public ValueQuery<T, From> Count()
         {
             Steps.Add("count()");
-            return new ValueQuery<From>(this);
+            return new ValueQuery<T, From>(this);
         }
 
         /*
@@ -76,10 +76,10 @@ namespace CuriousGremlin.Query
         }
         */
 
-        public ValueQuery<From> Constant(string value)
+        public ValueQuery<T, From> Constant(string value)
         {
             Steps.Add("constant('" + Sanitize(value) + "')");
-            return new ValueQuery<From>(this);
+            return new ValueQuery<T, From>(this);
         }
 
         public Query Coin(double probability)
@@ -108,10 +108,10 @@ namespace CuriousGremlin.Query
             return new TerminalQuery<From>(this);
         }
 
-        public ListQuery<From> Fold()
+        public ListQuery<T, From> Fold()
         {
             Steps.Add("fold()");
-            return new ListQuery<From>(this);
+            return new ListQuery<T, From>(this);
         }
 
         public BooleanQuery<From> HasNext()
@@ -151,10 +151,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public ListQuery<From> Path()
+        public ListQuery<T, From> Path()
         {
             Steps.Add("path()");
-            return new ListQuery<From>(this);
+            return new ListQuery<T, From>(this);
         }
 
         public Query Range(int lowerBound, int upperBound)
@@ -167,7 +167,7 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public Query Repeat(ITraversalQuery<To,To> traversal, int count)
+        public Query Repeat(ITraversalQuery<IGraphOutput,IGraphOutput> traversal, int count)
         {
             if (count < 1)
                 throw new ArgumentException("Repeat count must be greater than 0");
@@ -177,7 +177,7 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public Query Repeat(ITraversalQuery<To, To> traversal, BooleanQuery<To> condition, RepeatTypeEnum type)
+        public Query Repeat(TraversalQuery<To, To> traversal, BooleanQuery<To> condition, RepeatTypeEnum type)
         {
             if (traversal.Steps.Count < 1)
                 throw new ArgumentException("Provided traversal must contain at least one step");
@@ -205,7 +205,7 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public DictionaryQuery<From> Select(params string[] items)
+        public DictionaryQuery<T, From> Select(params string[] items)
         {
             if (items.Length < 1)
                 throw new ArgumentException("Must have at least one item to select");
@@ -218,10 +218,10 @@ namespace CuriousGremlin.Query
             step += string.Join(", ", itemList);
             step += ")";
             Steps.Add(step);
-            return new DictionaryQuery<From>(this);
+            return new DictionaryQuery<T, From>(this);
         }
 
-        public DictionaryQuery<From> SelectBy(string label, params string[] items)
+        public DictionaryQuery<T, From> SelectBy(string label, params string[] items)
         {
             if (label == null || label == "")
                 throw new ArgumentException("Label cannot be empty or null");
@@ -237,7 +237,7 @@ namespace CuriousGremlin.Query
             step += ")";
             step += ".by('" + Sanitize(label) + "')";
             Steps.Add(step);
-            return new DictionaryQuery<From>(this);
+            return new DictionaryQuery<T, From>(this);
         }
 
         public Query SimplePath()
@@ -268,9 +268,9 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public CollectionQuery<From> ToCollectionQuery()
+        public CollectionQuery<T, From> ToCollectionQuery()
         {
-            return new CollectionQuery<From>(this);
+            return new CollectionQuery<T, From>(this);
         }
 
         public Query ToList()
@@ -286,15 +286,16 @@ namespace CuriousGremlin.Query
         }
     }
 
-    public class CollectionQuery<From> : CollectionQuery<IGraphObject,IGraphOutput,CollectionQuery<From>>
+    public class CollectionQuery<T, From> : CollectionQuery<T, From,IGraphOutput,CollectionQuery<T, From>>
+        where From: IGraphObject
     {
-        internal CollectionQuery(ITraversalQuery<IGraphObject, IGraphOutput> query) : base(query) { }
+        internal CollectionQuery(ITraversalQuery query) : base(query) { }
 
         internal CollectionQuery() : base() { }
 
-        public CollectionQuery<GraphCollection> CreateSubQuery()
+        public CollectionQuery<GraphCollection<T>, From> CreateSubQuery()
         {
-            return new CollectionQuery<GraphCollection>();
+            return new CollectionQuery<GraphCollection<T>, From>();
         }
     }
 }

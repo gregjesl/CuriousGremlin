@@ -6,19 +6,20 @@ using CuriousGremlin.Query.Objects;
 namespace CuriousGremlin.Query
 {
     public class VertexQuery<From> : ElementQuery<From, GraphVertex, VertexQuery<From>>
+        where From: IGraphObject
     {
-        internal VertexQuery(ITraversalQuery<From,IGraphOutput> query) : base(query) { }
+        internal VertexQuery(ITraversalQuery query) : base(query) { }
 
         internal VertexQuery() : base() { }
 
         public static VertexQuery<From> Find(string label)
         {
-            return Vertices().HasLabel(label);
+            return (Vertices() as VertexQuery<From>).HasLabel(label);
         }
 
         public static VertexQuery<From> Find(Dictionary<string, object> properties)
         {
-            return Vertices().Has(properties);
+            return (Vertices() as VertexQuery<From>).Has(properties);
         }
 
         public static VertexQuery<From> Find(string label, Dictionary<string, object> properties)
@@ -26,15 +27,17 @@ namespace CuriousGremlin.Query
             return Find(label).Has(properties);
         }
 
+        /*
         public EdgeQuery<From> AddEdge(string label, string vertexID)
         {
-            return AddEdge(label, Vertex<From>(vertexID));
+            return AddEdge(label, VertexQuery<From>(vertexID));
         }
 
         public EdgeQuery<From> AddEdge(string label, string vertexID, Dictionary<string, object> properties)
         {
             return AddEdge(label, Vertex(vertexID), properties);
         }
+        */
 
         public EdgeQuery<From> AddEdge(string label, VertexQuery<From> vertices)
         {

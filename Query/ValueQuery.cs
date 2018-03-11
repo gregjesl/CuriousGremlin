@@ -6,7 +6,8 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class ValueQuery<From> : CollectionQuery<From,GraphValue,ValueQuery<From>>
+    public class ValueQuery<T, From> : CollectionQuery<T, From,GraphValue,ValueQuery<T, From>>
+        where From: IGraphObject
     {
         internal ValueQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
 
@@ -46,25 +47,25 @@ namespace CuriousGremlin.Query
             return new BooleanQuery<From>(this);
         }
 
-        public ValueQuery<From> Max()
+        public ValueQuery<T, From> Max()
         {
             Steps.Add("max()");
             return this;
         }
 
-        public ValueQuery<From> Mean()
+        public ValueQuery<T, From> Mean()
         {
             Steps.Add("mean()");
             return this;
         }
 
-        public ValueQuery<From> Min()
+        public ValueQuery<T, From> Min()
         {
             Steps.Add("min()");
             return this;
         }
 
-        public ValueQuery<From> Sum()
+        public ValueQuery<T, From> Sum()
         {
             Steps.Add("sum()");
             return this;

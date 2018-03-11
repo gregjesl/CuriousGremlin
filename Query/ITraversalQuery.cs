@@ -5,10 +5,15 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public interface ITraversalQuery<From,To> 
+    public interface ITraversalQuery
+    {
+        StepList Steps { get; }
+    }
+
+    public interface ITraversalQuery<out From, out To> : ITraversalQuery
         where From: IGraphObject
         where To: IGraphOutput
     {
-        StepList Steps { get; }
+        
     }
 }

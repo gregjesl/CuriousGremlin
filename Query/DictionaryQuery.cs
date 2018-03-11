@@ -5,9 +5,9 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class DictionaryQuery<From, TValue> : ListQuery<From, KeyValuePair<string, TValue>>
+    public class DictionaryQuery<TValue, From> : ListQuery<KeyValuePair<string, TValue>, From>
         where From: IGraphObject
     {
-        internal DictionaryQuery(ITraversalQuery<IGraphObject, IGraphOutput> query) : base(query) { }
+        internal DictionaryQuery(ITraversalQuery query) : base(query) { }
     }
 }

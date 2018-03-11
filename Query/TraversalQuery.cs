@@ -5,13 +5,13 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class TraversalQuery<From, To, Query> : GraphQuery, ITraversalQuery<From, To>
+    public class TraversalQuery<From, To> : GraphQuery, ITraversalQuery<From, To>
         where From: IGraphObject
         where To: IGraphOutput
     {
         public StepList Steps { set; get; }
 
-        internal TraversalQuery(ITraversalQuery<IGraphObject, IGraphOutput> query)
+        internal TraversalQuery(ITraversalQuery query)
         {
             if (query is null)
                 throw new ArgumentNullException("Step list cannot be null");

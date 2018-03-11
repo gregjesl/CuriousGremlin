@@ -6,8 +6,9 @@ using CuriousGremlin.Query.Objects;
 namespace CuriousGremlin.Query
 {
     public class EdgeQuery<From> : ElementQuery<From,GraphEdge,EdgeQuery<From>>
+        where From: IGraphObject
     {
-        internal EdgeQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
+        internal EdgeQuery(ITraversalQuery query) : base(query) { }
 
         public VertexQuery<From> OutV()
         {
