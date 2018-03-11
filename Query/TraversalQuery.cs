@@ -6,6 +6,8 @@ using CuriousGremlin.Query.Objects;
 namespace CuriousGremlin.Query
 {
     public class TraversalQuery<From, To, Query> : GraphQuery, ITraversalQuery<From, To>
+        where From: IGraphObject
+        where To: IGraphOutput
     {
         public StepList Steps { set; get; }
 

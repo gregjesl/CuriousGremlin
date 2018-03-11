@@ -6,7 +6,9 @@ using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class CollectionQuery<From, To, Query> : TraversalQuery<IGraphObject, IGraphOutput, Query> where Query : CollectionQuery<From, To, Query>
+    public abstract class CollectionQuery<From, To, Query> : TraversalQuery<From, To, Query> where Query : CollectionQuery<From, To, Query>
+        where From : IGraphObject
+        where To : IGraphOutput
     {
         public enum RepeatTypeEnum { DoWhile, WhileDo };
 

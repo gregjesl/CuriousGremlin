@@ -7,6 +7,6 @@ namespace CuriousGremlin.Query
 {
     public class TerminalQuery<From> : TraversalQuery<From,object,TerminalQuery<From>>
     {
-        internal TerminalQuery(ITraversalQuery query) : base(query) { }
+        internal TerminalQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
     }
 }

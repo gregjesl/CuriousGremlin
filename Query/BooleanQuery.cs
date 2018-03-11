@@ -5,7 +5,7 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class BooleanQuery<From> : TraversalQuery<From,bool,BooleanQuery<From>>
+    public class BooleanQuery<From> : TraversalQuery<From,IGraphOutput,BooleanQuery<From>>
     {
         internal BooleanQuery(ITraversalQuery<From,IGraphOutput> query) : base(query) { }
     }

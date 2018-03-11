@@ -8,7 +8,7 @@ namespace CuriousGremlin.Query
 {
     public class ValueQuery<From> : CollectionQuery<From,GraphValue,ValueQuery<From>>
     {
-        internal ValueQuery(ITraversalQuery query) : base(query) { }
+        internal ValueQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
 
         public BooleanQuery<From> Is(float value)
         {

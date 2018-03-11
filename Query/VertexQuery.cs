@@ -7,7 +7,7 @@ namespace CuriousGremlin.Query
 {
     public class VertexQuery<From> : ElementQuery<From, GraphVertex, VertexQuery<From>>
     {
-        internal VertexQuery(ITraversalQuery<From,GraphVertex> query) : base(query) { }
+        internal VertexQuery(ITraversalQuery<From,IGraphOutput> query) : base(query) { }
 
         internal VertexQuery() : base() { }
 
