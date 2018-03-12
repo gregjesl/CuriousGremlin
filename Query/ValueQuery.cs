@@ -47,6 +47,12 @@ namespace CuriousGremlin.Query
             return new BooleanQuery<From>(this);
         }
 
+        public ValueQuery<T, From> Math(string mapping)
+        {
+            Steps.Add("math(" + Sanitize(mapping) + ")");
+            return this;
+        }
+
         public ValueQuery<T, From> Max()
         {
             Steps.Add("max()");

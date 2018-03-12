@@ -5,86 +5,85 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class VertexQuery<From> : ElementQuery<From, GraphVertex, VertexQuery<From>>
+    public class VertexQuery<From, Query> : ElementQuery<From, GraphVertex, Query>
         where From: IGraphObject
+        where Query: VertexQuery<From, Query>
     {
         internal VertexQuery(ITraversalQuery query) : base(query) { }
 
         internal VertexQuery() : base() { }
 
-        public static VertexQuery<From> Find(string label)
+        public static VertexQuery Find(string label)
         {
-            return (Vertices() as VertexQuery<From>).HasLabel(label);
+            return Vertices().HasLabel(label);
         }
 
-        public static VertexQuery<From> Find(Dictionary<string, object> properties)
+        public static VertexQuery Find(Dictionary<string, object> properties)
         {
-            return (Vertices() as VertexQuery<From>).Has(properties);
+            return Vertices().Has(properties);
         }
 
-        public static VertexQuery<From> Find(string label, Dictionary<string, object> properties)
+        public static VertexQuery Find(string label, Dictionary<string, object> properties)
         {
             return Find(label).Has(properties);
         }
 
-        /*
         public EdgeQuery<From> AddEdge(string label, string vertexID)
         {
-            return AddEdge(label, VertexQuery<From>(vertexID));
+            Steps.Add("addE('" + Sanitize(label) + "').to(g.V('" + Sanitize(vertexID) + "'))");
+            return new EdgeQuery<From>(this);
         }
 
         public EdgeQuery<From> AddEdge(string label, string vertexID, Dictionary<string, object> properties)
         {
-            return AddEdge(label, Vertex(vertexID), properties);
+            return AddEdge(label, vertexID).AddProperties(properties);
         }
-        */
 
-        public EdgeQuery<From> AddEdge(string label, VertexQuery<From> vertices)
+        public EdgeQuery<From> AddEdge(string label, VertexQuery vertices)
         {
             Steps.Add("addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")");
             return new EdgeQuery<From>(this);
         }
 
-        public EdgeQuery<From> AddEdge(string label, VertexQuery<From> vertices, Dictionary<string, object> properties)
+        public EdgeQuery<From> AddEdge(string label, VertexQuery vertices, Dictionary<string, object> properties)
         {
-            Steps.Add("addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")");
-            return (new EdgeQuery<From>(this)).AddProperties(properties);
+            return AddEdge(label, vertices).AddProperties(properties);
         }
 
-        public VertexQuery<From> Out()
+        public Query Out()
         {
             Steps.Add("out()");
-            return this;
+            return this as Query;
         }
 
-        public VertexQuery<From> Out(string label)
+        public Query Out(string label)
         {
             Steps.Add("out('" + Sanitize(label) + "')");
-            return this;
+            return this as Query;
         }
 
-        public VertexQuery<From> In()
+        public Query In()
         {
             Steps.Add("in()");
-            return this;
+            return this as Query;
         }
 
-        public VertexQuery<From> In(string label)
+        public Query In(string label)
         {
             Steps.Add("in('" + Sanitize(label) + "')");
-            return this;
+            return this as Query;
         }
 
-        public VertexQuery<From> Both()
+        public Query Both()
         {
             Steps.Add("both()");
-            return this;
+            return this as Query;
         }
 
-        public VertexQuery<From> Both(string label)
+        public Query Both(string label)
         {
             Steps.Add("both('" + Sanitize(label) + "')");
-            return this;
+            return this as Query;
         }
 
         public EdgeQuery<From> OutE()
@@ -123,15 +122,28 @@ namespace CuriousGremlin.Query
             return new EdgeQuery<From>(this);
         }
 
-        public VertexQuery<From> AddListProperty(string key, string value)
+        public Query AddListProperty(string key, string value)
         {
             Steps.Add(".property(list, '" + Sanitize(key) + "', " + GetObjectString(value) + ")");
-            return this;
+            return this as Query;
         }
 
         public VertexQuery<GraphVertex> CreateSubQuery()
         {
             return new VertexQuery<GraphVertex>();
         }
+    }
+
+    public class VertexQuery<From> : VertexQuery<From, VertexQuery<From>>
+        where From: IGraphObject
+    {
+        internal VertexQuery(ITraversalQuery query) : base(query) { }
+
+        internal VertexQuery() : base() { }
+    }
+
+    public class VertexQuery : VertexQuery<Graph, VertexQuery>
+    {
+
     }
 }

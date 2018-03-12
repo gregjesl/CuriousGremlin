@@ -5,10 +5,16 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
+    /// <summary>
+    /// Implementation of <seealso cref="ITraversalQuery{From, To}"/>
+    /// </summary>
     public class TraversalQuery<From, To> : GraphQuery, ITraversalQuery<From, To>
         where From: IGraphObject
         where To: IGraphOutput
     {
+        /// <summary>
+        /// A list of steps the traversal will take
+        /// </summary>
         public StepList Steps { set; get; }
 
         internal TraversalQuery(ITraversalQuery query)
@@ -21,6 +27,12 @@ namespace CuriousGremlin.Query
         protected TraversalQuery()
         {
             Steps = new StepList();
+        }
+
+        public TerminalQuery<From> Explain()
+        {
+            Steps.Add("explain()");
+            return new TerminalQuery<From>(this);
         }
 
         public override string ToString()

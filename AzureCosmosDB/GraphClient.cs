@@ -9,6 +9,7 @@ using Microsoft.Azure.Documents.Client;
 using CuriousGremlin.GraphSON;
 using CuriousGremlin.Query;
 using Newtonsoft.Json;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.AzureCosmosDB
 {
@@ -133,6 +134,11 @@ namespace CuriousGremlin.AzureCosmosDB
             }
         }
 
+        public async Task<FeedResponse<object>> Execute(ITraversalQuery query)
+        {
+            return await Execute(query.ToString());
+        }
+
         public async Task<List<Vertex>> Execute(VertexQuery query)
         {
             var vertices = new List<Vertex>();
@@ -144,7 +150,7 @@ namespace CuriousGremlin.AzureCosmosDB
             return vertices;
         }
 
-        public async Task<List<Edge>> Execute(EdgeQuery query)
+        public async Task<List<Edge>> Execute(EdgeQuery<Graph> query)
         {
             var edges = new List<Edge>();
             var results = await Execute(query.ToString());
@@ -155,40 +161,40 @@ namespace CuriousGremlin.AzureCosmosDB
             return edges;
         }
 
-        public async Task<List<object>> Execute(ValueQuery query)
+        public async Task<List<T>> Execute<T>(ValueQuery<T, Graph> query)
         {
-            var items = new List<object>();
+            var items = new List<T>();
             var results = await Execute(query.ToString());
             foreach (Newtonsoft.Json.Linq.JObject result in results)
             {
-                items.Add(result.ToObject<object>());
+                items.Add(result.ToObject<T>());
             }
             return items;
         }
 
-        public async Task<List<List<object>>> Execute(ListQuery query)
+        public async Task<List<List<T>>> Execute<T>(ListQuery<T, Graph> query)
         {
-            var items = new List<List<object>>();
+            var items = new List<List<T>>();
             var results = await Execute(query.ToString());
             foreach (Newtonsoft.Json.Linq.JObject result in results)
             {
-                items.Add(result.ToObject<List<object>>());
+                items.Add(result.ToObject<List<T>>());
             }
             return items;
         }
 
-        public async Task<List<Dictionary<string,object>>> Execute(DictionaryQuery query)
+        public async Task<List<List<KeyValuePair<TKey,TValue>>>> Execute<TKey,TValue>(DictionaryQuery<TKey, TValue, Graph> query)
         {
-            var items = new List<Dictionary<string,object>>();
+            var items = new List<List<KeyValuePair<TKey, TValue>>>();
             var results = await Execute(query.ToString());
             foreach (Newtonsoft.Json.Linq.JObject result in results)
             {
-                items.Add(result.ToObject<Dictionary<string, object>>());
+                items.Add(result.ToObject<List<KeyValuePair<TKey,TValue>>>());
             }
             return items;
         }
 
-        public async Task<bool> Execute(BooleanQuery query)
+        public async Task<bool> Execute(BooleanQuery<Graph> query)
         {
             var items = new List<bool>();
             var results = await Execute(query.ToString());
@@ -199,7 +205,7 @@ namespace CuriousGremlin.AzureCosmosDB
             return items[0];
         }
 
-        public async Task Execute(TerminalQuery query)
+        public async Task Execute(TerminalQuery<Graph> query)
         {
             var results = await Execute(query.ToString());
         }

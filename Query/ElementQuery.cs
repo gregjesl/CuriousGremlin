@@ -50,6 +50,12 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        public DictionaryQuery<string, TValue, From> ValueMap<TValue>()
+        {
+            Steps.Add("valueMap()");
+            return new DictionaryQuery<string, TValue, From>(this);
+        }
+
         public Query Values(string key)
         {
             Steps.Add("values('" + Sanitize(key) + "')");

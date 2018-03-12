@@ -12,7 +12,8 @@ namespace CuriousGremlin.Query
 
         public object Unfold()
         {
-            throw new NotImplementedException();
+            Steps.Add("unfold()");
+            return new CollectionQuery<T, From>(this);
         }
     }
 }

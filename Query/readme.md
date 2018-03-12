@@ -32,43 +32,42 @@ AddVertex | Vertex | :white_check_mark:
 AddProperty | Element -> Element | :white_check_mark:
 AddListProperty | Vertex -> Vertex | :white_check_mark:
 Aggregate | Collection -> Collection | :white_check_mark:
-And | | :x:
+And | Collection -> Collection | :white_check_mark:
 As | Collection -> Collection | :white_check_mark:
-Barrier | | :x:
-Both | Vertex -> Vertex | :white_check_mark:
-BothE | Vertex -> Edge | :white_check_mark:
-BothV | Edge -> Vertex | :white_check_mark:
-By | | :x:
-Cap | | :x:
-Coalesce | | :x:
-Count | Collection -> Value | :white_check_mark:
-Choose | Collection -> Graph | :x:
-Coin | Collection -> Collection | :white_check_mark:
-Constant | Collection -> Collection | :white_check_mark:
-CyclicPath | Collection -> Collection | :white_check_mark:
-Dedup | Collection -> Collection | :white_check_mark:
-Drop | Collection -> Terminal | :white_check_mark:
-Fold | Collection -> List | :white_check_mark:
-Group | | :x:
-GroupCount | | :x:
+[Barrier](http://tinkerpop.apache.org/docs/current/reference/#barrier-step) | Collection -> Collection | :white_check_mark:
+[Both](http://tinkerpop.apache.org/docs/current/reference/#vertex-steps) | Vertex -> Vertex | :white_check_mark:
+[BothE](http://tinkerpop.apache.org/docs/current/reference/#vertex-steps) | Vertex -> Edge | :white_check_mark:
+[BothV](http://tinkerpop.apache.org/docs/current/reference/#vertex-steps) | Edge -> Vertex | :white_check_mark:
+[By](http://tinkerpop.apache.org/docs/current/reference/#by-step) | Collection -> Dictionary | :white_check_mark:
+[Cap](http://tinkerpop.apache.org/docs/current/reference/#cap-step) | | :x:
+[Coalesce](http://tinkerpop.apache.org/docs/current/reference/#coalesce-step) | Collection -> Collection | :white_check_mark:
+[Count](http://tinkerpop.apache.org/docs/current/reference/#count-step) | Collection -> Value | :white_check_mark:
+[Choose](http://tinkerpop.apache.org/docs/current/reference/#choose-step) | Collection -> Collection | :white_check_mark:
+[Coin](http://tinkerpop.apache.org/docs/current/reference/#coin-step) | Collection -> Collection | :white_check_mark:
+[Constant](http://tinkerpop.apache.org/docs/current/reference/#constant-step) | Collection -> Collection | :white_check_mark:
+[CyclicPath](http://tinkerpop.apache.org/docs/current/reference/#cyclicpath-step) | Collection -> Collection | :white_check_mark:
+[Dedup](http://tinkerpop.apache.org/docs/current/reference/#dedup-step) | Collection -> Collection | :white_check_mark:
+[Drop](http://tinkerpop.apache.org/docs/current/reference/#drop-step) | Collection -> Terminal | :white_check_mark:
+[Explain](http://tinkerpop.apache.org/docs/current/reference/#explain-step) | Traversal -> Terminal | :white_check_mark:
+[Fold](http://tinkerpop.apache.org/docs/current/reference/#fold-step) | Collection -> List | :white_check_mark:
+[Group](http://tinkerpop.apache.org/docs/current/reference/#group-step) | | :x:
+[GroupCount](http://tinkerpop.apache.org/docs/current/reference/#groupcount-step) | Collection -> Dictionary | :white_check_mark:
 Has | Element -> Element | :white_check_mark:
 HasLabel | Element -> Element | :white_check_mark:
 HasNext | Collection -> Boolean | :white_check_mark:
-Inject | | :x:
+[Inject](http://tinkerpop.apache.org/docs/current/reference/#inject-step) | Collection -> Collection | :white_check_mark:
 In | Vertex -> Vertex | :white_check_mark:
 InE | Vertex -> Edge | :white_check_mark:
 InV | Edge -> Vertex | :white_check_mark:
 Is  | Value -> Boolean | :white_check_mark:
 Limit | Collection -> Collection | :white_check_mark:
-Local | | :x:
-MapKeys |  | :x:
-MapValues | | :x:
+Local | Collection -> Collection | :white_check_mark:
 Match | | :x:
 Max | Value -> Value | :white_check_mark:
 Mean | Value -> Value | :white_check_mark:
 Min | Value -> Value | :white_check_mark:
 Next | Collection -> Collection | :white_check_mark:
-Or | | :x:
+Or | Collection -> Collection | :white_check_mark:
 Order | Value -> Value | :white_check_mark:
 Out | Vertex -> Vertex | :white_check_mark:
 OutE | Vertex -> Edge | :white_check_mark:
@@ -76,7 +75,7 @@ OutV | Edge -> Vertex | :white_check_mark:
 Path | Collection -> List | :white_check_mark:
 Profile | | :x:
 Range | Graph -> Graph | :white_check_mark:
-Repeat | | :x:
+Repeat | Collection -> Collection | :white_check_mark:
 Sack | | :x:
 Sample | Collection -> Collection | :white_check_mark:
 Select | Collection -> List | :white_check_mark:
@@ -90,12 +89,12 @@ ToBulkSet | Collection -> Collection | :white_check_mark:
 ToList | Collection -> List | :white_check_mark:
 ToSet | Collection -> Collection | :white_check_mark:
 Tree | | :x:
-Unfold | | :x:
-Union | | :x:
-ValueMap | | :x:
+Unfold | List -> Collection | :white_check_mark:
+Union | Collection -> Collection | :white_check_mark:
+ValueMap | Element -> Dictionary | :white_check_mark:
 Values | Element -> Value | :white_check_mark:
 Vertex | Vertex | :white_check_mark:
-Where | | :x:
+Where | Collection -> Collection | :white_check_mark:
 
 ## Recipies
 
