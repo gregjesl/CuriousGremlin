@@ -216,6 +216,18 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        public Query Not(ITraversalQuery<To, To> subquery)
+        {
+            Steps.Add("not(" + subquery.ToString() + ")");
+            return this as Query;
+        }
+
+        public Query Optional(ITraversalQuery<To, To> subquery)
+        {
+            Steps.Add("optional(" + subquery.ToString() + ")");
+            return this as Query;
+        }
+
         public CollectionQuery<TOutput, From> Or<TOutput>(params ITraversalQuery<To, TOutput>[] paths)
             where TOutput: IGraphOutput
         {
@@ -243,6 +255,26 @@ namespace CuriousGremlin.Query
         {
             Steps.Add("path()");
             return new ListQuery<T, From>(this);
+        }
+
+        public DictionaryQuery<string, object, From> PropertyMap()
+        {
+            Steps.Add("propertyMap()");
+            return new DictionaryQuery<string, object, From>(this);
+        }
+
+        public DictionaryQuery<string, object, From> PropertyMap(params string[] keys)
+        {
+            string step = "propertyMap(";
+            var itemList = new List<string>();
+            foreach (var item in keys)
+            {
+                itemList.Add("'" + Sanitize(item) + "'");
+            }
+            step += string.Join(", ", itemList);
+            step += ")";
+            Steps.Add(step);
+            return new DictionaryQuery<string, object, From>(this);
         }
 
         public Query Range(int lowerBound, int upperBound)
@@ -331,6 +363,12 @@ namespace CuriousGremlin.Query
         public Query SimplePath()
         {
             Steps.Add("simplePath()");
+            return this as Query;
+        }
+
+        public Query Skip(int number)
+        {
+            Steps.Add("skip(" + number.ToString() + ")");
             return this as Query;
         }
 

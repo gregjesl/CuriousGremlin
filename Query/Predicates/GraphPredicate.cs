@@ -14,6 +14,8 @@ namespace CuriousGremlin.Query.Predicates
             Predicate = Command + "(" + GraphQuery.GetObjectString(item) + ")";
         }
 
+        protected GraphPredicate() { }
+
         protected GraphPredicate(object lb, object up)
         {
             Predicate = Command + "(" + GraphQuery.GetObjectString(lb) + ", " + GraphQuery.GetObjectString(up) + ")";
@@ -45,14 +47,16 @@ namespace CuriousGremlin.Query.Predicates
         }
     }
 
+    public class GPNot : GraphPredicate
+    {
+        protected override string Command { get { return "not"; }}
+        public GPNot(GraphPredicate predicate) : base(predicate) { }
+	}
+
     public class GPEquals : GraphPredicate
     {
         protected override string Command { get { return "eq"; } }
         public GPEquals(object item) : base(item) { }
-        public override string ToString()
-        {
-            return Predicate;
-        }
     }
 
     public class GPNotEqual : GraphPredicate
