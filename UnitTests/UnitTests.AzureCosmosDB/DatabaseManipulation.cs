@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CuriousGremlin.AzureCosmosDB;
 using CuriousGremlin.Query;
-using CuriousGremlin.GraphSON;
 using System;
 
 namespace UnitTests.AzureCosmosDB

@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Graphs;
 using Microsoft.Azure.Documents.Client;
-using CuriousGremlin.GraphSON;
 using CuriousGremlin.Query;
 using Newtonsoft.Json;
 using CuriousGremlin.Query.Objects;
@@ -139,24 +138,24 @@ namespace CuriousGremlin.AzureCosmosDB
             return await Execute(query.ToString());
         }
 
-        public async Task<List<Vertex>> Execute(VertexQuery query)
+        public async Task<List<GraphVertex>> Execute(VertexQuery query)
         {
-            var vertices = new List<Vertex>();
+            var vertices = new List<GraphVertex>();
             var results = await Execute(query.ToString());
             foreach(Newtonsoft.Json.Linq.JObject result in results)
             {
-                vertices.Add(result.ToObject<Vertex>());
+                vertices.Add(result.ToObject<GraphVertex>());
             }
             return vertices;
         }
 
-        public async Task<List<Edge>> Execute(EdgeQuery<Graph> query)
+        public async Task<List<GraphEdge>> Execute(EdgeQuery<Graph> query)
         {
-            var edges = new List<Edge>();
+            var edges = new List<GraphEdge>();
             var results = await Execute(query.ToString());
             foreach (Newtonsoft.Json.Linq.JObject result in results)
             {
-                edges.Add(result.ToObject<Edge>());
+                edges.Add(result.ToObject<GraphEdge>());
             }
             return edges;
         }

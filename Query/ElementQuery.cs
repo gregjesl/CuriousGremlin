@@ -29,6 +29,12 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        public ValueQuery<string, From>Id()
+        {
+            Steps.Add("id()");
+            return new ValueQuery<string, From>(this);
+        }
+
         public Query Has(string key, object value)
         {
             Steps.Add("has('" + Sanitize(key) + "', " + GetObjectString(value) + ")");
@@ -54,6 +60,18 @@ namespace CuriousGremlin.Query
         {
             Steps.Add("valueMap()");
             return new DictionaryQuery<string, TValue, From>(this);
+        }
+
+        public ValueQuery<object, From>Properties()
+        {
+            Steps.Add("properties()");
+            return new ValueQuery<object, From>(this);
+        }
+
+        public ValueQuery<object, From> Properties(string key)
+        {
+            Steps.Add("properties(" + Sanitize(key) + ")");
+            return new ValueQuery<object, From>(this);
         }
 
         public Query Values(string key)

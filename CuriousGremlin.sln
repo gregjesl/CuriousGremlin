@@ -2,17 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Query", "Query\Query.csproj", "{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Query", "Query\Query.csproj", "{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphSON", "GraphSON\GraphSON.csproj", "{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureCosmosDB", "AzureCosmosDB\AzureCosmosDB.csproj", "{9D348F8F-5F34-45FE-A583-6202833E3E67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCosmosDB", "AzureCosmosDB\AzureCosmosDB.csproj", "{9D348F8F-5F34-45FE-A583-6202833E3E67}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{C5A71BE6-2590-4B00-9150-8078DEA4715D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.GraphSON", "UnitTests\UnitTests.GraphSON\UnitTests.GraphSON.csproj", "{94D6F783-74B6-4D6F-B33D-468CFED2F415}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.AzureCosmosDB", "UnitTests\UnitTests.AzureCosmosDB\UnitTests.AzureCosmosDB.csproj", "{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.AzureCosmosDB", "UnitTests\UnitTests.AzureCosmosDB\UnitTests.AzureCosmosDB.csproj", "{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9BB80DF4-F633-4223-A879-AABE47B55A5B}"
 	ProjectSection(SolutionItems) = preProject
@@ -31,18 +27,10 @@ Global
 		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FA60ABB-A920-4EB4-A2F7-94A0DCC37BFD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94D6F783-74B6-4D6F-B33D-468CFED2F415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94D6F783-74B6-4D6F-B33D-468CFED2F415}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94D6F783-74B6-4D6F-B33D-468CFED2F415}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94D6F783-74B6-4D6F-B33D-468CFED2F415}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,7 +44,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{94D6F783-74B6-4D6F-B33D-468CFED2F415} = {C5A71BE6-2590-4B00-9150-8078DEA4715D}
 		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9} = {C5A71BE6-2590-4B00-9150-8078DEA4715D}
 		{2F12193A-84DA-481B-AFA5-3A90AABC139A} = {C5A71BE6-2590-4B00-9150-8078DEA4715D}
 	EndGlobalSection

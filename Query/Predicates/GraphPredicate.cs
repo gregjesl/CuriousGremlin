@@ -50,7 +50,10 @@ namespace CuriousGremlin.Query.Predicates
     public class GPNot : GraphPredicate
     {
         protected override string Command { get { return "not"; }}
-        public GPNot(GraphPredicate predicate) : base(predicate) { }
+        public GPNot(GraphPredicate predicate) : base() 
+        {
+            Predicate = Command + "(" + predicate.ToString() + ")";
+        }
 	}
 
     public class GPEquals : GraphPredicate
