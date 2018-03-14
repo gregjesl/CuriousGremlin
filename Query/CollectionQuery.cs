@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
 using CuriousGremlin.Query.Predicates;
+using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class CollectionQuery<T, From, To, Query> : TraversalQuery<From, GraphCollection<T>> where Query : CollectionQuery<T, From, To, Query>
+    public class CollectionQuery<T, From, To, Query> : TraversalQuery<From, GraphCollection<T>> where Query : CollectionQuery<T, From, To, Query>
         where From : IGraphObject
         where To : IGraphOutput
     {
@@ -15,6 +16,43 @@ namespace CuriousGremlin.Query
         internal CollectionQuery(ITraversalQuery query) : base(query) { }
 
         protected CollectionQuery() : base() { }
+
+        public VertexQuery<From> AddVertex(string label)
+        {
+            return AddVertex(label, new Dictionary<string, object>());
+        }
+
+        public VertexQuery<From> AddVertex(Dictionary<string, object> properties)
+        {
+            return AddVertex(null, properties);
+        }
+
+        public VertexQuery<From> AddVertex(string label, Dictionary<string, object> properties)
+        {
+            string step = "addV(";
+            if (label != null && label != "")
+                step += "'" + Sanitize(label) + "'";
+
+            if (properties.Count > 0)
+            {
+                step += ", " + SeralizeProperties(properties);
+            }
+            step += ")";
+            Steps.Add(step);
+            return new VertexQuery<From>(this);
+        }
+
+        public VertexQuery<From> AddVertex(IVertexObject vertex)
+        {
+            var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
+            foreach (var item in properties)
+            {
+                if (item.Value is null)
+                    properties.Remove(item.Key);
+            }
+            properties.Remove("VertexLabel");
+            return AddVertex(vertex.VertexLabel, properties);
+        }
 
         public Query Aggregate(string label)
         {

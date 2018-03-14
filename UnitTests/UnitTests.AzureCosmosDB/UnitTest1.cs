@@ -23,14 +23,14 @@ namespace UnitTests.AzureCosmosDB
                 {
                     
                     // Kill it with fire
-                    client.Execute(GraphQuery.Vertices().Drop().ToString()).Wait();
+                    client.Execute(VertexQuery.All().Drop().ToString()).Wait();
 
                     
                     // Assert that the database is clean
-                    Assert.AreEqual(client.Execute(GraphQuery.Vertices().ToString()).Result.Count, 0);
+                    Assert.AreEqual(client.Execute(VertexQuery.All().ToString()).Result.Count, 0);
 
                     // Insert an object
-                    VertexQuery insert_query = GraphQuery.AddVertex("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value");
+                    VertexQuery insert_query = VertexQuery.AddVertex("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value");
                     var insert_result = client.Execute(insert_query).Result;
                     Assert.AreEqual(insert_result.Count, 1);
                     Assert.AreEqual(insert_result[0].label, "test_vertex");
@@ -41,12 +41,12 @@ namespace UnitTests.AzureCosmosDB
 
                     
                     // Insert a second object
-                    var second_vertex_query = GraphQuery.AddVertex("second_vertex");
+                    var second_vertex_query = VertexQuery.AddVertex("second_vertex");
                     var second_vertex_result = client.Execute(second_vertex_query).Result;
                     Assert.AreEqual(second_vertex_result.Count, 1);
 
                     // Connect the two objects
-                    var connect_query = GraphQuery.Vertex(insert_result[0].id).AddEdge("test_edge", second_vertex_result[0].id).AddProperty("test_key", "test_value");
+                    var connect_query = VertexQuery.Vertex(insert_result[0].id).AddEdge("test_edge", second_vertex_result[0].id).AddProperty("test_key", "test_value");
                     var connect_result = client.Execute(connect_query).Result;
                     Assert.AreEqual(connect_result.Count, 1);
                     Assert.AreEqual(connect_result[0].label, "test_edge");
@@ -58,7 +58,7 @@ namespace UnitTests.AzureCosmosDB
                     Assert.IsTrue(connect_result[0].properties.ContainsValue("test_value"));
 
                     // Reload the first object to check for edges
-                    VertexQuery out_query = GraphQuery.Vertex(insert_result[0].id).Out();
+                    VertexQuery out_query = VertexQuery.Vertex(insert_result[0].id).Out();
                     var out_result = client.Execute(out_query).Result;
                     Assert.AreEqual(out_result.Count, 1);
                     Assert.AreEqual(out_result[0].id, second_vertex_result[0].id);

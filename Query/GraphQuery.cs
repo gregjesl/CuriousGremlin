@@ -54,57 +54,5 @@ namespace CuriousGremlin.Query
             }
             return string.Join(",", outputs);
         }
-
-        public static VertexQuery Vertex(string id)
-        {
-            var query = new VertexQuery();
-            query.Steps.Add("V('" + Sanitize(id) + "')");
-            return query;
-        }
-
-        public static VertexQuery Vertices()
-        {
-            var query = new VertexQuery();
-            query.Steps.Add("V()");
-            return query;
-        }
-
-        public static VertexQuery AddVertex(string label)
-        {
-            return AddVertex(label, new Dictionary<string, object>());
-        }
-
-        public static VertexQuery AddVertex(Dictionary<string, object> properties)
-        {
-            return AddVertex(null, properties);
-        }
-
-        public static VertexQuery AddVertex(string label, Dictionary<string, object> properties)
-        {
-            var query = new VertexQuery();
-            string step = "addV(";
-            if(label != null && label != "")
-                step += "'" + Sanitize(label) + "'";
-
-            if(properties.Count > 0)
-            {
-                step += ", " + SeralizeProperties(properties);
-            }
-            step += ")";
-            query.Steps.Add(step);
-            return query;
-        }
-
-        public static VertexQuery AddVertex(IVertexObject vertex)
-        {
-            var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
-            foreach (var item in properties)
-            {
-                if (item.Value is null)
-                    properties.Remove(item.Key);
-            }
-            properties.Remove("VertexLabel");
-            return AddVertex(vertex.VertexLabel, properties);
-        }
     }
 }

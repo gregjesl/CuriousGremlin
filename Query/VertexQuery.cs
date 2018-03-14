@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
+using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query
 {
@@ -12,21 +13,6 @@ namespace CuriousGremlin.Query
         internal VertexQuery(ITraversalQuery query) : base(query) { }
 
         internal VertexQuery() : base() { }
-
-        public static VertexQuery Find(string label)
-        {
-            return Vertices().HasLabel(label);
-        }
-
-        public static VertexQuery Find(Dictionary<string, object> properties)
-        {
-            return Vertices().Has(properties);
-        }
-
-        public static VertexQuery Find(string label, Dictionary<string, object> properties)
-        {
-            return Find(label).Has(properties);
-        }
 
         public EdgeQuery<From> AddEdge(string label, string vertexID)
         {
@@ -144,6 +130,73 @@ namespace CuriousGremlin.Query
 
     public class VertexQuery : VertexQuery<Graph, VertexQuery>
     {
+        private VertexQuery() : base() { }
 
+        public static VertexQuery All()
+        {
+            var query = new VertexQuery();
+            query.Steps.Add("V()");
+            return query;
+        }
+
+        public static VertexQuery Find(string label)
+        {
+            return All().HasLabel(label);
+        }
+
+        public static VertexQuery Find(Dictionary<string, object> properties)
+        {
+            return All().Has(properties);
+        }
+
+        public static VertexQuery Find(string label, Dictionary<string, object> properties)
+        {
+            return Find(label).Has(properties);
+        }
+
+        public static VertexQuery Vertex(string id)
+        {
+            var query = new VertexQuery();
+            query.Steps.Add("V('" + Sanitize(id) + "')");
+            return query;
+        }
+
+        public new static VertexQuery AddVertex(string label)
+        {
+            return AddVertex(label, new Dictionary<string, object>());
+        }
+
+        public new static VertexQuery AddVertex(Dictionary<string, object> properties)
+        {
+            return AddVertex(null, properties);
+        }
+
+        public new static VertexQuery AddVertex(string label, Dictionary<string, object> properties)
+        {
+            var query = new VertexQuery();
+            string step = "addV(";
+            if (label != null && label != "")
+                step += "'" + Sanitize(label) + "'";
+
+            if (properties.Count > 0)
+            {
+                step += ", " + SeralizeProperties(properties);
+            }
+            step += ")";
+            query.Steps.Add(step);
+            return query;
+        }
+
+        public new static VertexQuery AddVertex(IVertexObject vertex)
+        {
+            var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
+            foreach (var item in properties)
+            {
+                if (item.Value is null)
+                    properties.Remove(item.Key);
+            }
+            properties.Remove("VertexLabel");
+            return AddVertex(vertex.VertexLabel, properties);
+        }
     }
 }
