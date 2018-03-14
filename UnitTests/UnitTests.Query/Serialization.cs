@@ -15,7 +15,7 @@ namespace UnitTests.Query
         public void Query_SerializeVertexObject()
         {
             var item = new VertexSerializationTest();
-            var result = VertexQuery.AddVertex(item);
+            var result = VertexQuery.Create(item);
             var test = Regex.Replace(result.ToString(), @"\s+", "");
             Assert.IsTrue(test.Contains(@"'testString','testo\'mally'"));
             Assert.IsTrue(test.Contains("'testBool',true"));

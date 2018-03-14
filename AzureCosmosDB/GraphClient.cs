@@ -68,7 +68,7 @@ namespace CuriousGremlin.AzureCosmosDB
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         { 
             if (pool != null)
                 pool.ReturnToPool(this);
@@ -164,9 +164,9 @@ namespace CuriousGremlin.AzureCosmosDB
         {
             var items = new List<T>();
             var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
+            foreach (T result in results)
             {
-                items.Add(result.ToObject<T>());
+                items.Add(result);
             }
             return items;
         }
@@ -175,9 +175,9 @@ namespace CuriousGremlin.AzureCosmosDB
         {
             var items = new List<List<T>>();
             var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
+            foreach (List<T> result in results)
             {
-                items.Add(result.ToObject<List<T>>());
+                items.Add(result);
             }
             return items;
         }

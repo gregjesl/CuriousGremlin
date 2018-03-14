@@ -7,7 +7,8 @@ using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query
 {
-    public class CollectionQuery<T, From, To, Query> : TraversalQuery<From, GraphCollection<T>> where Query : CollectionQuery<T, From, To, Query>
+    public class CollectionQuery<T, From, To, Query> : TraversalQuery<From, GraphCollection<T>> 
+        where Query : CollectionQuery<T, From, To, Query>
         where From : IGraphObject
         where To : IGraphOutput
     {
@@ -16,6 +17,11 @@ namespace CuriousGremlin.Query
         internal CollectionQuery(ITraversalQuery query) : base(query) { }
 
         protected CollectionQuery() : base() { }
+
+        public static implicit operator CollectionQuery<T, From, To, Query>(CollectionQuery<T, From> query)
+        {
+            return new CollectionQuery<T, From, To, Query>(query);
+        }
 
         public VertexQuery<From> AddVertex(string label)
         {
@@ -107,40 +113,49 @@ namespace CuriousGremlin.Query
             return new DictionaryQuery<string, T, From>(this);
         }
 
-        public DictionaryQuery<int, T, From> ByCount()
+        public DictionaryQuery<long, T, From> ByCount()
         {
             Steps.Add("by(outE().count())");
-            return new DictionaryQuery<int, T, From>(this);
+            return new DictionaryQuery<long, T, From>(this);
         }
 
-        public DictionaryQuery<int, T, From> ByEdge()
+        public DictionaryQuery<long, T, From> ByEdge()
         {
             Steps.Add("by(outE().count())");
-            return new DictionaryQuery<int, T, From>(this);
+            return new DictionaryQuery<long, T, From>(this);
         }
 
-        public TerminalQuery<From> Choose(BooleanQuery<To> condition, ITraversalQuery<To, IGraphOutput> TrueQuery, ITraversalQuery<To, IGraphOutput> FalseQuery)
+        public TerminalQuery<From> Choose(ITraversalQuery<To, IGraphOutput> condition, ITraversalQuery<To, IGraphOutput> TrueQuery, ITraversalQuery<To, IGraphOutput> FalseQuery)
         {
             return new TerminalQuery<From>(Choose<IGraphOutput>(condition, TrueQuery, FalseQuery));
         }
 
-        public CollectionQuery<TOutput,From> Choose<TOutput>(BooleanQuery<To> condition, ITraversalQuery<To, TOutput> TrueQuery, ITraversalQuery<To, TOutput> FalseQuery)
+        public CollectionQuery<TOutput,From> Choose<TOutput>(ITraversalQuery<To, IGraphOutput> condition, ITraversalQuery<To, TOutput> TrueQuery, ITraversalQuery<To, TOutput> FalseQuery)
             where TOutput: IGraphOutput
         {
-            Steps.Add("choose(" + condition.ToString() + "), __." + TrueQuery.ToString() + ", __." + FalseQuery + ")");
+            Steps.Add("choose(" + condition.ToString() + ", __." + TrueQuery.ToString() + ", __." + FalseQuery + ")");
             return new CollectionQuery<TOutput, From>(this);
         }
 
-        public ValueQuery<int, From> Count()
+        public ValueQuery<long, From> Count()
         {
             Steps.Add("count()");
-            return new ValueQuery<int, From>(this);
+            return new ValueQuery<long, From>(this);
         }
 
-        public Query Coalesce()
+        public CollectionQuery<TOutput,From> Coalesce<TOutput>(params ITraversalQuery<To, TOutput>[] paths)
+            where TOutput: IGraphOutput
         {
-            Steps.Add("coalesce()");
-            return this as Query;
+            string step = "coalesce(";
+            List<string> pathStrings = new List<string>();
+            foreach(var path in paths)
+            {
+                pathStrings.Add(path.ToString());
+            }
+            step += string.Join(",", pathStrings);
+            step += ")";
+            Steps.Add(step);
+            return new CollectionQuery<TOutput, From>(this);
         }
 
         public ValueQuery<T, From> Constant(string value)
@@ -335,7 +350,7 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public Query Repeat(TraversalQuery<To, To> traversal, BooleanQuery<To> condition, RepeatTypeEnum type)
+        public Query Repeat(ITraversalQuery<To, IGraphOutput> traversal, ITraversalQuery<To, IGraphOutput> condition, RepeatTypeEnum type)
         {
             if (traversal.Steps.Count < 1)
                 throw new ArgumentException("Provided traversal must contain at least one step");
@@ -473,7 +488,7 @@ namespace CuriousGremlin.Query
         }
     }
 
-    public class CollectionQuery<T, From> : CollectionQuery<T, From,IGraphOutput,CollectionQuery<T, From>>
+    public class CollectionQuery<T, From> : CollectionQuery<T, From, IGraphOutput, CollectionQuery<T, From>>
         where From: IGraphObject
     {
         internal CollectionQuery(ITraversalQuery query) : base(query) { }

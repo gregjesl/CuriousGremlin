@@ -30,7 +30,7 @@ namespace UnitTests.AzureCosmosDB
                     Assert.AreEqual(client.Execute(VertexQuery.All().ToString()).Result.Count, 0);
 
                     // Insert an object
-                    VertexQuery insert_query = VertexQuery.AddVertex("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value");
+                    VertexQuery insert_query = VertexQuery.Create("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value");
                     var insert_result = client.Execute(insert_query).Result;
                     Assert.AreEqual(insert_result.Count, 1);
                     Assert.AreEqual(insert_result[0].label, "test_vertex");
@@ -41,7 +41,7 @@ namespace UnitTests.AzureCosmosDB
 
                     
                     // Insert a second object
-                    var second_vertex_query = VertexQuery.AddVertex("second_vertex");
+                    var second_vertex_query = VertexQuery.Create("second_vertex");
                     var second_vertex_result = client.Execute(second_vertex_query).Result;
                     Assert.AreEqual(second_vertex_result.Count, 1);
 

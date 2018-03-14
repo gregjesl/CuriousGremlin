@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query
 {
-    public class VertexQuery<From, Query> : ElementQuery<From, GraphVertex, Query>
+    public class VertexQuery<From, Query> : ElementQuery<From, GraphVertex, Query>, ITraversalQuery<From, GraphVertex>
         where From: IGraphObject
         where Query: VertexQuery<From, Query>
     {
@@ -120,17 +120,34 @@ namespace CuriousGremlin.Query
         }
     }
 
-    public class VertexQuery<From> : VertexQuery<From, VertexQuery<From>>
+    public class VertexQuery<From> : VertexQuery<From, VertexQuery<From>>, ITraversalQuery<From, GraphVertex>
         where From: IGraphObject
     {
         internal VertexQuery(ITraversalQuery query) : base(query) { }
 
         internal VertexQuery() : base() { }
+
+        public static implicit operator VertexQuery<From>(CollectionQuery<GraphVertex, From> query)
+        {
+            return new VertexQuery<From>(query);
+        }
     }
 
-    public class VertexQuery : VertexQuery<Graph, VertexQuery>
+    public class VertexQuery : VertexQuery<Graph, VertexQuery>, ITraversalQuery<Graph, GraphVertex>
     {
         private VertexQuery() : base() { }
+
+        private VertexQuery(ITraversalQuery query) : base(query) { }
+
+        public static implicit operator VertexQuery(CollectionQuery<GraphVertex, Graph> query)
+        {
+            return new VertexQuery(query);
+        }
+
+        public static implicit operator VertexQuery(CollectionQuery<GraphElement, Graph> query)
+        {
+            return new VertexQuery(query);
+        }
 
         public static VertexQuery All()
         {
@@ -161,17 +178,17 @@ namespace CuriousGremlin.Query
             return query;
         }
 
-        public new static VertexQuery AddVertex(string label)
+        public static VertexQuery Create(string label)
         {
-            return AddVertex(label, new Dictionary<string, object>());
+            return Create(label, new Dictionary<string, object>());
         }
 
-        public new static VertexQuery AddVertex(Dictionary<string, object> properties)
+        public static VertexQuery Create(Dictionary<string, object> properties)
         {
-            return AddVertex(null, properties);
+            return Create(null, properties);
         }
 
-        public new static VertexQuery AddVertex(string label, Dictionary<string, object> properties)
+        public static VertexQuery Create(string label, Dictionary<string, object> properties)
         {
             var query = new VertexQuery();
             string step = "addV(";
@@ -187,7 +204,7 @@ namespace CuriousGremlin.Query
             return query;
         }
 
-        public new static VertexQuery AddVertex(IVertexObject vertex)
+        public static VertexQuery Create(IVertexObject vertex)
         {
             var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
             foreach (var item in properties)
@@ -196,7 +213,7 @@ namespace CuriousGremlin.Query
                     properties.Remove(item.Key);
             }
             properties.Remove("VertexLabel");
-            return AddVertex(vertex.VertexLabel, properties);
+            return Create(vertex.VertexLabel, properties);
         }
     }
 }

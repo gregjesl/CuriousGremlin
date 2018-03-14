@@ -56,6 +56,12 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        public ValueQuery<string, From> Label()
+        {
+            Steps.Add("label()");
+            return new ValueQuery<string, From>(this);
+        }
+
         public DictionaryQuery<string, TValue, From> ValueMap<TValue>()
         {
             Steps.Add("valueMap()");
