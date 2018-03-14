@@ -10,4 +10,9 @@ namespace CuriousGremlin.Query
     {
         internal BooleanQuery(ITraversalQuery query) : base(query) { }
     }
+
+    public class BooleanQuery : BooleanQuery<Graph>
+    {
+        internal BooleanQuery(ITraversalQuery query) : base(query) { }
+    }
 }
