@@ -5,16 +5,16 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class ListQuery<T, From> : CollectionQuery<GraphListCollection<T>, From, GraphListCollection<T>, ListQuery<T, From>>
-        where From : IGraphObject
+    public class ListQuery<T, From, Query> : CollectionQuery<List<T>, From, Query>
+        where Query : ListQuery<T, From, Query>
     {
-        internal ListQuery(ITraversalQuery query) : base(query) { }
+        protected ListQuery(ITraversalQuery<From> query) : base(query) { }
 
-        private ListQuery() : base() { }
+        protected ListQuery() : base() { }
 
-        public ListQuery<T, GraphListCollection<T>> CreateSubQuery()
+        public static implicit operator ListQuery<T, From, Query>(ListQuery<T, From> query)
         {
-            return new ListQuery<T, GraphListCollection<T>>();
+            return new ListQuery<T, From, Query>(query);
         }
 
         public CollectionQuery<T, From> Unfold()
@@ -22,5 +22,12 @@ namespace CuriousGremlin.Query
             Steps.Add("unfold()");
             return new CollectionQuery<T, From>(this);
         }
+    }
+
+    public class ListQuery<T, From> : ListQuery<T, From, ListQuery<T, From>>
+    {
+        internal ListQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal ListQuery() : base() { }
     }
 }

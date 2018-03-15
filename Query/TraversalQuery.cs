@@ -9,8 +9,6 @@ namespace CuriousGremlin.Query
     /// Implementation of <seealso cref="ITraversalQuery{From, To}"/>
     /// </summary>
     public class TraversalQuery<From, To> : GraphQuery, ITraversalQuery<From, To>
-        where From: IGraphObject
-        where To: IGraphOutput
     {
         /// <summary>
         /// A list of steps the traversal will take
@@ -29,11 +27,13 @@ namespace CuriousGremlin.Query
             Steps = new StepList();
         }
 
+        /*
         public TerminalQuery<From> Explain()
         {
             Steps.Add("explain()");
             return new TerminalQuery<From>(this);
         }
+        */
 
         public override string ToString()
         {

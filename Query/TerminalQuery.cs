@@ -5,8 +5,8 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class TerminalQuery<From> : TraversalQuery<From,GraphNull>
-        where From: IGraphObject
+    public class TerminalQuery<T, Query> : CollectionQuery<T, Query>
+        where Query: TerminalQuery<T, Query>
     {
         internal TerminalQuery(ITraversalQuery query) : base(query) { }
     }

@@ -5,10 +5,12 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class EdgeQuery<From> : ElementQuery<From,GraphEdge,EdgeQuery<From>>
-        where From: IGraphObject
+    public class EdgeQuery<From, Query> : ElementQuery<GraphEdge, From, Query>
+        where Query: EdgeQuery<From, Query>
     {
-        internal EdgeQuery(ITraversalQuery query) : base(query) { }
+        protected EdgeQuery(ITraversalQuery<From> query) : base(query) { }
+
+        protected EdgeQuery() : base() { }
 
         public VertexQuery<From> OutV()
         {
@@ -33,5 +35,12 @@ namespace CuriousGremlin.Query
             Steps.Add("otherV()");
             return new VertexQuery<From>(this);
         }
+    }
+
+    public class EdgeQuery<From> : EdgeQuery<From, EdgeQuery<From>>
+    {
+        internal EdgeQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal EdgeQuery() : base() { }
     }
 }

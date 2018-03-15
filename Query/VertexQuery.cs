@@ -6,13 +6,22 @@ using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query
 {
-    public class VertexQuery<From, Query> : ElementQuery<From, GraphVertex, Query>, ITraversalQuery<From, GraphVertex>
-        where From: IGraphObject
+    public class VertexQuery<From, Query> : ElementQuery<GraphVertex, From, Query>
         where Query: VertexQuery<From, Query>
     {
-        internal VertexQuery(ITraversalQuery query) : base(query) { }
+        protected VertexQuery(ITraversalQuery<From> query) : base(query) { }
 
-        internal VertexQuery() : base() { }
+        protected VertexQuery() : base() { }
+
+        public static implicit operator VertexQuery<From, Query>(VertexQuery<From> query)
+        {
+            return new VertexQuery<From, Query>(query);
+        }
+
+        public static implicit operator VertexQuery<From, Query>(ElementQuery<GraphVertex, From> query)
+        {
+            return new VertexQuery<From, Query>(query);
+        }
 
         public EdgeQuery<From> AddEdge(string label, string vertexID)
         {
@@ -114,40 +123,22 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public VertexQuery<GraphVertex> CreateSubQuery()
+        public new VertexQuery<GraphVertex> CreateSubQuery()
         {
             return new VertexQuery<GraphVertex>();
         }
     }
 
-    public class VertexQuery<From> : VertexQuery<From, VertexQuery<From>>, ITraversalQuery<From, GraphVertex>
-        where From: IGraphObject
+    public class VertexQuery<From> : VertexQuery<From, VertexQuery<From>>
     {
-        internal VertexQuery(ITraversalQuery query) : base(query) { }
+        public VertexQuery(ITraversalQuery<From> query) : base(query) { }
 
-        internal VertexQuery() : base() { }
-
-        public static implicit operator VertexQuery<From>(CollectionQuery<GraphVertex, From> query)
-        {
-            return new VertexQuery<From>(query);
-        }
+        public VertexQuery() : base() { }
     }
 
-    public class VertexQuery : VertexQuery<Graph, VertexQuery>, ITraversalQuery<Graph, GraphVertex>
+    public class VertexQuery : VertexQuery<GraphQuery>, ITraversalQuery<GraphQuery>
     {
-        private VertexQuery() : base() { }
-
-        private VertexQuery(ITraversalQuery query) : base(query) { }
-
-        public static implicit operator VertexQuery(CollectionQuery<GraphVertex, Graph> query)
-        {
-            return new VertexQuery(query);
-        }
-
-        public static implicit operator VertexQuery(CollectionQuery<GraphElement, Graph> query)
-        {
-            return new VertexQuery(query);
-        }
+        internal VertexQuery() : base() { }
 
         public static VertexQuery All()
         {
@@ -158,17 +149,17 @@ namespace CuriousGremlin.Query
 
         public static VertexQuery Find(string label)
         {
-            return All().HasLabel(label);
+            return All().HasLabel(label) as VertexQuery;
         }
 
         public static VertexQuery Find(Dictionary<string, object> properties)
         {
-            return All().Has(properties);
+            return All().Has(properties) as VertexQuery;
         }
 
         public static VertexQuery Find(string label, Dictionary<string, object> properties)
         {
-            return Find(label).Has(properties);
+            return Find(label).Has(properties) as VertexQuery;
         }
 
         public static VertexQuery Vertex(string id)

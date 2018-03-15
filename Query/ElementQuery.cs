@@ -5,12 +5,10 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class ElementQuery<From, To, Query> : CollectionQuery<GraphElement, From, To, Query> 
-        where From: IGraphObject
-        where To: IGraphOutput
-        where Query: ElementQuery<From,To,Query>
+    public abstract class ElementQuery<T, From, Query> : CollectionQuery<T, From, Query>
+        where Query: ElementQuery<T, From, Query>
     {
-        internal ElementQuery(ITraversalQuery query) : base(query) { }
+        protected ElementQuery(ITraversalQuery<From> query) : base(query) { }
 
         protected ElementQuery() : base() { }
 
@@ -29,10 +27,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public ValueQuery<string, From>Id()
+        public ValueQuery<string>Id()
         {
             Steps.Add("id()");
-            return new ValueQuery<string, From>(this);
+            return new ValueQuery<string>(this);
         }
 
         public Query Has(string key, object value)
@@ -56,6 +54,7 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /*
         public ValueQuery<string, From> Label()
         {
             Steps.Add("label()");
@@ -85,5 +84,13 @@ namespace CuriousGremlin.Query
             Steps.Add("values('" + Sanitize(key) + "')");
             return this as Query;
         }
+        */
+    }
+
+    public abstract class ElementQuery<T, From> : ElementQuery<T, From, ElementQuery<T, From>>
+    {
+        internal ElementQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal ElementQuery() : base() { }
     }
 }

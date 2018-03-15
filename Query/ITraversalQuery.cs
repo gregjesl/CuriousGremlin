@@ -18,10 +18,13 @@ namespace CuriousGremlin.Query
     /// </summary>
     /// <typeparam name="From">The type of graph object the traversal starts from</typeparam>
     /// <typeparam name="To">The type of graph object the traversal returns</typeparam>
-    public interface ITraversalQuery<out From, out To> : ITraversalQuery
-        where From: IGraphObject
-        where To: IGraphOutput
+    public interface ITraversalQuery<out From> : ITraversalQuery
     {
         
+    }
+
+    public interface ITraversalQuery<out From, out To> : ITraversalQuery<From>
+    {
+
     }
 }

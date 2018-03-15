@@ -6,60 +6,67 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class ValueQuery<T, From> : CollectionQuery<T, From,GraphValue,ValueQuery<T, From>>
-        where From: IGraphObject
+    public class ValueQuery<T, From, Query> : CollectionQuery<T, From, Query>
+        where Query: ValueQuery<T, From, Query>
     {
-        internal ValueQuery(ITraversalQuery<From, IGraphOutput> query) : base(query) { }
+        protected ValueQuery(ITraversalQuery<From> query) : base(query) { }
 
-        public BooleanQuery<From> Is(float value)
+        internal ValueQuery() : base() { }
+
+        public static implicit operator ValueQuery<T, From, Query>(ValueQuery<T, From> query)
         {
-            Steps.Add("is(" + GetObjectString(value) + ")");
-            return new BooleanQuery<From>(this);
+            return new ValueQuery<T, From, Query>(query);
         }
 
-        public BooleanQuery<From> Is(double value)
+        public Query Is(float value)
         {
             Steps.Add("is(" + GetObjectString(value) + ")");
-            return new BooleanQuery<From>(this);
+            return this as Query;
         }
 
-        public BooleanQuery<From> Is(decimal value)
+        public Query Is(double value)
         {
             Steps.Add("is(" + GetObjectString(value) + ")");
-            return new BooleanQuery<From>(this);
+            return this as Query;
         }
 
-        public BooleanQuery<From> Is(int value)
+        public Query Is(decimal value)
         {
             Steps.Add("is(" + GetObjectString(value) + ")");
-            return new BooleanQuery<From>(this);
+            return this as Query;
         }
 
-        public BooleanQuery<From> Is(long value)
+        public Query Is(int value)
         {
             Steps.Add("is(" + GetObjectString(value) + ")");
-            return new BooleanQuery<From>(this);
+            return this as Query;
         }
 
-        public BooleanQuery<From> Is(GraphPredicate predicate)
+        public Query Is(long value)
+        {
+            Steps.Add("is(" + GetObjectString(value) + ")");
+            return this as Query;
+        }
+
+        public Query Is(GraphPredicate predicate)
         {
             Steps.Add("is(" + predicate.ToString() + ")");
-            return new BooleanQuery<From>(this);
+            return this as Query;
         }
 
-        public ValueQuery<string, From> Key()
+        public ValueQuery<string> Key()
         {
             Steps.Add("key()");
-            return new ValueQuery<string, From>(this);
+            return new ValueQuery<string>(this);
         }
 
-        public ValueQuery<T, From> Math(string mapping)
+        public ValueQuery<T> Math(string mapping)
         {
             Steps.Add("math(" + Sanitize(mapping) + ")");
             return this;
         }
 
-        public ValueQuery<T, From> Max()
+        public ValueQuery<T> Max()
         {
             Steps.Add("max()");
             return this;
@@ -77,10 +84,31 @@ namespace CuriousGremlin.Query
             return this;
         }
 
-        public ValueQuery<T, From> Sum()
+        public Query Sum()
         {
             Steps.Add("sum()");
-            return this;
+            return this as Query;
         }
+    }
+
+    public class ValueQuery<T, From> : ValueQuery<T, From, ValueQuery<T, From>>
+    {
+        internal ValueQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal ValueQuery() : base() { }
+    }
+
+    public class StringQuery<From> : ValueQuery<string, From>
+    {
+        internal StringQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal StringQuery() : base() { }
+    }
+
+    public class IntegerQuery<From> : ValueQuery<long, From>
+    {
+        internal IntegerQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal IntegerQuery() : base() { }
     }
 }
