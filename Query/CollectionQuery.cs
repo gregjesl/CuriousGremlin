@@ -188,7 +188,7 @@ namespace CuriousGremlin.Query
         {
             if (probability < 0.0 || probability > 1.0)
                 throw new ArgumentException("Probability must be between 0 and 1");
-            Steps.Add(string.Format("coin({0})", probability));
+            Steps.Add(string.Format("coin({0:0.0000})", probability));
             return this as Query;
         }
 

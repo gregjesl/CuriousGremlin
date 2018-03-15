@@ -78,10 +78,16 @@ namespace CuriousGremlin.Query
             return new ValueQuery<object, From>(this);
         }
 
-        public Query Values(string key)
+        public ValueQuery<object, From> Values(string key)
         {
             Steps.Add("values('" + Sanitize(key) + "')");
-            return this as Query;
+            return new ValueQuery<object, From>(this);
+        }
+
+        public ValueQuery<TOutput, From> Values<TOutput>(string key)
+        {
+            Steps.Add("values('" + Sanitize(key) + "')");
+            return new ValueQuery<TOutput, From>(this);
         }
     }
 
