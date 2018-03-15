@@ -39,7 +39,7 @@ namespace CuriousGremlin.Query
         {
             if (Steps.Count < 1)
                 throw new NullReferenceException("Traversal query contains no steps");
-            if (typeof(From) == typeof(Graph) && Steps[0] != "g")
+            if (typeof(From) == typeof(GraphQuery) && Steps[0] != "g")
                 Steps.Insert(0, "g");
             return Steps.ToString();
         }

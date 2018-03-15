@@ -135,7 +135,7 @@ namespace CuriousGremlin.AzureCosmosDB
 
         public async Task<List<T>> Execute<T>(ITraversalQuery<GraphQuery, T> query)
         {
-            var results = await Execute("g." + query.ToString());
+            var results = await Execute(query.ToString());
             var resultList = new List<T>();
             var objList = new List<object>();
             if (results.Count == 0)
@@ -168,9 +168,9 @@ namespace CuriousGremlin.AzureCosmosDB
             return resultList;
         }
 
-        public async Task Execute(TerminalQuery<Graph> query)
+        public async Task Execute(TerminalQuery<GraphClient> query)
         {
-            await Execute("g." + query.ToString());
+            await Execute(query.ToString());
         }
         #endregion
     }

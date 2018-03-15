@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CuriousGremlin.Query.Objects;
 using CuriousGremlin.Query.Predicates;
 using Newtonsoft.Json.Linq;
 
@@ -242,7 +241,6 @@ namespace CuriousGremlin.Query
         }
 
         public CollectionQuery<TOutput, From> Local<TOutput>(ITraversalQuery<T, TOutput> localQuery)
-            where TOutput : IGraphOutput
         {
             Steps.Add("local(" + localQuery.ToString() + ")");
             return new CollectionQuery<TOutput, From>(this);
@@ -275,7 +273,6 @@ namespace CuriousGremlin.Query
         }
 
         public CollectionQuery<TOutput, From> Or<TOutput>(params ITraversalQuery<T, TOutput>[] paths)
-            where TOutput : IGraphOutput
         {
             string step = "or(";
             var pathList = new List<string>();
@@ -453,7 +450,6 @@ namespace CuriousGremlin.Query
         }
 
         public CollectionQuery<TOutput, From> Union<TOutput>(params ITraversalQuery<T, TOutput>[] paths)
-            where TOutput : IGraphOutput
         {
             if (paths.Length < 1)
                 throw new ArgumentException("Must have at least one path");
