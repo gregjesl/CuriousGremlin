@@ -2,20 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
     public abstract class GraphQuery
     {
-        protected string Query;
-
-        protected GraphQuery(string query)
-        {
-            if (query is null)
-                throw new ArgumentNullException("Query cannot be null");
-            Query = query;
-        }
-
         protected static string Sanitize(string input)
         {
             if (input is null)
@@ -61,75 +53,6 @@ namespace CuriousGremlin.Query
                 outputs.Add("'" + Sanitize(property.Key) + "', " + GetObjectString(property.Value));
             }
             return string.Join(",", outputs);
-        }
-
-        public static VertexQuery Vertex(string id)
-        {
-            return new VertexQuery("g.V('" + Sanitize(id) + "')");
-        }
-
-        public static VertexQuery Vertices()
-        {
-            return new VertexQuery("g.V()");
-        }
-
-        public static VertexQuery AddVertex(string label)
-        {
-            return AddVertex(label, new Dictionary<string, object>());
-        }
-
-        public static VertexQuery AddVertex(Dictionary<string, object> properties)
-        {
-            return AddVertex(null, properties);
-        }
-
-        public static VertexQuery AddVertex(string label, Dictionary<string, object> properties)
-        {
-            string query = "g.addV(";
-            if(label != null && label != "")
-                query += "'" + Sanitize(label) + "'";
-
-            if(properties.Count > 0)
-            {
-                query += ", " + SeralizeProperties(properties);
-            }
-            query += ")";
-            return new VertexQuery(query);
-        }
-
-        public static VertexQuery AddVertex(IVertexObject vertex)
-        {
-            var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
-            foreach(var item in properties)
-            {
-                if (item.Value is null)
-                    properties.Remove(item.Key);
-            }
-            properties.Remove("VertexLabel");
-            return AddVertex(vertex.VertexLabel, properties);
-        }
-
-        public GraphQuery TimeLimit(int milliseconds)
-        {
-            if (milliseconds <= 0)
-                throw new ArgumentException("Time must be greater than zero");
-            Query += string.Format(".timeLimit({0})", milliseconds);
-            return this;
-        }
-
-        public override string ToString()
-        {
-            return Query;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return (string)obj == Query;
-        }
-
-        public override int GetHashCode()
-        {
-            return Query.GetHashCode();
         }
     }
 }

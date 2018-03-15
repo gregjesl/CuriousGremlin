@@ -6,9 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Graphs;
 using Microsoft.Azure.Documents.Client;
-using CuriousGremlin.GraphSON;
 using CuriousGremlin.Query;
 using Newtonsoft.Json;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.AzureCosmosDB
 {
@@ -68,7 +68,7 @@ namespace CuriousGremlin.AzureCosmosDB
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         { 
             if (pool != null)
                 pool.ReturnToPool(this);
@@ -133,75 +133,44 @@ namespace CuriousGremlin.AzureCosmosDB
             }
         }
 
-        public async Task<List<Vertex>> Execute(VertexQuery query)
+        public async Task<List<T>> Execute<T>(ITraversalQuery<GraphQuery, T> query)
         {
-            var vertices = new List<Vertex>();
             var results = await Execute(query.ToString());
-            foreach(Newtonsoft.Json.Linq.JObject result in results)
+            var resultList = new List<T>();
+            var objList = new List<object>();
+            if (results.Count == 0)
+                return resultList;
+            foreach(var item in results)
             {
-                vertices.Add(result.ToObject<Vertex>());
+                objList.Add(item);
             }
-            return vertices;
+            if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JArray))
+            {
+                foreach (Newtonsoft.Json.Linq.JArray item in objList)
+                {
+                    resultList.Add(item.ToObject<T>());
+                }
+            }
+            else if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JObject))
+            {
+                foreach(Newtonsoft.Json.Linq.JObject item in objList)
+                {
+                    resultList.Add(item.ToObject<T>());
+                }
+            }
+            else
+            {
+                foreach (T item in objList)
+                {
+                    resultList.Add(item);
+                }
+            }
+            return resultList;
         }
 
-        public async Task<List<Edge>> Execute(EdgeQuery query)
+        public async Task Execute(TerminalQuery<GraphClient> query)
         {
-            var edges = new List<Edge>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
-            {
-                edges.Add(result.ToObject<Edge>());
-            }
-            return edges;
-        }
-
-        public async Task<List<object>> Execute(ValueQuery query)
-        {
-            var items = new List<object>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
-            {
-                items.Add(result.ToObject<object>());
-            }
-            return items;
-        }
-
-        public async Task<List<List<object>>> Execute(ListQuery query)
-        {
-            var items = new List<List<object>>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
-            {
-                items.Add(result.ToObject<List<object>>());
-            }
-            return items;
-        }
-
-        public async Task<List<Dictionary<string,object>>> Execute(DictionaryQuery query)
-        {
-            var items = new List<Dictionary<string,object>>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
-            {
-                items.Add(result.ToObject<Dictionary<string, object>>());
-            }
-            return items;
-        }
-
-        public async Task<bool> Execute(BooleanQuery query)
-        {
-            var items = new List<bool>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
-            {
-                items.Add(result.ToObject<bool>());
-            }
-            return items[0];
-        }
-
-        public async Task Execute(TerminalQuery query)
-        {
-            var results = await Execute(query.ToString());
+            await Execute(query.ToString());
         }
         #endregion
     }

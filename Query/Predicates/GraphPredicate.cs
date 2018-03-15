@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CuriousGremlin.Query.Predicates
 {
-    public abstract class GraphPredicate
+    public abstract class GraphPredicate : GraphQuery
     {
         protected string Predicate;
         protected abstract string Command { get; }
@@ -13,6 +13,8 @@ namespace CuriousGremlin.Query.Predicates
         {
             Predicate = Command + "(" + GraphQuery.GetObjectString(item) + ")";
         }
+
+        protected GraphPredicate() { }
 
         protected GraphPredicate(object lb, object up)
         {
@@ -45,14 +47,19 @@ namespace CuriousGremlin.Query.Predicates
         }
     }
 
+    public class GPNot : GraphPredicate
+    {
+        protected override string Command { get { return "not"; }}
+        public GPNot(GraphPredicate predicate) : base() 
+        {
+            Predicate = Command + "(" + predicate.ToString() + ")";
+        }
+	}
+
     public class GPEquals : GraphPredicate
     {
         protected override string Command { get { return "eq"; } }
         public GPEquals(object item) : base(item) { }
-        public override string ToString()
-        {
-            return Predicate;
-        }
     }
 
     public class GPNotEqual : GraphPredicate

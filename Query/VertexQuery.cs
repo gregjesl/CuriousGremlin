@@ -1,126 +1,210 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
+using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query
 {
-    public class VertexQuery : ElementQuery<VertexQuery>
+    public class VertexQuery<From, Query> : ElementQuery<GraphVertex, From, Query>
+        where Query: VertexQuery<From, Query>
     {
-        internal VertexQuery(string query) : base(query) { }
+        protected VertexQuery(ITraversalQuery<From> query) : base(query) { }
+
+        protected VertexQuery() : base() { }
+
+        public static implicit operator VertexQuery<From, Query>(VertexQuery<From> query)
+        {
+            return new VertexQuery<From, Query>(query);
+        }
+
+        public static implicit operator VertexQuery<From, Query>(ElementQuery<GraphVertex, From> query)
+        {
+            return new VertexQuery<From, Query>(query);
+        }
+
+        public EdgeQuery<From> AddEdge(string label, string vertexID)
+        {
+            Steps.Add("addE('" + Sanitize(label) + "').to(g.V('" + Sanitize(vertexID) + "'))");
+            return new EdgeQuery<From>(this);
+        }
+
+        public EdgeQuery<From> AddEdge(string label, string vertexID, Dictionary<string, object> properties)
+        {
+            return AddEdge(label, vertexID).AddProperties(properties);
+        }
+
+        public EdgeQuery<From> AddEdge(string label, VertexQuery vertices)
+        {
+            Steps.Add("addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")");
+            return new EdgeQuery<From>(this);
+        }
+
+        public EdgeQuery<From> AddEdge(string label, VertexQuery vertices, Dictionary<string, object> properties)
+        {
+            return AddEdge(label, vertices).AddProperties(properties);
+        }
+
+        public Query Out()
+        {
+            Steps.Add("out()");
+            return this as Query;
+        }
+
+        public Query Out(string label)
+        {
+            Steps.Add("out('" + Sanitize(label) + "')");
+            return this as Query;
+        }
+
+        public Query In()
+        {
+            Steps.Add("in()");
+            return this as Query;
+        }
+
+        public Query In(string label)
+        {
+            Steps.Add("in('" + Sanitize(label) + "')");
+            return this as Query;
+        }
+
+        public Query Both()
+        {
+            Steps.Add("both()");
+            return this as Query;
+        }
+
+        public Query Both(string label)
+        {
+            Steps.Add("both('" + Sanitize(label) + "')");
+            return this as Query;
+        }
+
+        public EdgeQuery<From> OutE()
+        {
+            Steps.Add("outE()");
+            return new EdgeQuery<From>(this);
+        }
+
+        public EdgeQuery<From> OutE(string label)
+        {
+            Steps.Add("outE('" + Sanitize(label) + "')");
+            return new EdgeQuery<From>(this);
+        }
+
+        public EdgeQuery<From> InE()
+        {
+            Steps.Add("inE()");
+            return new EdgeQuery<From>(this);
+        }
+
+        public EdgeQuery<From> InE(string label)
+        {
+            Steps.Add("inE('" + Sanitize(label) + "')");
+            return new EdgeQuery<From>(this);
+        }
+
+        public EdgeQuery<From> BothE()
+        {
+            Steps.Add("bothE()");
+            return new EdgeQuery<From>(this);
+        }
+
+        public EdgeQuery<From> BothE(string label)
+        {
+            Steps.Add("bothE('" + Sanitize(label) + "')");
+            return new EdgeQuery<From>(this);
+        }
+
+        public Query AddListProperty(string key, string value)
+        {
+            Steps.Add(".property(list, '" + Sanitize(key) + "', " + GetObjectString(value) + ")");
+            return this as Query;
+        }
+
+        public new VertexQuery<GraphVertex> CreateSubQuery()
+        {
+            return new VertexQuery<GraphVertex>();
+        }
+    }
+
+    public class VertexQuery<From> : VertexQuery<From, VertexQuery<From>>
+    {
+        public VertexQuery(ITraversalQuery<From> query) : base(query) { }
+
+        public VertexQuery() : base() { }
+    }
+
+    public class VertexQuery : VertexQuery<GraphQuery>
+    {
+        internal VertexQuery() : base() { }
+
+        public static VertexQuery All()
+        {
+            var query = new VertexQuery();
+            query.Steps.Add("V()");
+            return query;
+        }
 
         public static VertexQuery Find(string label)
         {
-            return Vertices().HasLabel(label);
+            return All().HasLabel(label) as VertexQuery;
         }
 
         public static VertexQuery Find(Dictionary<string, object> properties)
         {
-            return Vertices().Has(properties);
+            return All().Has(properties) as VertexQuery;
         }
 
         public static VertexQuery Find(string label, Dictionary<string, object> properties)
         {
-            return Find(label).Has(properties);
+            return Find(label).Has(properties) as VertexQuery;
         }
 
-        public EdgeQuery AddEdge(string label, string vertexID)
+        public static VertexQuery Vertex(string id)
         {
-            return AddEdge(label, Vertex(vertexID));
+            var query = new VertexQuery();
+            query.Steps.Add("V('" + Sanitize(id) + "')");
+            return query;
         }
 
-        public EdgeQuery AddEdge(string label, string vertexID, Dictionary<string, object> properties)
+        public static VertexQuery Create(string label)
         {
-            return AddEdge(label, Vertex(vertexID), properties);
+            return Create(label, new Dictionary<string, object>());
         }
 
-        public EdgeQuery AddEdge(string label, VertexQuery vertices)
+        public static VertexQuery Create(Dictionary<string, object> properties)
         {
-            Query += ".addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")";
-            return new EdgeQuery(Query);
+            return Create(null, properties);
         }
 
-        public EdgeQuery AddEdge(string label, VertexQuery vertices, Dictionary<string, object> properties)
+        public static VertexQuery Create(string label, Dictionary<string, object> properties)
         {
-            Query += ".addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")";
-            return (new EdgeQuery(Query)).AddProperties(properties);
+            var query = new VertexQuery();
+            string step = "addV(";
+            if (label != null && label != "")
+                step += "'" + Sanitize(label) + "'";
+
+            if (properties.Count > 0)
+            {
+                step += ", " + SeralizeProperties(properties);
+            }
+            step += ")";
+            query.Steps.Add(step);
+            return query;
         }
 
-        public VertexQuery Out()
+        public static VertexQuery Create(IVertexObject vertex)
         {
-            Query += ".out()";
-            return this;
-        }
-
-        public VertexQuery Out(string label)
-        {
-            Query += ".out('" + Sanitize(label) + "')";
-            return this;
-        }
-
-        public VertexQuery In()
-        {
-            Query += ".in()";
-            return this;
-        }
-
-        public VertexQuery In(string label)
-        {
-            Query += ".in('" + Sanitize(label) + "')";
-            return this;
-        }
-
-        public VertexQuery Both()
-        {
-            Query += ".both()";
-            return this;
-        }
-
-        public VertexQuery Both(string label)
-        {
-            Query += ".both('" + Sanitize(label) + "')";
-            return this;
-        }
-
-        public EdgeQuery OutE()
-        {
-            Query += ".outE()";
-            return new EdgeQuery(Query);
-        }
-
-        public EdgeQuery OutE(string label)
-        {
-            Query += ".outE('" + Sanitize(label) + "')";
-            return new EdgeQuery(Query);
-        }
-
-        public EdgeQuery InE()
-        {
-            Query += ".inE()";
-            return new EdgeQuery(Query);
-        }
-
-        public EdgeQuery InE(string label)
-        {
-            Query += ".inE('" + Sanitize(label) + "')";
-            return new EdgeQuery(Query);
-        }
-
-        public EdgeQuery BothE()
-        {
-            Query += ".bothE()";
-            return new EdgeQuery(Query);
-        }
-
-        public EdgeQuery BothE(string label)
-        {
-            Query += ".bothE('" + Sanitize(label) + "')";
-            return new EdgeQuery(Query);
-        }
-
-        public VertexQuery AddListProperty(string key, string value)
-        {
-            Query += ".property(list, '" + Sanitize(key) + "', " + GetObjectString(value) + ")";
-            return this;
+            var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
+            foreach (var item in properties)
+            {
+                if (item.Value is null)
+                    properties.Remove(item.Key);
+            }
+            properties.Remove("VertexLabel");
+            return Create(vertex.VertexLabel, properties);
         }
     }
 }

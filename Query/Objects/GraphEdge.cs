@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CuriousGremlin.GraphSON
+namespace CuriousGremlin.Query.Objects
 {
-    public class Edge
+    public class GraphEdge : GraphElement
     {
-        public string id;
-        public string label;
         public string inVLabel;
         public string outVLabel;
         public string inV;

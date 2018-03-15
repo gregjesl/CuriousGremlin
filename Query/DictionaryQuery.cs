@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class DictionaryQuery : ListQuery
+    public class DictionaryQuery<TKey, TValue, From, Query> : ListQuery<KeyValuePair<string, TValue>, From, Query>
+        where Query: DictionaryQuery<TKey, TValue, From, Query>
     {
-        internal DictionaryQuery(string query) : base(query) { }
+        internal DictionaryQuery(ITraversalQuery<From> query) : base(query) { }
+    }
+
+    public class DictionaryQuery<TKey, TValue, From> : DictionaryQuery<TKey, TValue, From, DictionaryQuery<TKey, TValue, From>>
+    {
+        internal DictionaryQuery(ITraversalQuery<From> query) : base(query) { }
     }
 }

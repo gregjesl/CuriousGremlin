@@ -1,53 +1,100 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public abstract class ElementQuery<T> : CollectionQuery<T> where T: ElementQuery<T>
+    public abstract class ElementQuery<T, From, Query> : CollectionQuery<T, From, Query>
+        where Query: ElementQuery<T, From, Query>
     {
-        protected ElementQuery(string query) : base(query) { }
+        protected ElementQuery(ITraversalQuery<From> query) : base(query) { }
 
-        public T AddProperty(string key, object value)
+        protected ElementQuery() : base() { }
+
+        public Query AddProperty(string key, object value)
         {
-            Query += ".property('" + Sanitize(key) + "', " + GetObjectString(value) + ")";
-            return this as T;
+            Steps.Add("property('" + Sanitize(key) + "', " + GetObjectString(value) + ")");
+            return this as Query;
         }
 
-        public T AddProperties(Dictionary<string, object> properties)
+        public Query AddProperties(Dictionary<string, object> properties)
         {
             foreach(var item in properties)
             {
                 AddProperty(item.Key, item.Value);
             }
-            return this as T;
+            return this as Query;
         }
 
-        public T Has(string key, object value)
+        public StringQuery<From>Id()
         {
-            Query += ".has('" + Sanitize(key) + "', " + GetObjectString(value) + ")";
-            return this as T;
+            Steps.Add("id()");
+            return new StringQuery<From>(this);
         }
 
-        public T Has(Dictionary<string, object> properties)
+        public Query Has(string key, object value)
+        {
+            Steps.Add("has('" + Sanitize(key) + "', " + GetObjectString(value) + ")");
+            return this as Query;
+        }
+
+        public Query Has(Dictionary<string, object> properties)
         {
             foreach(var item in properties)
             {
                 Has(item.Key, item.Value);
             }
-            return this as T;
+            return this as Query;
         }
 
-        public T HasLabel(string label)
+        public Query HasLabel(string label)
         {
-            Query += ".hasLabel('" + Sanitize(label) + "')";
-            return this as T;
+            Steps.Add("hasLabel('" + Sanitize(label) + "')");
+            return this as Query;
         }
 
-        public T Values(string name)
+        public StringQuery<From> Label()
         {
-            Query += ".values('" + Sanitize(name) + "')";
-            return this as T;
+            Steps.Add("label()");
+            return new StringQuery<From>(this);
         }
+
+        public DictionaryQuery<string, TValue, From> ValueMap<TValue>()
+        {
+            Steps.Add("valueMap()");
+            return new DictionaryQuery<string, TValue, From>(this);
+        }
+
+        public ValueQuery<object, From>Properties()
+        {
+            Steps.Add("properties()");
+            return new ValueQuery<object, From>(this);
+        }
+
+        public ValueQuery<object, From> Properties(string key)
+        {
+            Steps.Add("properties(" + Sanitize(key) + ")");
+            return new ValueQuery<object, From>(this);
+        }
+
+        public ValueQuery<object, From> Values(string key)
+        {
+            Steps.Add("values('" + Sanitize(key) + "')");
+            return new ValueQuery<object, From>(this);
+        }
+
+        public ValueQuery<TOutput, From> Values<TOutput>(string key)
+        {
+            Steps.Add("values('" + Sanitize(key) + "')");
+            return new ValueQuery<TOutput, From>(this);
+        }
+    }
+
+    public abstract class ElementQuery<T, From> : ElementQuery<T, From, ElementQuery<T, From>>
+    {
+        internal ElementQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal ElementQuery() : base() { }
     }
 }

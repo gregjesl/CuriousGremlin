@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GraphSON\GraphSON.csproj" />
     <ProjectReference Include="..\Query\Query.csproj" />
   </ItemGroup>
 

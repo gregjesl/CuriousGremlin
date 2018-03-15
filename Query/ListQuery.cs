@@ -1,17 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class ListQuery : CollectionQuery<ListQuery>
+    public class ListQuery<T, From, Query> : CollectionQuery<List<T>, From, Query>
+        where Query : ListQuery<T, From, Query>
     {
-        internal ListQuery(string query) : base(query) { }
+        protected ListQuery(ITraversalQuery<From> query) : base(query) { }
 
+        protected ListQuery() : base() { }
 
-        public object Unfold()
+        public static implicit operator ListQuery<T, From, Query>(ListQuery<T, From> query)
         {
-            throw new NotImplementedException();
+            return new ListQuery<T, From, Query>(query);
         }
+
+        public new ListQuery<T, List<T>> CreateSubQuery()
+        {
+            return new ListQuery<T, List<T>>();
+        }
+
+        public CollectionQuery<T, From> Unfold()
+        {
+            Steps.Add("unfold()");
+            return new CollectionQuery<T, From>(this);
+        }
+    }
+
+    public class ListQuery<T, From> : ListQuery<T, From, ListQuery<T, From>>
+    {
+        internal ListQuery(ITraversalQuery<From> query) : base(query) { }
+
+        internal ListQuery() : base() { }
     }
 }

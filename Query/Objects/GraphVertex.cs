@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CuriousGremlin.GraphSON
+namespace CuriousGremlin.Query.Objects
 {
-    public class Vertex
+    public class GraphVertex : GraphElement
     {
-        public string id;
-
-        public string label;
-
-        public Dictionary<string, List<KeyValuePair<string,object>>> properties;
+        public Dictionary<string, List<KeyValuePair<string, object>>> properties { set; get; }
 
         public T Deserialize<T>(string value = "value")
         {
