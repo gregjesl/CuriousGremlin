@@ -17,6 +17,11 @@ namespace CuriousGremlin.Query
             return new ListQuery<T, From, Query>(query);
         }
 
+        public new ListQuery<T, List<T>> CreateSubQuery()
+        {
+            return new ListQuery<T, List<T>>();
+        }
+
         public CollectionQuery<T, From> Unfold()
         {
             Steps.Add("unfold()");

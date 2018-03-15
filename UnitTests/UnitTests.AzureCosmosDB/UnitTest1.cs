@@ -23,11 +23,11 @@ namespace UnitTests.AzureCosmosDB
                 {
                     
                     // Kill it with fire
-                    client.Execute(VertexQuery.All().Drop().ToString()).Wait();
+                    client.Execute(VertexQuery.All().Drop()).Wait();
 
                     
                     // Assert that the database is clean
-                    Assert.AreEqual(client.Execute(VertexQuery.All().ToString()).Result.Count, 0);
+                    Assert.AreEqual(client.Execute(VertexQuery.All()).Result.Count, 0);
 
                     // Insert an object
                     var insert_query = VertexQuery.Create("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value");

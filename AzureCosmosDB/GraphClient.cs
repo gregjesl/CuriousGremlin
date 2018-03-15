@@ -135,22 +135,34 @@ namespace CuriousGremlin.AzureCosmosDB
 
         public async Task<List<T>> Execute<T>(ITraversalQuery<GraphQuery, T> query)
         {
-            var results = await Execute(query.ToString());
+            var results = await Execute("g." + query.ToString());
             var resultList = new List<T>();
+            var objList = new List<object>();
             if (results.Count == 0)
                 return resultList;
-            if(typeof(T) == typeof(GraphVertex) || typeof(T) == typeof(GraphEdge))
+            foreach(var item in results)
             {
-                foreach (Newtonsoft.Json.Linq.JObject result in results)
+                objList.Add(item);
+            }
+            if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JArray))
+            {
+                foreach (Newtonsoft.Json.Linq.JArray item in objList)
                 {
-                    resultList.Add(result.ToObject<T>());
+                    resultList.Add(item.ToObject<T>());
+                }
+            }
+            else if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JObject))
+            {
+                foreach(Newtonsoft.Json.Linq.JObject item in objList)
+                {
+                    resultList.Add(item.ToObject<T>());
                 }
             }
             else
             {
-                foreach(T result in results)
+                foreach (T item in objList)
                 {
-                    resultList.Add(result);
+                    resultList.Add(item);
                 }
             }
             return resultList;
@@ -158,7 +170,7 @@ namespace CuriousGremlin.AzureCosmosDB
 
         public async Task Execute(TerminalQuery<Graph> query)
         {
-            await Execute(query.ToString());
+            await Execute("g." + query.ToString());
         }
         #endregion
     }

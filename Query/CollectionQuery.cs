@@ -333,14 +333,14 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public Query Repeat(ITraversalQuery<IGraphOutput, IGraphOutput> traversal, int count)
+        public CollectionQuery<TOutput, From> Repeat<TOutput>(ITraversalQuery<T, TOutput> traversal, int count)
         {
             if (count < 1)
                 throw new ArgumentException("Repeat count must be greater than 0");
             if (traversal.Steps.Count < 1)
                 throw new ArgumentException("Provided traversal must contain at least one step");
             Steps.Add("repeat(" + traversal.ToString() + ").times(" + count.ToString() + ")");
-            return this as Query;
+            return new CollectionQuery<TOutput, From>(this);
         }
 
         public Query Repeat<TOutput>(ITraversalQuery<T, TOutput> traversal, ITraversalQuery<T> condition, RepeatTypeEnum type)
