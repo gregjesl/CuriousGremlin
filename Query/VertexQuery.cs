@@ -136,7 +136,7 @@ namespace CuriousGremlin.Query
         public VertexQuery() : base() { }
     }
 
-    public class VertexQuery : VertexQuery<GraphQuery>, ITraversalQuery<GraphQuery>
+    public class VertexQuery : VertexQuery<GraphQuery>
     {
         internal VertexQuery() : base() { }
 

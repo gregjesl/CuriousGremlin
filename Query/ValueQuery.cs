@@ -18,6 +18,26 @@ namespace CuriousGremlin.Query
             return new ValueQuery<T, From, Query>(query);
         }
 
+        public Query Constant(T value)
+        {
+            Steps.Add("constant(" + GetObjectString(value) + ")");
+            return this as Query;
+        }
+
+        public Query Inject(params T[] values)
+        {
+            string step = "inject(";
+            List<string> valueList = new List<string>();
+            foreach (var item in values)
+            {
+                valueList.Add(GetObjectString(item));
+            }
+            step += string.Join(",", valueList);
+            step += ")";
+            Steps.Add(step);
+            return this as Query;
+        }
+
         public Query Is(float value)
         {
             Steps.Add("is(" + GetObjectString(value) + ")");
@@ -54,34 +74,34 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public ValueQuery<string> Key()
+        public StringQuery<From> Key()
         {
             Steps.Add("key()");
-            return new ValueQuery<string>(this);
+            return new StringQuery<From>(this);
         }
 
-        public ValueQuery<T> Math(string mapping)
+        public Query Math(string mapping)
         {
             Steps.Add("math(" + Sanitize(mapping) + ")");
-            return this;
+            return this as Query;
         }
 
-        public ValueQuery<T> Max()
+        public Query Max()
         {
             Steps.Add("max()");
-            return this;
+            return this as Query;
         }
 
-        public ValueQuery<T, From> Mean()
+        public Query Mean()
         {
             Steps.Add("mean()");
-            return this;
+            return this as Query;
         }
 
-        public ValueQuery<T, From> Min()
+        public Query Min()
         {
             Steps.Add("min()");
-            return this;
+            return this as Query;
         }
 
         public Query Sum()
@@ -96,6 +116,16 @@ namespace CuriousGremlin.Query
         internal ValueQuery(ITraversalQuery<From> query) : base(query) { }
 
         internal ValueQuery() : base() { }
+
+        public static implicit operator ValueQuery<T, From>(StringQuery<From> query)
+        {
+            return new ValueQuery<T, From>(query);
+        }
+
+        public static implicit operator ValueQuery<T, From>(IntegerQuery<From> query)
+        {
+            return new ValueQuery<T, From>(query);
+        }
     }
 
     public class StringQuery<From> : ValueQuery<string, From>

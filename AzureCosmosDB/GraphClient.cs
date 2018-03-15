@@ -133,80 +133,32 @@ namespace CuriousGremlin.AzureCosmosDB
             }
         }
 
-        public async Task<FeedResponse<object>> Execute(ITraversalQuery query)
+        public async Task<List<T>> Execute<T>(ITraversalQuery<GraphQuery, T> query)
         {
-            return await Execute(query.ToString());
-        }
-
-        public async Task<List<GraphVertex>> Execute(VertexQuery query)
-        {
-            var vertices = new List<GraphVertex>();
             var results = await Execute(query.ToString());
-            foreach(Newtonsoft.Json.Linq.JObject result in results)
+            var resultList = new List<T>();
+            if (results.Count == 0)
+                return resultList;
+            if(typeof(T) == typeof(GraphVertex) || typeof(T) == typeof(GraphEdge))
             {
-                vertices.Add(result.ToObject<GraphVertex>());
+                foreach (Newtonsoft.Json.Linq.JObject result in results)
+                {
+                    resultList.Add(result.ToObject<T>());
+                }
             }
-            return vertices;
-        }
-
-        public async Task<List<GraphEdge>> Execute(EdgeQuery<Graph> query)
-        {
-            var edges = new List<GraphEdge>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
+            else
             {
-                edges.Add(result.ToObject<GraphEdge>());
+                foreach(T result in results)
+                {
+                    resultList.Add(result);
+                }
             }
-            return edges;
-        }
-
-        public async Task<List<T>> Execute<T>(ValueQuery<T, Graph> query)
-        {
-            var items = new List<T>();
-            var results = await Execute(query.ToString());
-            foreach (T result in results)
-            {
-                items.Add(result);
-            }
-            return items;
-        }
-
-        public async Task<List<List<T>>> Execute<T>(ListQuery<T, Graph> query)
-        {
-            var items = new List<List<T>>();
-            var results = await Execute(query.ToString());
-            foreach (List<T> result in results)
-            {
-                items.Add(result);
-            }
-            return items;
-        }
-
-        public async Task<List<List<KeyValuePair<TKey,TValue>>>> Execute<TKey,TValue>(DictionaryQuery<TKey, TValue, Graph> query)
-        {
-            var items = new List<List<KeyValuePair<TKey, TValue>>>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
-            {
-                items.Add(result.ToObject<List<KeyValuePair<TKey,TValue>>>());
-            }
-            return items;
-        }
-
-        public async Task<bool> Execute(BooleanQuery<Graph> query)
-        {
-            var items = new List<bool>();
-            var results = await Execute(query.ToString());
-            foreach (Newtonsoft.Json.Linq.JObject result in results)
-            {
-                items.Add(result.ToObject<bool>());
-            }
-            return items[0];
+            return resultList;
         }
 
         public async Task Execute(TerminalQuery<Graph> query)
         {
-            var results = await Execute(query.ToString());
+            await Execute(query.ToString());
         }
         #endregion
     }

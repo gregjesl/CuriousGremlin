@@ -30,7 +30,7 @@ namespace UnitTests.AzureCosmosDB
                     Assert.AreEqual(client.Execute(VertexQuery.All().ToString()).Result.Count, 0);
 
                     // Insert an object
-                    VertexQuery insert_query = VertexQuery.Create("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value");
+                    var insert_query = VertexQuery.Create("test_vertex").AddProperty("test_key", "test_value").AddProperty("test_key", "another_test_value");
                     var insert_result = client.Execute(insert_query).Result;
                     Assert.AreEqual(insert_result.Count, 1);
                     Assert.AreEqual(insert_result[0].label, "test_vertex");
@@ -58,7 +58,7 @@ namespace UnitTests.AzureCosmosDB
                     Assert.IsTrue(connect_result[0].properties.ContainsValue("test_value"));
 
                     // Reload the first object to check for edges
-                    VertexQuery out_query = VertexQuery.Vertex(insert_result[0].id).Out();
+                    var out_query = VertexQuery.Vertex(insert_result[0].id).Out();
                     var out_result = client.Execute(out_query).Result;
                     Assert.AreEqual(out_result.Count, 1);
                     Assert.AreEqual(out_result[0].id, second_vertex_result[0].id);

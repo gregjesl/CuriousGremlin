@@ -27,10 +27,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public ValueQuery<string>Id()
+        public StringQuery<From>Id()
         {
             Steps.Add("id()");
-            return new ValueQuery<string>(this);
+            return new StringQuery<From>(this);
         }
 
         public Query Has(string key, object value)
@@ -54,11 +54,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        /*
-        public ValueQuery<string, From> Label()
+        public StringQuery<From> Label()
         {
             Steps.Add("label()");
-            return new ValueQuery<string, From>(this);
+            return new StringQuery<From>(this);
         }
 
         public DictionaryQuery<string, TValue, From> ValueMap<TValue>()
@@ -84,7 +83,6 @@ namespace CuriousGremlin.Query
             Steps.Add("values('" + Sanitize(key) + "')");
             return this as Query;
         }
-        */
     }
 
     public abstract class ElementQuery<T, From> : ElementQuery<T, From, ElementQuery<T, From>>
