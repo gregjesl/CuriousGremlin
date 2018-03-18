@@ -23,7 +23,7 @@ using(client)
 ```C#
 using CuriousGremlin.GraphSON;
 ...
-foreach(var item in result)
+foreach(GraphVertex item in result)
 {
 	Console.WriteLine("Vertex ID: " + item.id);
 	Console.WriteLine("Vertex Label: " + item.label);
@@ -33,5 +33,4 @@ foreach(var item in result)
 ## Organization
 1. [Query](Query) - A library for building strongly-typed Gremlin queries.
 2. [AzureCosmosDB](AzureCosmosDB) - A library for creating Gremlin clients for Azure CosmosDB
-3. [GraphSON](GraphSON) - A library containing GraphSON objects
-4. [UnitTests](UnitTests) - Unit tests for the project
+3. [UnitTests](UnitTests) - Unit tests for the project

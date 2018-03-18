@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>CuriousGremlin.Query</RootNamespace>
     <Version>0.1.0</Version>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
 
   <ItemGroup>

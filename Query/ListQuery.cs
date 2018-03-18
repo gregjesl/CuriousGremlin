@@ -22,6 +22,10 @@ namespace CuriousGremlin.Query
             return new ListQuery<T, List<T>>();
         }
 
+        /// <summary>
+        /// Maps the list to a collection
+        /// </summary>
+        /// <returns>The unfold.</returns>
         public CollectionQuery<T, From> Unfold()
         {
             Steps.Add("unfold()");

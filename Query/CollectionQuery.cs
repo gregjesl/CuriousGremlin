@@ -14,27 +14,40 @@ namespace CuriousGremlin.Query
         protected CollectionQuery(ITraversalQuery<From> query)
         {
             if (query is null)
-                throw new ArgumentNullException("Step list cannot be null");
+                throw new ArgumentException("Step list cannot be null");
             Steps = query.Steps;
         }
 
-        public CollectionQuery() : base() { }
+        internal CollectionQuery() : base() { }
 
         public static implicit operator CollectionQuery<T, From, Query>(CollectionQuery<T, From> query)
         {
             return new CollectionQuery<T, From, Query>(query);
         }
 
+        /// <summary>
+        /// For every incoming object, a vertex is created. 
+        /// </summary>
+        /// <param name="label">The label of the new vertex/vertices</param>
         public VertexQuery<From> AddVertex(string label)
         {
             return AddVertex(label, new Dictionary<string, object>());
         }
 
+        /// <summary>
+        /// For every incoming object, a vertex is created. 
+        /// </summary>
+        /// <param name="properties">The properties to add to the new vertex/vertices</param>
         public VertexQuery<From> AddVertex(Dictionary<string, object> properties)
         {
             return AddVertex(null, properties);
         }
 
+        /// <summary>
+        /// For every incoming object, a vertex is created. 
+        /// </summary>
+        /// <param name="label">The label of the new vertex/vertices</param>
+        /// <param name="properties">The properties to add to the new vertex/vertices</param>
         public VertexQuery<From> AddVertex(string label, Dictionary<string, object> properties)
         {
             string step = "addV(";
@@ -50,6 +63,10 @@ namespace CuriousGremlin.Query
             return new VertexQuery<From>(this);
         }
 
+        /// <summary>
+        /// For every incoming object, a vertex is created. 
+        /// </summary>
+        /// <param name="vertex">The object to be serialized</param>
         public VertexQuery<From> AddVertex(IVertexObject vertex)
         {
             var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
@@ -62,22 +79,35 @@ namespace CuriousGremlin.Query
             return AddVertex(vertex.VertexLabel, properties);
         }
 
+        /// <summary>
+        /// Aggregates all the objects at a particular point of traversal into a Collection using eager evaluation
+        /// </summary>
+        /// <param name="label">The label of the aggregated collection</param>
         public Query Aggregate(string label)
         {
             Steps.Add("aggregate('" + Sanitize(label) + "')");
             return this as Query;
         }
 
-        public Query And(params ITraversalQuery<From, T>[] conditions)
+        /// <summary>
+        /// A traverser is returned if and only if all conditons yield a result
+        /// </summary>
+        public Query And(params ITraversalQuery<T, T>[] conditions)
         {
             return And(conditions);
         }
 
-        public Query And<TOutput>(params ITraversalQuery<From, TOutput>[] conditions)
+        /// <summary>
+        /// A traverser is returned if and only if all conditons yield a result
+        /// </summary>
+        public Query And<TOutput>(params ITraversalQuery<T, TOutput>[] conditions)
         {
             return And<TOutput>(conditions);
         }
 
+        /// <summary>
+        /// A traverser is returned if and only if all conditons yield a result
+        /// </summary>
         public Query And(IEnumerable<ITraversalQuery<From, T>> conditions)
         {
             string step = "and(";
@@ -91,6 +121,9 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// A traverser is returned if and only if all conditons yield a result
+        /// </summary>
         public Query And<TOutput>(IEnumerable<ITraversalQuery<From, TOutput>> conditions)
         {
             string step = "and(";
@@ -104,12 +137,20 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Aggregates all the objects at a particular point of traversal into a Collection
+        /// <seealso cref="Aggregate(string)"/>
+        /// </summary>
+        /// <param name="label">The label of the collection</param>
         public Query As(string label)
         {
             Steps.Add("as('" + Sanitize(label) + "')");
             return this as Query;
         }
 
+        /// <summary>
+        /// Turns the lazy traversal pipeline into a bulk-synchronous pipeline
+        /// </summary>
         public Query Barrier()
         {
             Steps.Add("barrier()");
@@ -137,24 +178,36 @@ namespace CuriousGremlin.Query
         }
         */
 
+        /// <summary>
+        /// Routes the current traverser to a particular traversal branch option
+        /// </summary>
+        /// <returns>The choose.</returns>
+        /// <param name="condition">Condition to evaluate</param>
+        /// <param name="TrueQuery">Path executed if the condition yields a result</param>
+        /// <param name="FalseQuery">Path executed if the condition does not yields a result</param>
         public CollectionQuery<T, From> Choose(ITraversalQuery<T> condition, ITraversalQuery<T, T> TrueQuery, ITraversalQuery<T, T> FalseQuery)
         {
             Steps.Add("choose(" + condition.ToString() + ", __." + TrueQuery.ToString() + ", __." + FalseQuery + ")");
             return new CollectionQuery<T, From>(this);
         }
 
+        /// <summary>
+        /// Routes the current traverser to a particular traversal branch option
+        /// </summary>
+        /// <returns>The choose.</returns>
+        /// <param name="condition">Condition to evaluate</param>
+        /// <param name="TrueQuery">Path executed if the condition yields a result</param>
+        /// <param name="FalseQuery">Path executed if the condition does not yields a result</param>
         public CollectionQuery<TOutput, From> Choose<TOutput>(ITraversalQuery<T> condition, ITraversalQuery<T, TOutput> TrueQuery, ITraversalQuery<T, TOutput> FalseQuery)
         {
             Steps.Add("choose(" + condition.ToString() + ", __." + TrueQuery.ToString() + ", __." + FalseQuery + ")");
             return new CollectionQuery<TOutput, From>(this);
         }
 
-        public IntegerQuery<From> Count()
-        {
-            Steps.Add("count()");
-            return new IntegerQuery<From>(this);
-        }
-
+        /// <summary>
+        /// Evaluates the provided traversals in order and returns the first traversal that emits at least one element
+        /// </summary>
+        /// <param name="paths">Paths to evaluate</param>
         public Query Coalesce(params ITraversalQuery<T, T>[] paths)
         {
             string step = "coalesce(";
@@ -169,6 +222,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Evaluates the provided traversals in order and returns the first traversal that emits at least one element
+        /// </summary>
+        /// <param name="paths">Paths to evaluate</param>
         public CollectionQuery<TOutput, From> Coalesce<TOutput>(params ITraversalQuery<T, TOutput>[] paths)
         {
             string step = "coalesce(";
@@ -183,6 +240,11 @@ namespace CuriousGremlin.Query
             return new CollectionQuery<TOutput, From>(this);
         }
 
+        /// <summary>
+        /// Randomly filters out a traverser
+        /// </summary>
+        /// <returns>Probability of a traverser being allowed to pass</returns>
+        /// <param name="probability">Probability.</param>
         public Query Coin(double probability)
         {
             if (probability < 0.0 || probability > 1.0)
@@ -191,47 +253,95 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Specifies a constant value
+        /// </summary>
+        public ValueQuery<TOutput, From> Constant<TOutput>(TOutput value)
+        {
+            Steps.Add("constant(" + GetObjectString(value) + ")");
+            return new ValueQuery<TOutput, From>(this);
+        }
+
+        /// <summary>
+        /// Counts the total number of represented traversers in the streams (i.e. the bulk count)
+        /// </summary>
+        /// <returns>The count.</returns>
+        public IntegerQuery<From> Count()
+        {
+            Steps.Add("count()");
+            return new IntegerQuery<From>(this);
+        }
+
+        /// <summary>
+        /// Creates a sub query
+        /// </summary>
+        /// <returns>The sub query</returns>
         public CollectionQuery<T, T> CreateSubQuery()
         {
             return new CollectionQuery<T, T>();
         }
 
+        /// <summary>
+        /// Removes traversers that do not have a cyclic path
+        /// </summary>
         public Query CyclicPath()
         {
             Steps.Add("cyclicPath()");
             return this as Query;
         }
 
+        /// <summary>
+        /// Removes repeatedly seen objects from the traversal stream
+        /// </summary>
         public Query Dedup()
         {
             Steps.Add("dedup()");
             return this as Query;
         }
 
+        /// <summary>
+        /// Removes the element from the graph
+        /// </summary>
+        /// <returns>The drop.</returns>
         public TerminalQuery<From> Drop()
         {
             Steps.Add("drop()");
             return new TerminalQuery<From>(this);
         }
 
+        /// <summary>
+        /// Aggregates the output of the traversers into a list
+        /// <seealso cref="ListQuery{T, From, Query}.Unfold"/>
+        /// </summary>
+        /// <returns>The fold.</returns>
         public ListQuery<T, From> Fold()
         {
             Steps.Add("fold()");
             return new ListQuery<T, From>(this);
         }
 
+        /// <summary>
+        /// Groups elements by the specified property
+        /// </summary>
+        /// <param name="property">The key of the property to group by</param>
         public DictionaryQuery<string, T, From> Group(string property)
         {
             Steps.Add("group().by('" + Sanitize(property) + "')");
             return new DictionaryQuery<string, T, From>(this);
         }
 
+        /*
         public Query HasNext()
         {
             Steps.Add("hasNext()");
             return this as Query;
         }
+        */
 
+        /// <summary>
+        /// Returns up to the specified number of results
+        /// </summary>
+        /// <param name="limit">The maximum number of items to return</param>
         public Query Limit(int limit)
         {
             if (limit < 0)
@@ -240,18 +350,25 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Executes the provided query on each incoming item
+        /// </summary>
+        /// <param name="localQuery">The query to execute on each incoming item</param>
         public CollectionQuery<TOutput, From> Local<TOutput>(ITraversalQuery<T, TOutput> localQuery)
         {
             Steps.Add("local(" + localQuery.ToString() + ")");
             return new CollectionQuery<TOutput, From>(this);
         }
 
+        /*
         public Query Next()
         {
             Steps.Add("next()");
             return this as Query;
         }
+        */
 
+        /*
         public Query Next(int count)
         {
             if (count < 1)
@@ -259,19 +376,29 @@ namespace CuriousGremlin.Query
             Steps.Add(string.Format("next({0})", count));
             return this as Query;
         }
+        */
 
+        /// <summary>
+        /// Removes objects from the traversal stream when the traversal provided as an argument does not return any objects
+        /// </summary>
         public Query Not(ITraversalQuery<T, T> subquery)
         {
             Steps.Add("not(" + subquery.ToString() + ")");
             return this as Query;
         }
 
+        /// <summary>
+        /// Returns the result of the specified traversal if it yields a result else it returns the calling element
+        /// </summary>
         public Query Optional(ITraversalQuery<T, T> subquery)
         {
             Steps.Add("optional(" + subquery.ToString() + ")");
             return this as Query;
         }
 
+        /// <summary>
+        /// Ensures that at least one of the provided traversals yield a result
+        /// </summary>
         public CollectionQuery<TOutput, From> Or<TOutput>(params ITraversalQuery<T, TOutput>[] paths)
         {
             string step = "or(";
@@ -285,27 +412,26 @@ namespace CuriousGremlin.Query
             return new CollectionQuery<TOutput, From>(this);
         }
 
-        public Query OrderBy(string property, bool ascending = true)
-        {
-            string step = "order().by('" + Sanitize(property) + "', ";
-            step += ascending ? "incr" : "decr";
-            step += ")";
-            Steps.Add(step);
-            return this as Query;
-        }
-
+        /// <summary>
+        /// Returns the history of the traverser
+        /// </summary>
         public ListQuery<object, From> Path()
         {
             Steps.Add("path()");
             return new ListQuery<object, From>(this);
         }
 
+        /// <summary>
+        /// Properties the map.
+        /// </summary>
+        /// <returns>The map.</returns>
         public DictionaryQuery<string, object, From> PropertyMap()
         {
             Steps.Add("propertyMap()");
             return new DictionaryQuery<string, object, From>(this);
         }
 
+        /*
         public DictionaryQuery<string, object, From> PropertyMap(params string[] keys)
         {
             string step = "propertyMap(";
@@ -319,7 +445,13 @@ namespace CuriousGremlin.Query
             Steps.Add(step);
             return new DictionaryQuery<string, object, From>(this);
         }
+        */
 
+        /// <summary>
+        /// Limits the results to the elements in the specified range
+        /// </summary>
+        /// <param name="lowerBound">The number of items to skip</param>
+        /// <param name="upperBound">The maximum number of items before the lower bound is executed</param>
         public Query Range(int lowerBound, int upperBound)
         {
             if (lowerBound < 0)
@@ -330,6 +462,11 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Repeats the provided traversal
+        /// </summary>
+        /// <param name="traversal">The sub query to repeat</param>
+        /// <param name="count">The number of times to repeat the sub query</param>
         public CollectionQuery<TOutput, From> Repeat<TOutput>(ITraversalQuery<T, TOutput> traversal, int count)
         {
             if (count < 1)
@@ -340,6 +477,13 @@ namespace CuriousGremlin.Query
             return new CollectionQuery<TOutput, From>(this);
         }
 
+        /// <summary>
+        /// Repeats the provided traversal until the provided condition is met
+        /// </summary>
+        /// <returns>The repeat.</returns>
+        /// <param name="traversal">The sub query to repeat</param>
+        /// <param name="condition">The condition that must be met to end the loop</param>
+        /// <param name="type">Specifies a do-while or while-do loop</param>
         public Query Repeat<TOutput>(ITraversalQuery<T, TOutput> traversal, ITraversalQuery<T> condition, RepeatTypeEnum type)
         {
             if (traversal.Steps.Count < 1)
@@ -360,6 +504,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Sampes the specified number of samples from the results
+        /// </summary>
+        /// <param name="samples">The maximum number of items to return</param>
         public Query Sample(int samples)
         {
             if (samples < 1)
@@ -368,6 +516,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Returns a collection that was previously specified
+        /// </summary>
+        /// <param name="items">The labels of collections to return</param>
         public DictionaryQuery<string, T, From> Select(params string[] items)
         {
             if (items.Length < 1)
@@ -384,37 +536,64 @@ namespace CuriousGremlin.Query
             return new DictionaryQuery<string, T, From>(this);
         }
 
-        public DictionaryQuery<string, T, From> SelectBy(string label, params string[] items)
+        /// <summary>
+        /// Returns the values of the specified key, grouped by the provided colleciton labels
+        /// </summary>
+        /// <returns>The by.</returns>
+        /// <param name="key">The key of the property values to return</param>
+        /// <param name="labels">The label(s) of aggregated collections</param>
+        public DictionaryQuery<string, T, From> SelectBy(string key, params string[] labels)
         {
-            if (label == null || label == "")
+            return SelectBy(key, labels);
+        }
+
+        /// <summary>
+        /// Returns the values of the specified key, grouped by the provided colleciton labels
+        /// </summary>
+        /// <returns>The by.</returns>
+        /// <param name="key">The key of the property values to return</param>
+        /// <param name="labels">The label(s) of aggregated collections</param>
+        public DictionaryQuery<string, T, From> SelectBy(string key, IEnumerable<string> labels)
+        {
+            if (string.IsNullOrEmpty(key))
                 throw new ArgumentException("Label cannot be empty or null");
-            if (items.Length < 1)
-                throw new ArgumentException("Must have at least one item to select");
             string step = "select(";
             var itemList = new List<string>();
-            foreach (var item in items)
+            foreach (var item in labels)
             {
                 itemList.Add("'" + Sanitize(item) + "'");
             }
             step += string.Join(", ", itemList);
             step += ")";
-            step += ".by('" + Sanitize(label) + "')";
+            step += ".by('" + Sanitize(key) + "')";
             Steps.Add(step);
             return new DictionaryQuery<string, T, From>(this);
         }
 
+        /// <summary>
+        /// Removes traversers that repeat a path
+        /// </summary>
+        /// <returns>The path.</returns>
         public Query SimplePath()
         {
             Steps.Add("simplePath()");
             return this as Query;
         }
 
+        /// <summary>
+        /// Skips the specified number of results before returning the results
+        /// </summary>
+        /// <param name="number">Number of items to skip</param>
         public Query Skip(int number)
         {
             Steps.Add("skip(" + number.ToString() + ")");
             return this as Query;
         }
 
+        /// <summary>
+        /// Returns the tail of a result collection
+        /// </summary>
+        /// <param name="limit">The number of items to return</param>
         public Query Tail(int limit)
         {
             if (limit < 0)
@@ -423,6 +602,10 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Limits the execution time
+        /// </summary>
+        /// <param name="milliseconds">Number of milliseconds to limit the execution to</param>
         public Query TimeLimit(int milliseconds)
         {
             if (milliseconds <= 0)
@@ -431,24 +614,37 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /// <summary>
+        /// Tos the bulk set.
+        /// </summary>
+        /// <returns>The bulk set.</returns>
         public Query ToBulkSet()
         {
             Steps.Add("toBulkSet()");
             return this as Query;
         }
 
+        /*
         public Query ToList()
         {
             Steps.Add("toList()");
             return this as Query;
         }
+        */
 
+        /// <summary>
+        /// Returns all results in a set (duplicates are removed). Execution is terminal. 
+        /// </summary>
+        /// <returns>The set.</returns>
         public Query ToSet()
         {
             Steps.Add("toSet()");
             return this as Query;
         }
 
+        /// <summary>
+        /// Merges the results of the provided sub queries
+        /// </summary>
         public CollectionQuery<TOutput, From> Union<TOutput>(params ITraversalQuery<T, TOutput>[] paths)
         {
             if (paths.Length < 1)
@@ -465,7 +661,19 @@ namespace CuriousGremlin.Query
             return new CollectionQuery<TOutput, From>(this);
         }
 
+        /// <summary>
+        /// Filters results based on a sub query
+        /// </summary>
         public Query Where(ITraversalQuery<T> condition)
+        {
+            Steps.Add("where(" + condition.ToString() + ")");
+            return this as Query;
+        }
+
+        /// <summary>
+        /// Filters results based on a sub query
+        /// </summary>
+        public Query Where(GraphPredicate condition)
         {
             Steps.Add("where(" + condition.ToString() + ")");
             return this as Query;

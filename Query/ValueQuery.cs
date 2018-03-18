@@ -18,12 +18,9 @@ namespace CuriousGremlin.Query
             return new ValueQuery<T, From, Query>(query);
         }
 
-        public Query Constant(T value)
-        {
-            Steps.Add("constant(" + GetObjectString(value) + ")");
-            return this as Query;
-        }
-
+        /// <summary>
+        /// Injects a value into the collection
+        /// </summary>
         public Query Inject(params T[] values)
         {
             string step = "inject(";
@@ -38,72 +35,84 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
-        public Query Is(float value)
+        /// <summary>
+        /// Filters results based on the provided value
+        /// </summary>
+        public Query Is(object value)
         {
             Steps.Add("is(" + GetObjectString(value) + ")");
             return this as Query;
         }
 
-        public Query Is(double value)
-        {
-            Steps.Add("is(" + GetObjectString(value) + ")");
-            return this as Query;
-        }
-
-        public Query Is(decimal value)
-        {
-            Steps.Add("is(" + GetObjectString(value) + ")");
-            return this as Query;
-        }
-
-        public Query Is(int value)
-        {
-            Steps.Add("is(" + GetObjectString(value) + ")");
-            return this as Query;
-        }
-
-        public Query Is(long value)
-        {
-            Steps.Add("is(" + GetObjectString(value) + ")");
-            return this as Query;
-        }
-
+        /// <summary>
+        /// Filters results based on the provided condition
+        /// </summary>
         public Query Is(GraphPredicate predicate)
         {
             Steps.Add("is(" + predicate.ToString() + ")");
             return this as Query;
         }
 
+        /// <summary>
+        /// Returns the keys of the collection
+        /// </summary>
+        /// <returns>The key.</returns>
         public StringQuery<From> Key()
         {
             Steps.Add("key()");
             return new StringQuery<From>(this);
         }
 
+        /*
         public Query Math(string mapping)
         {
             Steps.Add("math(" + Sanitize(mapping) + ")");
             return this as Query;
         }
+        */
 
+        /// <summary>
+        /// Returns the maximum value of the collection
+        /// </summary>
         public Query Max()
         {
             Steps.Add("max()");
             return this as Query;
         }
 
+        /// <summary>
+        /// Returns the average value of the collection
+        /// </summary>
         public Query Mean()
         {
             Steps.Add("mean()");
             return this as Query;
         }
 
+        /// <summary>
+        /// Returns the minimum value of the collection
+        /// </summary>
         public Query Min()
         {
             Steps.Add("min()");
             return this as Query;
         }
 
+        /// <summary>
+        /// Sorts the collection
+        /// </summary>
+        public Query Order(bool ascending = true)
+        {
+            string step = "order().by(";
+            step += ascending ? "incr" : "decr";
+            step += ")";
+            Steps.Add(step);
+            return this as Query;
+        }
+
+        /// <summary>
+        /// Returns the sum of the values
+        /// </summary>
         public Query Sum()
         {
             Steps.Add("sum()");

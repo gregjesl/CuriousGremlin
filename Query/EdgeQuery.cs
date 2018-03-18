@@ -12,24 +12,36 @@ namespace CuriousGremlin.Query
 
         protected EdgeQuery() : base() { }
 
+        /// <summary>
+        /// Returns the vertex in the outgoing direction of the edge
+        /// </summary>
         public VertexQuery<From> OutV()
         {
             Steps.Add("outV()");
             return new VertexQuery<From>(this);
         }
 
+        /// <summary>
+        /// Returns the vertex in the incoming direction of the edge
+        /// </summary>
         public VertexQuery<From> InV()
         {
             Steps.Add("inV()");
             return new VertexQuery<From>(this);
         }
 
+        /// <summary>
+        /// Returns both vertices connected to the edge
+        /// </summary>
         public VertexQuery<From> BothV()
         {
             Steps.Add("bothV()");
             return new VertexQuery<From>(this);
         }
 
+        /// <summary>
+        /// Returns the vertex that was not traversed from
+        /// </summary>
         public VertexQuery<From> OtherV()
         {
             Steps.Add("otherV()");

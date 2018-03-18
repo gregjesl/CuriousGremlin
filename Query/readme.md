@@ -1,7 +1,7 @@
 ﻿# Query
-A library for building strongly-typed Gremlin queries. 
+A library for building strongly-typed Gremlin queries. __TinkerPop Version: 3.3.1__
 
-Queries can be initiated by calling `GraphQuery.Vertices()`, `GraphQuery.Vertex(...)`, `GraphQuery.AddVertex(...)`, or `GraphQuery.Edge(...)`. 
+Queries can be initiated by calling `VertexQuery.All()`, `GraphVertex.Vertex(...)`, or `GraphVertex.AddVertex(...)`. 
 
 ## Structure
 - **GraphQuery** - Base class for queries
@@ -11,10 +11,11 @@ Queries can be initiated by calling `GraphQuery.Vertices()`, `GraphQuery.Vertex(
         - **VertexQuery** - Returns a collection of vertices
         - **EdgeQuery** - Returns a collection of edges
       - **ValueQuery** - Returns a collection of values (strings, numbers, and/or booleans)
+        - **StringQuery** - Returns a collection of strings
+        - **IntegerQuery** - Returns a colleection of integers
       - **ListQuery** - Returns a collection of lists
         - **DictionaryQuery** - Returns a collection of dictionaries
-    - **TerminalQuery** - Returns a singular object
-      - **BooleanQuery** - Returns a singular boolean
+    - **TerminalQuery** - A query where no additional steps are possible
 
 ## Vertex Serialization
 
