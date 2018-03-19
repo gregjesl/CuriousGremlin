@@ -5,7 +5,7 @@ using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query
 {
-    public class DictionaryQuery<TKey, TValue, From, Query> : ListQuery<KeyValuePair<string, TValue>, From, Query>
+    public class DictionaryQuery<TKey, TValue, From, Query> : CollectionQuery<Dictionary<TKey, TValue>, From, Query>
         where Query: DictionaryQuery<TKey, TValue, From, Query>
     {
         internal DictionaryQuery(ITraversalQuery<From> query) : base(query) { }

@@ -14,7 +14,7 @@ Queries can be initiated by calling `VertexQuery.All()`, `GraphVertex.Vertex(...
         - **StringQuery** - Returns a collection of strings
         - **IntegerQuery** - Returns a colleection of integers
       - **ListQuery** - Returns a collection of lists
-        - **DictionaryQuery** - Returns a collection of dictionaries
+      - **DictionaryQuery** - Returns a collection of dictionaries
     - **TerminalQuery** - A query where no additional steps are possible
 
 ## Vertex Serialization

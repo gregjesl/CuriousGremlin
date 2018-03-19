@@ -104,7 +104,7 @@ namespace UnitTests.AzureCosmosDB
             using (var client = TestDatabase.GetClient("steps_vertex_inV"))
             {
                 Setup_Test_Database(client);
-                Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("two").InE().InV()).Result[0].label, "one");
+                Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("two").OutE().InV()).Result[0].label, "three");
             }
         }
 

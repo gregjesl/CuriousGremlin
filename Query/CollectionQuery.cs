@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Predicates;
@@ -92,24 +93,34 @@ namespace CuriousGremlin.Query
         /// <summary>
         /// A traverser is returned if and only if all conditons yield a result
         /// </summary>
+        public Query And(IEnumerable<ITraversalQuery<T, T>> conditions)
+        {
+            return And(conditions.ToArray()) as Query;
+        }
+
+        /// <summary>
+        /// A traverser is returned if and only if all conditons yield a result
+        /// </summary>
         public Query And(params ITraversalQuery<T, T>[] conditions)
         {
-            return And(conditions);
+            return And<T>(conditions.ToArray()) as Query;
         }
 
         /// <summary>
         /// A traverser is returned if and only if all conditons yield a result
         /// </summary>
-        public Query And<TOutput>(params ITraversalQuery<T, TOutput>[] conditions)
+        public CollectionQuery<TOutput, From> And<TOutput>(IEnumerable<ITraversalQuery<T, TOutput>> conditions)
         {
-            return And<TOutput>(conditions);
+            return And(conditions.ToArray());
         }
 
         /// <summary>
         /// A traverser is returned if and only if all conditons yield a result
         /// </summary>
-        public Query And(IEnumerable<ITraversalQuery<From, T>> conditions)
+        public CollectionQuery<TOutput, From> And<TOutput>(params ITraversalQuery<T, TOutput>[] conditions)
         {
+            if (conditions.Length == 0)
+                throw new ArgumentNullException("Must provide at least one condition");
             string step = "and(";
             List<string> stepStrings = new List<string>();
             foreach (var condition in conditions)
@@ -118,7 +129,8 @@ namespace CuriousGremlin.Query
             }
             step += string.Join(",", stepStrings);
             step += ")";
-            return this as Query;
+            Steps.Add(step);
+            return new CollectionQuery<TOutput, From>(this);
         }
 
         /// <summary>
@@ -126,15 +138,7 @@ namespace CuriousGremlin.Query
         /// </summary>
         public Query And<TOutput>(IEnumerable<ITraversalQuery<From, TOutput>> conditions)
         {
-            string step = "and(";
-            List<string> stepStrings = new List<string>();
-            foreach (var condition in conditions)
-            {
-                stepStrings.Add(condition.ToString());
-            }
-            step += string.Join(",", stepStrings);
-            step += ")";
-            return this as Query;
+            return And(conditions.ToArray());
         }
 
         /// <summary>
@@ -240,6 +244,9 @@ namespace CuriousGremlin.Query
             return new CollectionQuery<TOutput, From>(this);
         }
 
+        /*
+         * Currently not supported by Azure CosmosDB
+         * 
         /// <summary>
         /// Randomly filters out a traverser
         /// </summary>
@@ -252,6 +259,7 @@ namespace CuriousGremlin.Query
             Steps.Add(string.Format("coin({0:0.0000})", probability));
             return this as Query;
         }
+        */
 
         /// <summary>
         /// Specifies a constant value
@@ -408,6 +416,7 @@ namespace CuriousGremlin.Query
                 pathList.Add("__." + path.ToString());
             }
             step += string.Join(", ", pathList);
+            step += ")";
             Steps.Add(step);
             return new CollectionQuery<TOutput, From>(this);
         }
@@ -520,12 +529,14 @@ namespace CuriousGremlin.Query
         /// Returns a collection that was previously specified
         /// </summary>
         /// <param name="items">The labels of collections to return</param>
-        public DictionaryQuery<string, T, From> Select(params string[] items)
+        public DictionaryQuery<string, T, From> Select(string item1, string item2, params string[] items)
         {
-            if (items.Length < 1)
-                throw new ArgumentException("Must have at least one item to select");
+            if (string.IsNullOrEmpty(item1) || string.IsNullOrEmpty(item2))
+                throw new ArgumentNullException("Input cannot be null or empty");
             string step = "select(";
             var itemList = new List<string>();
+            itemList.Add("'" + Sanitize(item1) + "'");
+            itemList.Add("'" + Sanitize(item2) + "'");
             foreach (var item in items)
             {
                 itemList.Add("'" + Sanitize(item) + "'");
@@ -534,17 +545,6 @@ namespace CuriousGremlin.Query
             step += ")";
             Steps.Add(step);
             return new DictionaryQuery<string, T, From>(this);
-        }
-
-        /// <summary>
-        /// Returns the values of the specified key, grouped by the provided colleciton labels
-        /// </summary>
-        /// <returns>The by.</returns>
-        /// <param name="key">The key of the property values to return</param>
-        /// <param name="labels">The label(s) of aggregated collections</param>
-        public DictionaryQuery<string, T, From> SelectBy(string key, params string[] labels)
-        {
-            return SelectBy(key, labels);
         }
 
         /// <summary>
@@ -580,6 +580,9 @@ namespace CuriousGremlin.Query
             return this as Query;
         }
 
+        /*
+         * Currently not supported by CosmosDB
+         * 
         /// <summary>
         /// Skips the specified number of results before returning the results
         /// </summary>
@@ -589,6 +592,7 @@ namespace CuriousGremlin.Query
             Steps.Add("skip(" + number.ToString() + ")");
             return this as Query;
         }
+        */
 
         /// <summary>
         /// Returns the tail of a result collection

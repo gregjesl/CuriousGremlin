@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
@@ -39,7 +40,7 @@ namespace CuriousGremlin.Query
         /// </summary>
         public Query Has(string key)
         {
-            Steps.Add("has('" + Sanitize(key) + ")");
+            Steps.Add("has('" + Sanitize(key) + "')");
             return this as Query;
         }
 
@@ -91,7 +92,7 @@ namespace CuriousGremlin.Query
         /// <param name="label">The label(s) that the traverser must have to continue</param>
         public Query HasLabel(params string[] label)
         {
-            return HasLabel(label);
+            return HasLabel(label as IEnumerable<string>);
         }
 
         /// <summary>
@@ -115,15 +116,6 @@ namespace CuriousGremlin.Query
         /// <param name="ids">The id(s) that the traverser must have to continue</param>
         public Query HasId(params string[] ids)
         {
-            return HasId(ids);
-        }
-
-        /// <summary>
-        /// Remove the traverser if its element does not have any of the ids.
-        /// </summary>
-        /// <param name="ids">The id(s) that the traverser must have to continue</param>
-        public Query HasId(IEnumerable<string> ids)
-        {
             var list = new List<string>();
             foreach (var id in ids)
             {
@@ -134,17 +126,18 @@ namespace CuriousGremlin.Query
         }
 
         /// <summary>
-        /// Remove the traverser if the property does not have all of the provided keys.
+        /// Remove the traverser if its element does not have any of the ids.
         /// </summary>
-        public Query HasKeys(params string[] keys)
+        /// <param name="ids">The id(s) that the traverser must have to continue</param>
+        public Query HasId(IEnumerable<string> ids)
         {
-            return HasKeys(keys);
+            return HasId(ids.ToArray());
         }
 
         /// <summary>
         /// Remove the traverser if the property does not have all of the provided keys.
         /// </summary>
-        public Query HasKeys(IEnumerable<string> keys)
+        public Query HasKey(params string[] keys)
         {
             var list = new List<string>();
             foreach (var key in keys)
@@ -156,17 +149,17 @@ namespace CuriousGremlin.Query
         }
 
         /// <summary>
-        /// Remove the traverser if its property does not have all of the provided values.
+        /// Remove the traverser if the property does not have all of the provided keys.
         /// </summary>
-        public Query HasValue(params string[] values)
+        public Query HasKey(IEnumerable<string> keys)
         {
-            return HasValue(values);
+            return HasKey(keys.ToArray());
         }
 
         /// <summary>
         /// Remove the traverser if its property does not have all of the provided values.
         /// </summary>
-        public Query HasValue(IEnumerable<string> values)
+        public Query HasValue(params string[] values)
         {
             var list = new List<string>();
             foreach (var value in values)
@@ -178,11 +171,19 @@ namespace CuriousGremlin.Query
         }
 
         /// <summary>
+        /// Remove the traverser if its property does not have all of the provided values.
+        /// </summary>
+        public Query HasValue(IEnumerable<string> values)
+        {
+            return HasValue(values.ToArray());
+        }
+
+        /// <summary>
         /// Remove the traverser if its element has a value for the key.
         /// </summary>
         public Query HasNot(string key)
         {
-            Steps.Add("hasNot('" + Sanitize(key) + ")");
+            Steps.Add("hasNot('" + Sanitize(key) + "')");
             return this as Query;
         }
 
