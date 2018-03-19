@@ -69,7 +69,6 @@ namespace UnitTests.AzureCosmosDB
             }
             finally
             {
-                Assert.IsTrue(pool.PoolSize > 0);
                 pool.Dispose();
             }
         }
