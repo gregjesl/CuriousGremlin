@@ -9,14 +9,22 @@ namespace UnitTests.AzureCosmosDB
     public class ElementManipulation
     {
         [TestMethod]
-        public void AzureCosmosDB_Insert_and_Delete()
+        public void AzureCosmosDB_GraphClientPool()
         {
+            using (GraphClient setupClient = new GraphClient("https://localhost:8081/",
+                "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="))
+            {
+                setupClient.CreateDatabaseIfNotExistsAsync("test_db").Wait();
+                setupClient.CreateDocumentCollectionIfNotExistsAsync("test_db", "test_collection").Wait();
+            }
+
             GraphClientPool pool = new GraphClientPool(
-                "https://localhost:8081/",
-                "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
-                "test_db",
-                "test_collection"
-                );
+                    "https://localhost:8081/",
+                    "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+                    "test_db",
+                    "test_collection"
+                    );
+
             try
             { 
                 using (GraphClient client = pool.GetClient().Result)
@@ -24,7 +32,6 @@ namespace UnitTests.AzureCosmosDB
                     
                     // Kill it with fire
                     client.Execute(VertexQuery.All().Drop()).Wait();
-
                     
                     // Assert that the database is clean
                     Assert.AreEqual(client.Execute(VertexQuery.All()).Result.Count, 0);
@@ -65,11 +72,21 @@ namespace UnitTests.AzureCosmosDB
 
                     // Check the edge query
                     var count_result = client.Execute("g.V()").Result;
+
+                    // Kill it with fire
+                    client.Execute(VertexQuery.All().Drop()).Wait();
                 }
             }
             finally
             {
+                Assert.IsTrue(pool.PoolSize > 0);
                 pool.Dispose();
+                using (GraphClient setupClient = new GraphClient("https://localhost:8081/",
+                "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="))
+                {
+                    setupClient.DeleteCollectionAsync("test_db", "test_collection").Wait();
+                    setupClient.DeleteDatabaseAsync("test_db").Wait();
+                }
             }
         }
     }
