@@ -143,7 +143,7 @@ namespace UnitTests.AzureCosmosDB
                 var baseQuery = VertexQuery.All().HasLabel("test").Fold();
                 var existsQuery = baseQuery.CreateSubQuery().Unfold();
                 var createQuery = baseQuery.CreateSubQuery().AddVertex("test");
-                var query = baseQuery.Coalesce<GraphVertex>(existsQuery, createQuery);
+                VertexQuery query = baseQuery.Coalesce<GraphVertex>(existsQuery, createQuery);
 
                 // client.Execute("g.V().has('person','name','bill').fold().coalesce(unfold(),addV('person').property('name', 'bill'))").Wait();
 

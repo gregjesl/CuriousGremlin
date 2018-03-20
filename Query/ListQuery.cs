@@ -2,41 +2,31 @@
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
+using CuriousGremlin.Query.CRTP;
 
 namespace CuriousGremlin.Query
 {
-    public class ListQuery<T, From, Query> : CollectionQuery<List<T>, From, Query>
-        where Query : ListQuery<T, From, Query>
-    {
-        protected ListQuery(ITraversalQuery<From> query) : base(query) { }
-
-        protected ListQuery() : base() { }
-
-        public static implicit operator ListQuery<T, From, Query>(ListQuery<T, From> query)
-        {
-            return new ListQuery<T, From, Query>(query);
-        }
-
-        public new ListQuery<T, List<T>> CreateSubQuery()
-        {
-            return new ListQuery<T, List<T>>();
-        }
-
-        /// <summary>
-        /// Maps the list to a collection
-        /// </summary>
-        /// <returns>The unfold.</returns>
-        public CollectionQuery<T, From> Unfold()
-        {
-            Steps.Add("unfold()");
-            return new CollectionQuery<T, From>(this);
-        }
-    }
-
-    public class ListQuery<T, From> : ListQuery<T, From, ListQuery<T, From>>
+    public class ListQuery<T, From> : ListQueryTemplate<T, From, ListQuery<T, From>>
     {
         internal ListQuery(ITraversalQuery<From> query) : base(query) { }
 
         internal ListQuery() : base() { }
+
+        public static implicit operator ListQuery<T, From>(CollectionQuery<List<T>, From> query)
+        {
+            return new ListQuery<T, From>(query);
+        }
+    }
+
+    public class ListQuery<T> : ListQuery<T, GraphQuery>
+    {
+        internal ListQuery(ITraversalQuery<GraphQuery> query) : base(query) { }
+
+        internal ListQuery() : base() { }
+
+        public static implicit operator ListQuery<T>(CollectionQuery<List<T>, GraphQuery> query)
+        {
+            return new ListQuery<T>(query);
+        }
     }
 }

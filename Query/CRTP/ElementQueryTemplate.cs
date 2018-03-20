@@ -2,17 +2,16 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using CuriousGremlin.Query.Objects;
 using CuriousGremlin.Query.Predicates;
 
-namespace CuriousGremlin.Query
+namespace CuriousGremlin.Query.CRTP
 {
-    public abstract class ElementQuery<T, From, Query> : CollectionQuery<T, From, Query>
-        where Query: ElementQuery<T, From, Query>
+    public abstract class ElementQueryTemplate<T, From, Query> : CollectionQueryTemplate<T, From, Query>
+        where Query : ElementQueryTemplate<T, From, Query>
     {
-        protected ElementQuery(ITraversalQuery<From> query) : base(query) { }
+        protected ElementQueryTemplate(ITraversalQuery<From> query) : base(query) { }
 
-        protected ElementQuery() : base() { }
+        protected ElementQueryTemplate() : base() { }
 
         public Query AddProperty(string key, object value)
         {
@@ -22,14 +21,14 @@ namespace CuriousGremlin.Query
 
         public Query AddProperties(Dictionary<string, object> properties)
         {
-            foreach(var item in properties)
+            foreach (var item in properties)
             {
                 AddProperty(item.Key, item.Value);
             }
             return this as Query;
         }
 
-        public StringQuery<From>Id()
+        public StringQuery<From> Id()
         {
             Steps.Add("id()");
             return new StringQuery<From>(this);
@@ -79,7 +78,7 @@ namespace CuriousGremlin.Query
         /// <param name="properties">The key/value properties to filter by</param>
         public Query Has(Dictionary<string, object> properties)
         {
-            foreach(var item in properties)
+            foreach (var item in properties)
             {
                 Has(item.Key, item.Value);
             }
@@ -102,7 +101,7 @@ namespace CuriousGremlin.Query
         public Query HasLabel(IEnumerable<string> labels)
         {
             var list = new List<string>();
-            foreach(var label in labels)
+            foreach (var label in labels)
             {
                 list.Add(GetObjectString(label));
             }
@@ -221,7 +220,7 @@ namespace CuriousGremlin.Query
         /// <summary>
         /// Returns a collection of the element's properties
         /// </summary>
-        public ValueQuery<object, From>Properties()
+        public ValueQuery<object, From> Properties()
         {
             Steps.Add("properties()");
             return new ValueQuery<object, From>(this);
@@ -262,12 +261,5 @@ namespace CuriousGremlin.Query
             Steps.Add("values('" + Sanitize(key) + "')");
             return new ValueQuery<TOutput, From>(this);
         }
-    }
-
-    public abstract class ElementQuery<T, From> : ElementQuery<T, From, ElementQuery<T, From>>
-    {
-        internal ElementQuery(ITraversalQuery<From> query) : base(query) { }
-
-        internal ElementQuery() : base() { }
     }
 }

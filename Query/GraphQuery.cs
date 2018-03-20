@@ -8,6 +8,8 @@ namespace CuriousGremlin.Query
 {
     public abstract class GraphQuery
     {
+        public enum RepeatTypeEnum { DoWhile, WhileDo };
+
         protected static string Sanitize(string input)
         {
             if (input is null)
