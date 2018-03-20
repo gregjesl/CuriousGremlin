@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
+using Newtonsoft.Json.Linq;
 
 namespace CuriousGremlin.Query.CRTP
 {
@@ -56,6 +57,42 @@ namespace CuriousGremlin.Query.CRTP
         public EdgeQuery<From> AddEdge(string label, VertexQuery vertices, Dictionary<string, object> properties)
         {
             return AddEdge(label, vertices).AddProperties(properties);
+        }
+
+        /// <summary>
+        /// Adds an edge to the vertex
+        /// </summary>
+        /// <returns>The edge.</returns>
+        /// <param name="edge">The object to serialize</param>
+        /// <param name="vertices">The vertices to connect to</param>
+        public EdgeQuery<From> AddEdge(IEdgeObject edge, string vertexID)
+        {
+            var properties = JObject.FromObject(edge).ToObject<Dictionary<string, object>>();
+            foreach (var item in properties)
+            {
+                if (item.Value is null)
+                    properties.Remove(item.Key);
+            }
+            properties.Remove(nameof(edge.EdgeLabel));
+            return AddEdge(edge.EdgeLabel, vertexID).AddProperties(properties);
+        }
+
+        /// <summary>
+        /// Adds an edge to the vertex
+        /// </summary>
+        /// <returns>The edge.</returns>
+        /// <param name="edge">The object to serialize</param>
+        /// <param name="vertexID">The identifier of the vertex the edge will connect to</param>
+        public EdgeQuery<From> AddEdge(IEdgeObject edge, VertexQuery vertices)
+        {
+            var properties = JObject.FromObject(edge).ToObject<Dictionary<string, object>>();
+            foreach (var item in properties)
+            {
+                if (item.Value is null)
+                    properties.Remove(item.Key);
+            }
+            properties.Remove(nameof(edge.EdgeLabel));
+            return AddEdge(edge.EdgeLabel, vertices).AddProperties(properties);
         }
 
         /// <summary>

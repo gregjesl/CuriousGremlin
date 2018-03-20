@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CuriousGremlin.Query
+namespace CuriousGremlin.Query.Objects
 {
     public interface IVertexObject
     {

@@ -14,7 +14,7 @@ namespace UnitTests.Query
         [TestMethod]
         public void Query_SerializeVertexObject()
         {
-            var item = new VertexSerializationTest();
+            var item = new SerializationTestObject();
             var result = VertexQuery.Create(item);
             var test = Regex.Replace(result.ToString(), @"\s+", "");
             Assert.IsTrue(test.Contains(@"'testString','testo\'mally'"));
@@ -59,6 +59,54 @@ namespace UnitTests.Query
             Assert.AreEqual(result.testRandom, new TimeSpan(11, 11, 11));
         }
 
+        [TestMethod]
+        public void Query_SerializeEdgeObject()
+        {
+            var item = new SerializationTestObject();
+            var result = VertexQuery.Create(item);
+            var test = Regex.Replace(result.ToString(), @"\s+", "");
+            Assert.IsTrue(test.Contains(@"'testString','testo\'mally'"));
+            Assert.IsTrue(test.Contains("'testBool',true"));
+            Assert.IsTrue(test.Contains("'testFloat',1.2"));
+            Assert.IsTrue(test.Contains("'testDouble',1.4"));
+            Assert.IsTrue(test.Contains("'testDecimal',1.6"));
+            Assert.IsTrue(test.Contains("'testInt',11"));
+            Assert.IsTrue(test.Contains("'testLong',111"));
+            Assert.IsTrue(test.Contains("'testDateTime','" + (new DateTime(2011, 05, 25, 10, 0, 0)).ToString("s") + "'"));
+            Assert.IsTrue(test.Contains("'testRandom','" + (new TimeSpan(11, 11, 11)).ToString() + "'"));
+        }
+
+        [TestMethod]
+        public void Query_DeserializeEdgeObject()
+        {
+            var edge = new GraphEdge()
+            {
+                id = Guid.NewGuid().ToString(),
+                label = "test",
+                properties = new Dictionary<string, object>()
+            };
+            edge.properties.Add("testString", @"test_deserialization o\'mally");
+            edge.properties.Add("testBool", true);
+            edge.properties.Add("testFloat", 1.2);
+            edge.properties.Add("testDouble", 1.4);
+            edge.properties.Add("testDecimal", 1.6);
+            edge.properties.Add("testInt", 11);
+            edge.properties.Add("testLong", 111);
+            edge.properties.Add("testDateTime", (new DateTime(2011, 05, 25, 10, 0, 0)).ToString("s"));
+            edge.properties.Add("testRandom", (new TimeSpan(11, 11, 11)).ToString());
+
+            var result = edge.Deserialize<TestClass>();
+            Assert.AreEqual(result.testString, "test_deserialization o'mally");
+            Assert.IsTrue(result.testBool);
+            Assert.AreEqual(result.testFloat, 1.2f);
+            Assert.AreEqual(result.testDouble, 1.4);
+            Assert.AreEqual(result.testDecimal, 1.6m);
+            Assert.AreEqual(result.testInt, 11);
+            Assert.AreEqual(result.testLong, 111L);
+            Assert.AreEqual(result.testDateTime, new DateTime(2011, 05, 25, 10, 0, 0));
+            Assert.AreEqual(result.testRandom, new TimeSpan(11, 11, 11));
+        }
+
         public class TestClass
         {
             public string testString { set; get; }
@@ -73,9 +121,10 @@ namespace UnitTests.Query
         }
     }
 
-    class VertexSerializationTest : IVertexObject
+    class SerializationTestObject : IVertexObject, IEdgeObject
     {
         public string VertexLabel { get { return "test_serialization"; } }
+        public string EdgeLabel { get { return "test_edge_serialization"; } }
         public string testString = "test o'mally";
         public bool testBool = true;
         public float testFloat = 1.2f;

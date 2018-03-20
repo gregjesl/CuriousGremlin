@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using CuriousGremlin.Query.Objects;
 using CuriousGremlin.Query.Predicates;
 
 namespace CuriousGremlin.Query.CRTP
@@ -74,7 +75,7 @@ namespace CuriousGremlin.Query.CRTP
                 if (item.Value is null)
                     properties.Remove(item.Key);
             }
-            properties.Remove("VertexLabel");
+            properties.Remove(nameof(vertex.VertexLabel));
             return AddVertex(vertex.VertexLabel, properties);
         }
 
