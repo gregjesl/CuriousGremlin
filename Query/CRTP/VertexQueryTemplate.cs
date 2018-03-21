@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace CuriousGremlin.Query.CRTP
 {
@@ -68,13 +69,8 @@ namespace CuriousGremlin.Query.CRTP
         public EdgeQuery<From> AddEdge(IEdgeObject edge, string vertexID)
         {
             var properties = JObject.FromObject(edge).ToObject<Dictionary<string, object>>();
-            foreach (var item in properties)
-            {
-                if (item.Value is null)
-                    properties.Remove(item.Key);
-            }
             properties.Remove(nameof(edge.EdgeLabel));
-            return AddEdge(edge.EdgeLabel, vertexID).AddProperties(properties);
+            return AddEdge(edge.EdgeLabel, vertexID).AddProperties(properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
         }
 
         /// <summary>
@@ -86,13 +82,8 @@ namespace CuriousGremlin.Query.CRTP
         public EdgeQuery<From> AddEdge(IEdgeObject edge, VertexQuery vertices)
         {
             var properties = JObject.FromObject(edge).ToObject<Dictionary<string, object>>();
-            foreach (var item in properties)
-            {
-                if (item.Value is null)
-                    properties.Remove(item.Key);
-            }
             properties.Remove(nameof(edge.EdgeLabel));
-            return AddEdge(edge.EdgeLabel, vertices).AddProperties(properties);
+            return AddEdge(edge.EdgeLabel, vertices).AddProperties(properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
         }
 
         /// <summary>

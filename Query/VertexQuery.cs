@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
@@ -123,13 +124,8 @@ namespace CuriousGremlin.Query
         public static VertexQuery Create(IVertexObject vertex)
         {
             var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
-            foreach (var item in properties)
-            {
-                if (item.Value is null)
-                    properties.Remove(item.Key);
-            }
-            properties.Remove("VertexLabel");
-            return Create(vertex.VertexLabel, properties);
+            properties.Remove(nameof(vertex.VertexLabel));
+            return Create(vertex.VertexLabel, properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
         }
     }
 }

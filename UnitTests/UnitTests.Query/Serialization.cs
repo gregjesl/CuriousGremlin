@@ -63,7 +63,7 @@ namespace UnitTests.Query
         public void Query_SerializeEdgeObject()
         {
             var item = new SerializationTestObject();
-            var result = VertexQuery.Create(item);
+            var result = VertexQuery.All().AddEdge(item, "test");
             var test = Regex.Replace(result.ToString(), @"\s+", "");
             Assert.IsTrue(test.Contains(@"'testString','testo\'mally'"));
             Assert.IsTrue(test.Contains("'testBool',true"));
@@ -116,6 +116,7 @@ namespace UnitTests.Query
             public decimal testDecimal { set; get; }
             public int testInt { set; get; }
             public long testLong { set; get; }
+            public string testNull { set; get; }
             public DateTime testDateTime { set; get; }
             public TimeSpan testRandom { set; get; }
         }
@@ -132,6 +133,7 @@ namespace UnitTests.Query
         public decimal testDecimal = 1.6m;
         public int testInt = 11;
         public long testLong = 111;
+        public string testNull = null;
         public DateTime testDateTime = new DateTime(2011, 05, 25, 10, 0, 0);
         public TimeSpan testRandom = new TimeSpan(11, 11, 11);
     }
