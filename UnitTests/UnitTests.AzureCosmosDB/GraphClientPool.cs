@@ -43,10 +43,10 @@ namespace UnitTests.AzureCosmosDB
                     Assert.AreEqual(insert_result[0].label, "test_vertex");
                     Assert.IsTrue(insert_result[0].properties.ContainsKey("test_key"));
                     var properties = insert_result[0].properties["test_key"];
-                    Assert.IsNotNull(properties.Find(k => k.Value.Equals("test_value")));
-                    Assert.IsNotNull(properties.Find(k => k.Value.Equals("another_test_value")));
+                    Assert.IsNotNull(properties[0].ContainsValue("test_value"));
+                    Assert.IsNotNull(properties[0].ContainsValue("another_test_value"));
 
-                    
+
                     // Insert a second object
                     var second_vertex_query = VertexQuery.Create("second_vertex");
                     var second_vertex_result = client.Execute(second_vertex_query).Result;

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using CuriousGremlin.Query;
 using CuriousGremlin.Query.Objects;
 using CuriousGremlin.Query.Predicates;
+using Newtonsoft.Json.Linq;
 
 namespace UnitTests.Query
 {
@@ -35,20 +36,22 @@ namespace UnitTests.Query
             {
                 id = Guid.NewGuid().ToString(),
                 label = "test",
-                properties = new Dictionary<string, List<KeyValuePair<string, object>>>()
+                properties = new Dictionary<string, List<Dictionary<string, object>>>()
             };
-            vertex.properties.Add("testString", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", @"test_deserialization o\'mally") });
-            vertex.properties.Add("testBool", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", true) });
-            vertex.properties.Add("testFloat", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", 1.2) });
-            vertex.properties.Add("testDouble", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", 1.4) });
-            vertex.properties.Add("testDecimal", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", 1.6) });
-            vertex.properties.Add("testInt", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", 11) });
-            vertex.properties.Add("testLong", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", 111) });
-            vertex.properties.Add("testDateTime", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", (new DateTime(2011, 05, 25, 10, 0, 0)).ToString("s")) });
-            vertex.properties.Add("testRandom", new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>("value", (new TimeSpan(11, 11, 11)).ToString()) });
+
+            var serial = JObject.FromObject(new SerializationTestObject());
+
+            foreach(var item in serial)
+            {
+                var value = new Dictionary<string, object>();
+                value.Add("value", item.Value.ToObject<object>());
+                var valueList = new List<Dictionary<string, object>>();
+                valueList.Add(value);
+                vertex.properties.Add(item.Key, valueList);
+            }
 
             var result = vertex.Deserialize<TestClass>();
-            Assert.AreEqual(result.testString, "test_deserialization o'mally");
+            Assert.AreEqual(result.testString, "test o'mally");
             Assert.IsTrue(result.testBool);
             Assert.AreEqual(result.testFloat, 1.2f);
             Assert.AreEqual(result.testDouble, 1.4);

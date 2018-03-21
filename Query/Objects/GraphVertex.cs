@@ -7,14 +7,16 @@ namespace CuriousGremlin.Query.Objects
 {
     public class GraphVertex : GraphElement
     {
-        public Dictionary<string, List<KeyValuePair<string, object>>> properties { set; get; }
+        public Dictionary<string, List<Dictionary<string, object>>> properties { set; get; }
 
         public T Deserialize<T>(string value = "value")
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             foreach (var property in properties)
             {
-                object propertyValue = property.Value.Find(k => k.Key.Equals(value)).Value;
+                if (!property.Value[0].ContainsKey(value))
+                    throw new NullReferenceException("Could not find value of property");
+                object propertyValue = property.Value[0][value];
                 if (propertyValue is string)
                     propertyValue = ((string)propertyValue).Replace(@"\'", @"'");
                 dictionary.Add(property.Key, propertyValue);
