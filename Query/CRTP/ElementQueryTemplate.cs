@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Predicates;
+using CuriousGremlin.Query.Objects;
 
 namespace CuriousGremlin.Query.CRTP
 {
@@ -134,50 +135,6 @@ namespace CuriousGremlin.Query.CRTP
         }
 
         /// <summary>
-        /// Remove the traverser if the property does not have all of the provided keys.
-        /// </summary>
-        public Query HasKey(params string[] keys)
-        {
-            var list = new List<string>();
-            foreach (var key in keys)
-            {
-                list.Add(GetObjectString(key));
-            }
-            Steps.Add("hasKey(" + string.Join(",", list) + ")");
-            return this as Query;
-        }
-
-        /// <summary>
-        /// Remove the traverser if the property does not have all of the provided keys.
-        /// </summary>
-        public Query HasKey(IEnumerable<string> keys)
-        {
-            return HasKey(keys.ToArray());
-        }
-
-        /// <summary>
-        /// Remove the traverser if its property does not have all of the provided values.
-        /// </summary>
-        public Query HasValue(params string[] values)
-        {
-            var list = new List<string>();
-            foreach (var value in values)
-            {
-                list.Add(GetObjectString(value));
-            }
-            Steps.Add("hasValue(" + string.Join(",", list) + ")");
-            return this as Query;
-        }
-
-        /// <summary>
-        /// Remove the traverser if its property does not have all of the provided values.
-        /// </summary>
-        public Query HasValue(IEnumerable<string> values)
-        {
-            return HasValue(values.ToArray());
-        }
-
-        /// <summary>
         /// Remove the traverser if its element has a value for the key.
         /// </summary>
         public Query HasNot(string key)
@@ -220,19 +177,19 @@ namespace CuriousGremlin.Query.CRTP
         /// <summary>
         /// Returns a collection of the element's properties
         /// </summary>
-        public ValueQuery<object, From> Properties()
+        public PropertyQuery<From> Properties()
         {
             Steps.Add("properties()");
-            return new ValueQuery<object, From>(this);
+            return new PropertyQuery<From>(this);
         }
 
         /// <summary>
         /// Returns a collection of the element's properties
         /// </summary>
-        public ValueQuery<object, From> Properties(string key)
+        public PropertyQuery<From> Properties(string key)
         {
-            Steps.Add("properties(" + Sanitize(key) + ")");
-            return new ValueQuery<object, From>(this);
+            Steps.Add("properties('" + Sanitize(key) + "')");
+            return new PropertyQuery<From>(this);
         }
 
         /// <summary>

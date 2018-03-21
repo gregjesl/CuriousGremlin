@@ -224,6 +224,24 @@ namespace CuriousGremlin.Query.CRTP
         }
 
         /// <summary>
+        /// Returns a collection of the element's properties
+        /// </summary>
+        public DictionaryQuery<string, List<GraphProperty>, From> PropertyMap()
+        {
+            Steps.Add("propertyMap()");
+            return new DictionaryQuery<string, List<GraphProperty>, From>(this);
+        }
+
+        /// <summary>
+        /// Returns a collection of the element's values
+        /// </summary>
+        public DictionaryQuery<string, List<object>, From> ValueMap()
+        {
+            Steps.Add("valueMap()");
+            return new DictionaryQuery<string, List<object>, From>(this);
+        }
+
+        /// <summary>
         /// Creates a sub query
         /// </summary>
         /// <returns>The sub query</returns>

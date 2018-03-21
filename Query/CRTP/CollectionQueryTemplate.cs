@@ -429,16 +429,6 @@ namespace CuriousGremlin.Query.CRTP
             return new ListQuery<object, From>(this);
         }
 
-        /// <summary>
-        /// Properties the map.
-        /// </summary>
-        /// <returns>The map.</returns>
-        public DictionaryQuery<string, object, From> PropertyMap()
-        {
-            Steps.Add("propertyMap()");
-            return new DictionaryQuery<string, object, From>(this);
-        }
-
         /*
         public DictionaryQuery<string, object, From> PropertyMap(params string[] keys)
         {

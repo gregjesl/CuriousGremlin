@@ -306,36 +306,29 @@ namespace UnitTests.AzureCosmosDB
             }
         }
 
-        /*
-         * Only works on property item
-         * 
         [TestMethod]
         public void Steps_HasKey()
         {
             using (var client = TestDatabase.GetClient("hasKey"))
             {
                 client.Execute(VertexQuery.Create("foo").AddProperty("key", "value")).Wait();
-                var query = VertexQuery.All().HasKey("key");
+                var query = VertexQuery.All().Properties().HasKey("key");
                 var result = client.Execute(query).Result;
                 Assert.AreEqual(result.Count, 1);
-                Assert.AreEqual(client.Execute(VertexQuery.All().HasKey("not_key").Count()).Result[0], 0);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Properties().HasKey("not_key").Count()).Result[0], 0);
             }
         }
-        */
 
-        /*
-         * Conly works on property item
         [TestMethod]
         public void Steps_HasValue()
         {
             using (var client = TestDatabase.GetClient("hasValue"))
             {
                 client.Execute(VertexQuery.Create("foo").AddProperty("key", "value")).Wait();
-                Assert.AreEqual(client.Execute(VertexQuery.All().HasValue("value").Count()).Result[0], 1);
-                Assert.AreEqual(client.Execute(VertexQuery.All().HasValue("not_value").Count()).Result[0], 0);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Properties().HasValue("value").Count()).Result[0], 1);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Properties().HasValue("not_value").Count()).Result[0], 0);
             }
         }
-        */
 
         [TestMethod]
         public void Steps_HasNot()
@@ -379,6 +372,16 @@ namespace UnitTests.AzureCosmosDB
                 var result = client.Execute(VertexQuery.All().Values("key").Inject("injected_value")).Result;
                 Assert.IsTrue(result.Contains("value"));
                 Assert.IsTrue(result.Contains("injected_value"));
+            }
+        }
+
+        [TestMethod]
+        public void Steps_Key()
+        {
+            using (var client = TestDatabase.GetClient("key"))
+            {
+                client.Execute(VertexQuery.Create("foo").AddProperty("key", "value")).Wait();
+                Assert.IsTrue(client.Execute(VertexQuery.All().Properties().Key()).Result[0].Contains("key"));
             }
         }
 
@@ -541,6 +544,54 @@ namespace UnitTests.AzureCosmosDB
         }
 
         [TestMethod]
+        public void Steps_Properties()
+        {
+            using (var client = TestDatabase.GetClient("properties"))
+            {
+                client.Execute(VertexQuery.Create("foo").AddProperty("age", 30)).Wait();
+
+                var result = client.Execute(VertexQuery.All().Properties()).Result;
+                Assert.AreEqual(result.Count, 1);
+                Assert.AreEqual(result[0].label, "age");
+                Assert.AreEqual(result[0].value, 30L);
+
+                result = client.Execute(VertexQuery.All().Properties("age")).Result;
+                Assert.AreEqual(result.Count, 1);
+                Assert.AreEqual(result[0].label, "age");
+                Assert.AreEqual(result[0].value, 30L);
+
+                result = client.Execute(VertexQuery.All().Properties("name")).Result;
+                Assert.AreEqual(result.Count, 0);
+            }
+        }
+
+        [TestMethod]
+        public void Steps_PropertyMap()
+        {
+            using (var client = TestDatabase.GetClient("propertyMap"))
+            {
+                client.Execute(VertexQuery.Create("foo").AddProperty("age", 30)).Wait();
+
+                var query = VertexQuery.All().PropertyMap();
+                var result = client.Execute(query).Result;
+                Assert.AreEqual(result.Count, 1);
+                Assert.IsTrue(result[0].ContainsKey("age"));
+                Assert.AreEqual(result[0]["age"].Count, 1);
+                Assert.AreEqual(result[0]["age"][0].label, "age");
+                Assert.AreEqual(result[0]["age"][0].value, 30L);
+
+                client.Execute(VertexQuery.Create("bar")).Wait();
+                client.Execute(VertexQuery.All().HasLabel("foo").AddEdge("to", VertexQuery.Find("bar")).AddProperty("key", "value")).Wait();
+
+                var edgeQuery = VertexQuery.All().OutE().PropertyMap();
+                var edgeResult = client.Execute(edgeQuery).Result;
+                Assert.IsTrue(edgeResult[0].ContainsKey("key"));
+                Assert.AreEqual(edgeResult[0]["key"].Key, "key");
+                Assert.AreEqual(edgeResult[0]["key"].Value, "value");
+            }
+        }
+
+        [TestMethod]
         public void Steps_Range()
         {
             using (var client = TestDatabase.GetClient("range"))
@@ -695,6 +746,43 @@ namespace UnitTests.AzureCosmosDB
                 Assert.AreEqual(result.Count, 2);
                 Assert.IsTrue(result.Contains("John"));
                 Assert.IsTrue(result.Contains("Doe"));
+            }
+        }
+
+        [TestMethod]
+        public void Steps_Value()
+        {
+            using (var client = TestDatabase.GetClient("value"))
+            {
+                client.Execute(VertexQuery.Create("foo").AddProperty("key", "value")).Wait();
+                Assert.AreEqual(client.Execute(VertexQuery.All().Properties().Value()).Result.Count, 1);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Properties().Value()).Result[0], "value");
+            }
+        }
+
+        [TestMethod]
+        public void Steps_ValueMap()
+        {
+            using (var client = TestDatabase.GetClient("valueMap"))
+            {
+                client.Execute(VertexQuery.Create("foo").AddProperty("age", 30)).Wait();
+
+                var vertexQuery = VertexQuery.All().ValueMap();
+                var vertexResult = client.Execute(vertexQuery).Result;
+
+                Assert.AreEqual(vertexResult.Count, 1);
+                Assert.IsTrue(vertexResult[0].ContainsKey("age"));
+                Assert.AreEqual(vertexResult[0]["age"][0], 30L);
+
+                client.Execute(VertexQuery.Create("bar")).Wait();
+                client.Execute(VertexQuery.All().HasLabel("foo").AddEdge("to", VertexQuery.Find("bar")).AddProperty("key", "value")).Wait();
+
+                var edgeQuery = VertexQuery.All().OutE().ValueMap();
+                var edgeResult = client.Execute(edgeQuery).Result;
+
+                Assert.AreEqual(edgeResult.Count, 1);
+                Assert.IsTrue(edgeResult[0].ContainsKey("key"));
+                Assert.AreEqual(edgeResult[0]["key"], "value");
             }
         }
 

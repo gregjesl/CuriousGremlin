@@ -47,5 +47,23 @@ namespace CuriousGremlin.Query.CRTP
             Steps.Add("otherV()");
             return new VertexQuery<From>(this);
         }
+
+        /// <summary>
+        /// Returns a collection of the element's properties
+        /// </summary>
+        public DictionaryQuery<string, KeyValuePair<string, object>, From> PropertyMap()
+        {
+            Steps.Add("propertyMap()");
+            return new DictionaryQuery<string, KeyValuePair<string, object>, From>(this);
+        }
+
+        /// <summary>
+        /// Returns a collection of the element's values
+        /// </summary>
+        public DictionaryQuery<string, object, From> ValueMap()
+        {
+            Steps.Add("valueMap()");
+            return new DictionaryQuery<string, object, From>(this);
+        }
     }
 }

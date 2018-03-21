@@ -18,13 +18,18 @@ namespace CuriousGremlin.Query
         }
     }
 
-    public class EdgeQuery : EdgeQuery<GraphQuery>
+    public class EdgeQuery : EdgeQueryTemplate<GraphQuery, EdgeQuery>
     {
         internal EdgeQuery(ITraversalQuery<GraphQuery> query) : base(query) { }
 
         internal EdgeQuery() : base() { }
 
         public static implicit operator EdgeQuery(CollectionQuery<GraphEdge, GraphQuery> query)
+        {
+            return new EdgeQuery(query);
+        }
+
+        public static implicit operator EdgeQuery(EdgeQuery<GraphQuery> query)
         {
             return new EdgeQuery(query);
         }

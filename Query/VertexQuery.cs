@@ -19,13 +19,18 @@ namespace CuriousGremlin.Query
         }
     }
 
-    public class VertexQuery : VertexQuery<GraphQuery>
+    public class VertexQuery : VertexQueryTemplate<GraphQuery, VertexQuery>
     {
         internal VertexQuery() : base() { }
 
         public VertexQuery(ITraversalQuery<GraphQuery, GraphVertex> query) : base(query) { }
 
         public static implicit operator VertexQuery(CollectionQuery<GraphVertex, GraphQuery> query)
+        {
+            return new VertexQuery(query);
+        }
+
+        public static implicit operator VertexQuery(VertexQuery<GraphQuery> query)
         {
             return new VertexQuery(query);
         }
