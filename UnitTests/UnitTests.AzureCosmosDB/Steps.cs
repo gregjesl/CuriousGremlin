@@ -34,8 +34,12 @@ namespace UnitTests.AzureCosmosDB
         {
             using (var client = TestDatabase.GetClient("addV"))
             {
-                Assert.AreEqual(client.Execute(VertexQuery.Create("test")).Result.Count, 1);
-                client.Execute(VertexQuery.All().AddVertex("test")).Wait();
+                var properties = new Dictionary<string, object>();
+                properties.Add("key1", "value1");
+                properties.Add("key2", "value2");
+                Assert.AreEqual(client.Execute(VertexQuery.Create("test", properties)).Result.Count, 1);
+                Assert.AreEqual(client.Execute(VertexQuery.All()).Result.Count, 1);
+                client.Execute(VertexQuery.All().AddVertex("test2", properties)).Wait();
                 Assert.AreEqual(client.Execute(VertexQuery.All()).Result.Count, 2);
             }
         }

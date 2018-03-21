@@ -26,55 +26,6 @@ namespace CuriousGremlin.Query.CRTP
         }
 
         /// <summary>
-        /// For every incoming object, a vertex is created. 
-        /// </summary>
-        /// <param name="label">The label of the new vertex/vertices</param>
-        public VertexQuery<From> AddVertex(string label)
-        {
-            return AddVertex(label, new Dictionary<string, object>());
-        }
-
-        /// <summary>
-        /// For every incoming object, a vertex is created. 
-        /// </summary>
-        /// <param name="properties">The properties to add to the new vertex/vertices</param>
-        public VertexQuery<From> AddVertex(Dictionary<string, object> properties)
-        {
-            return AddVertex(null, properties);
-        }
-
-        /// <summary>
-        /// For every incoming object, a vertex is created. 
-        /// </summary>
-        /// <param name="label">The label of the new vertex/vertices</param>
-        /// <param name="properties">The properties to add to the new vertex/vertices</param>
-        public VertexQuery<From> AddVertex(string label, Dictionary<string, object> properties)
-        {
-            string step = "addV(";
-            if (label != null && label != "")
-                step += "'" + Sanitize(label) + "'";
-
-            if (properties.Count > 0)
-            {
-                step += ", " + SeralizeProperties(properties);
-            }
-            step += ")";
-            Steps.Add(step);
-            return new VertexQuery<From>(this);
-        }
-
-        /// <summary>
-        /// For every incoming object, a vertex is created. 
-        /// </summary>
-        /// <param name="vertex">The object to be serialized</param>
-        public VertexQuery<From> AddVertex(IVertexObject vertex)
-        {
-            var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
-            properties.Remove(nameof(vertex.VertexLabel));
-            return AddVertex(vertex.VertexLabel, properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
-        }
-
-        /// <summary>
         /// Aggregates all the objects at a particular point of traversal into a Collection using eager evaluation
         /// </summary>
         /// <param name="label">The label of the aggregated collection</param>

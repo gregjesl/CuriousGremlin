@@ -107,13 +107,9 @@ namespace CuriousGremlin.Query
             string step = "addV(";
             if (label != null && label != "")
                 step += "'" + Sanitize(label) + "'";
-
-            if (properties.Count > 0)
-            {
-                step += ", " + SeralizeProperties(properties);
-            }
             step += ")";
             query.Steps.Add(step);
+            query.AddProperties(properties);
             return query;
         }
 
