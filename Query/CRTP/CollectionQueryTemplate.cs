@@ -70,13 +70,8 @@ namespace CuriousGremlin.Query.CRTP
         public VertexQuery<From> AddVertex(IVertexObject vertex)
         {
             var properties = JObject.FromObject(vertex).ToObject<Dictionary<string, object>>();
-            foreach (var item in properties)
-            {
-                if (item.Value is null)
-                    properties.Remove(item.Key);
-            }
             properties.Remove(nameof(vertex.VertexLabel));
-            return AddVertex(vertex.VertexLabel, properties);
+            return AddVertex(vertex.VertexLabel, properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
         }
 
         /// <summary>
