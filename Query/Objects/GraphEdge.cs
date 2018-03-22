@@ -26,5 +26,15 @@ namespace CuriousGremlin.Query.Objects
             var jobject = JObject.FromObject(dictionary);
             return jobject.ToObject<T>();
         }
+
+        public static List<T> Deserialize<T>(IEnumerable<GraphEdge> edges)
+        {
+            List<T> result = new List<T>();
+            foreach(GraphEdge edge in edges)
+            {
+                result.Add(edge.Deserialize<T>());
+            }
+            return result;
+        }
     }
 }

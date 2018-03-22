@@ -24,5 +24,15 @@ namespace CuriousGremlin.Query.Objects
             var jobject = JObject.FromObject(dictionary);
             return jobject.ToObject<T>();
         }
+
+        public static List<T> Deserialize<T>(IEnumerable<GraphVertex> vertices, string name = "value")
+        {
+            List<T> result = new List<T>();
+            foreach(GraphVertex vertex in vertices)
+            {
+                result.Add(vertex.Deserialize<T>());
+            }
+            return result;
+        }
     }
 }
