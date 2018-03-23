@@ -33,5 +33,12 @@ namespace CuriousGremlin.Query
         {
             return new EdgeQuery(query);
         }
+
+        public static EdgeQuery All()
+        {
+            var query = new EdgeQuery();
+            query.Steps.Add("E()");
+            return query;
+        }
     }
 }
