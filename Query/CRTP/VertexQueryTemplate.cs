@@ -18,10 +18,11 @@ namespace CuriousGremlin.Query.CRTP
         /// Adds an edge to the vertex
         /// </summary>
         /// <param name="label">The label of the new edge</param>
-        /// <param name="vertexID">The identifier of the vertex the edge will connect to</param>
-        public EdgeQuery<From> AddEdge(string label, string vertexID)
+        /// <param name="direction">The step specifiying the vertex to connect to</param>
+        public EdgeQuery<From> AddEdge(string label, DirectionStep direction)
         {
-            Steps.Add("addE('" + Sanitize(label) + "').to(g.V('" + Sanitize(vertexID) + "'))");
+            Steps.Add("addE('" + Sanitize(label) + "')");
+            Steps.Add(direction.ToString());
             return new EdgeQuery<From>(this);
         }
 
@@ -29,35 +30,11 @@ namespace CuriousGremlin.Query.CRTP
         /// Adds an edge to the vertex
         /// </summary>
         /// <param name="label">The label of the new edge</param>
-        /// <param name="vertexID">The identifier of the vertex the edge will connect to</param>
+        /// <param name="direction">The step specifiying the vertex to connect to</param>
         /// <param name="properties">The properties to add to the new edge</param>
-        public EdgeQuery<From> AddEdge(string label, string vertexID, Dictionary<string, object> properties)
+        public EdgeQuery<From> AddEdge(string label, DirectionStep direction, Dictionary<string, object> properties)
         {
-            return AddEdge(label, vertexID).AddProperties(properties);
-        }
-
-        /// <summary>
-        /// Adds an edge to the vertex
-        /// </summary>
-        /// <returns>The edge.</returns>
-        /// <param name="label">The label of the new edge</param>
-        /// <param name="vertices">The vertices to connect to</param>
-        public EdgeQuery<From> AddEdge(string label, VertexQuery vertices)
-        {
-            Steps.Add("addE('" + Sanitize(label) + "').to(" + vertices.ToString() + ")");
-            return new EdgeQuery<From>(this);
-        }
-
-        /// <summary>
-        /// Adds an edge to the vertex
-        /// </summary>
-        /// <returns>The edge.</returns>
-        /// <param name="label">The label of the new edge</param>
-        /// <param name="vertices">The vertices to connect to</param>
-        /// <param name="properties">The properties to add to the new edges</param>
-        public EdgeQuery<From> AddEdge(string label, VertexQuery vertices, Dictionary<string, object> properties)
-        {
-            return AddEdge(label, vertices).AddProperties(properties);
+            return AddEdge(label, direction).AddProperties(properties);
         }
 
         /// <summary>
@@ -65,25 +42,12 @@ namespace CuriousGremlin.Query.CRTP
         /// </summary>
         /// <returns>The edge.</returns>
         /// <param name="edge">The object to serialize</param>
-        /// <param name="vertices">The vertices to connect to</param>
-        public EdgeQuery<From> AddEdge(IEdgeObject edge, string vertexID)
+        /// <param name="direction">The step specifiying the vertex to connect to</param>
+        public EdgeQuery<From> AddEdge(IEdgeObject edge, DirectionStep direction)
         {
             var properties = JObject.FromObject(edge).ToObject<Dictionary<string, object>>();
             properties.Remove(nameof(edge.EdgeLabel));
-            return AddEdge(edge.EdgeLabel, vertexID).AddProperties(properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
-        }
-
-        /// <summary>
-        /// Adds an edge to the vertex
-        /// </summary>
-        /// <returns>The edge.</returns>
-        /// <param name="edge">The object to serialize</param>
-        /// <param name="vertexID">The identifier of the vertex the edge will connect to</param>
-        public EdgeQuery<From> AddEdge(IEdgeObject edge, VertexQuery vertices)
-        {
-            var properties = JObject.FromObject(edge).ToObject<Dictionary<string, object>>();
-            properties.Remove(nameof(edge.EdgeLabel));
-            return AddEdge(edge.EdgeLabel, vertices).AddProperties(properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
+            return AddEdge(edge.EdgeLabel, direction).AddProperties(properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
         }
 
         /// <summary>

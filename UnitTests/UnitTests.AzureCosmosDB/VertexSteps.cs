@@ -18,8 +18,8 @@ namespace UnitTests.AzureCosmosDB
             client.Execute(VertexQuery.Create("one")).Wait();
             client.Execute(VertexQuery.Create("two")).Wait();
             client.Execute(VertexQuery.Create("three")).Wait();
-            client.Execute(VertexQuery.All().HasLabel("one").AddEdge("one_to_two", VertexQuery.Find("two"))).Wait();
-            client.Execute(VertexQuery.All().HasLabel("two").AddEdge("two_to_three", VertexQuery.Find("three"))).Wait();
+            client.Execute(VertexQuery.All().HasLabel("one").AddEdge("one_to_two", DirectionStep.To(VertexQuery.Find("two")))).Wait();
+            client.Execute(VertexQuery.All().HasLabel("two").AddEdge("two_to_three", DirectionStep.To(VertexQuery.Find("three")))).Wait();
         }
 
         [TestMethod]

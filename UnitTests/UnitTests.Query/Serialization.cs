@@ -66,7 +66,7 @@ namespace UnitTests.Query
         public void Query_SerializeEdgeObject()
         {
             var item = new SerializationTestObject();
-            var result = VertexQuery.All().AddEdge(item, "test");
+            var result = VertexQuery.All().AddEdge(item, DirectionStep.To("test"));
             var test = Regex.Replace(result.ToString(), @"\s+", "");
             Assert.IsTrue(test.Contains(@"'testString','testo\'mally'"));
             Assert.IsTrue(test.Contains("'testBool',true"));

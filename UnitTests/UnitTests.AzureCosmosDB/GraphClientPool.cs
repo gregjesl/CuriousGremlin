@@ -53,7 +53,7 @@ namespace UnitTests.AzureCosmosDB
                     Assert.AreEqual(second_vertex_result.Count, 1);
 
                     // Connect the two objects
-                    var connect_query = VertexQuery.Vertex(insert_result[0].id).AddEdge("test_edge", second_vertex_result[0].id).AddProperty("test_key", "test_value");
+                    var connect_query = VertexQuery.Vertex(insert_result[0].id).AddEdge("test_edge", DirectionStep.To(second_vertex_result[0].id)).AddProperty("test_key", "test_value");
                     var connect_result = client.Execute(connect_query).Result;
                     Assert.AreEqual(connect_result.Count, 1);
                     Assert.AreEqual(connect_result[0].label, "test_edge");

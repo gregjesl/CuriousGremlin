@@ -22,7 +22,7 @@ namespace UnitTests.AzureCosmosDB
                 var vertex1 = client.Execute(VertexQuery.Create("vertex1")).Result;
                 var vertex2 = client.Execute(VertexQuery.Create("vertex2")).Result;
                 // Test
-                var query = VertexQuery.All().HasLabel("vertex1").AddEdge("edge1", vertex2[0].id);
+                var query = VertexQuery.All().HasLabel("vertex1").AddEdge("edge1", DirectionStep.To(vertex2[0].id));
                 client.Execute(query).Wait();
                 // Verify
                 Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("vertex1").Out()).Result[0].id, vertex2[0].id);
@@ -51,7 +51,7 @@ namespace UnitTests.AzureCosmosDB
             {
                 client.Execute(VertexQuery.Create("test")).Wait();
                
-                var query = VertexQuery.All().Aggregate("x").Where(new GPWithout("x"));
+                var query = VertexQuery.All().Aggregate("x").Where(new GPWithout(new List<object>() { "x" }));
 
                 Assert.AreEqual(client.Execute(query).Result.Count, 0);
             }
@@ -81,7 +81,7 @@ namespace UnitTests.AzureCosmosDB
             {
                 client.Execute(VertexQuery.Create("one")).Wait();
                 client.Execute(VertexQuery.Create("two")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", VertexQuery.Find("two"))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", DirectionStep.To(VertexQuery.Find("two")))).Wait();
 
                 var query = VertexQuery.All().As("a").Out().As("b").Select("a", "b");
 
@@ -223,8 +223,8 @@ namespace UnitTests.AzureCosmosDB
                 client.Execute(VertexQuery.Create("one")).Wait();
                 client.Execute(VertexQuery.Create("two")).Wait();
                 client.Execute(VertexQuery.Create("three")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", VertexQuery.Find("two"))).Wait();
-                client.Execute(VertexQuery.All().HasLabel("two").AddEdge("to", VertexQuery.Find("three"))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", DirectionStep.To(VertexQuery.Find("two")))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("two").AddEdge("to", DirectionStep.To(VertexQuery.Find("three")))).Wait();
 
                 Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("one").Both().Both().Count()).Result[0], 2L);
                 Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("one").Both().Both().CyclicPath().Count()).Result[0], 1L);
@@ -296,8 +296,8 @@ namespace UnitTests.AzureCosmosDB
                 Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", "not_value").Count()).Result[0], 0L);
                 Assert.AreEqual(client.Execute(VertexQuery.All().Has("foo", "key", "value").Count()).Result[0], 1L);
                 Assert.AreEqual(client.Execute(VertexQuery.All().Has("not_foo", "key", "value").Count()).Result[0], 0L);
-                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", new GPWithin("value")).Count()).Result[0], 1L);
-                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", new GPWithout("value")).Count()).Result[0], 0L);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", new GPWithin(new List<object>() { "value" })).Count()).Result[0], 1L);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", new GPWithout(new List<object>() { "value" })).Count()).Result[0], 0L);
             }
         }
 
@@ -515,7 +515,7 @@ namespace UnitTests.AzureCosmosDB
                 Assert.AreEqual(client.Execute(VertexQuery.All().Optional(subQuery)).Result[0].label, "one");
 
                 client.Execute(VertexQuery.Create("two")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", VertexQuery.Find("two"))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", DirectionStep.To(VertexQuery.Find("two")))).Wait();
                 Assert.AreEqual(client.Execute(VertexQuery.All().Optional(subQuery)).Result[0].label, "two");
             }
         }
@@ -587,7 +587,7 @@ namespace UnitTests.AzureCosmosDB
                 Assert.AreEqual(result[0]["age"][0].value, 30L);
 
                 client.Execute(VertexQuery.Create("bar")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("foo").AddEdge("to", VertexQuery.Find("bar")).AddProperty("key", "value")).Wait();
+                client.Execute(VertexQuery.All().HasLabel("foo").AddEdge("to", DirectionStep.To(VertexQuery.Find("bar"))).AddProperty("key", "value")).Wait();
 
                 var edgeQuery = VertexQuery.All().OutE().PropertyMap();
                 var edgeResult = client.Execute(edgeQuery).Result;
@@ -661,7 +661,7 @@ namespace UnitTests.AzureCosmosDB
             {
                 client.Execute(VertexQuery.Create("one")).Wait();
                 client.Execute(VertexQuery.Create("two")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", VertexQuery.Find("two"))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", DirectionStep.To(VertexQuery.Find("two")))).Wait();
 
                 var query = VertexQuery.All().As("a").Out().As("b").Select("a", "b");
 
@@ -680,8 +680,8 @@ namespace UnitTests.AzureCosmosDB
                 client.Execute(VertexQuery.Create("one")).Wait();
                 client.Execute(VertexQuery.Create("two")).Wait();
                 client.Execute(VertexQuery.Create("three")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", VertexQuery.Find("two"))).Wait();
-                client.Execute(VertexQuery.All().HasLabel("two").AddEdge("to", VertexQuery.Find("three"))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", DirectionStep.To(VertexQuery.Find("two")))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("two").AddEdge("to", DirectionStep.To(VertexQuery.Find("three")))).Wait();
 
                 Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("one").Both().Both().Count()).Result[0], 2L);
                 Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("one").Both().Both().SimplePath().Count()).Result[0], 1L);
@@ -781,7 +781,7 @@ namespace UnitTests.AzureCosmosDB
                 Assert.AreEqual(vertexResult[0]["age"][0], 30L);
 
                 client.Execute(VertexQuery.Create("bar")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("foo").AddEdge("to", VertexQuery.Find("bar")).AddProperty("key", "value")).Wait();
+                client.Execute(VertexQuery.All().HasLabel("foo").AddEdge("to", DirectionStep.To(VertexQuery.Find("bar"))).AddProperty("key", "value")).Wait();
 
                 var edgeQuery = VertexQuery.All().OutE().ValueMap();
                 var edgeResult = client.Execute(edgeQuery).Result;
@@ -810,8 +810,8 @@ namespace UnitTests.AzureCosmosDB
                 client.Execute(VertexQuery.Create("one")).Wait();
                 client.Execute(VertexQuery.Create("two")).Wait();
                 client.Execute(VertexQuery.Create("three")).Wait();
-                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", VertexQuery.Find("two"))).Wait();
-                client.Execute(VertexQuery.All().HasLabel("two").AddEdge("to", VertexQuery.Find("three"))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", DirectionStep.To(VertexQuery.Find("two")))).Wait();
+                client.Execute(VertexQuery.All().HasLabel("two").AddEdge("to", DirectionStep.To(VertexQuery.Find("three")))).Wait();
 
                 var query = VertexQuery.All().HasLabel("one").As("a").Both().Both().Where(new GPNotEqual("a"));
                 var result = client.Execute(query).Result;
