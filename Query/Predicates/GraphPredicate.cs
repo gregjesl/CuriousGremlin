@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,9 +23,9 @@ namespace CuriousGremlin.Query.Predicates
             Predicate = Command + "(" + GraphQuery.GetObjectString(lb) + ", " + GraphQuery.GetObjectString(up) + ")";
         }
 
-        protected GraphPredicate(params object[] items)
+        protected GraphPredicate(IEnumerable<object> items)
         {
-            if (items.Length < 1)
+            if (items.Count() < 1)
                 throw new ArgumentException("Must have at least one item");
             List<string> itemStrings = new List<string>();
             foreach (var item in items)
@@ -138,15 +140,28 @@ namespace CuriousGremlin.Query.Predicates
         public GPBetween(long lower, long upper) : base(lower, upper) { }
     }
 
-    public class GPWithin : GraphPredicate
+    public abstract class GraphPredicateList : GraphPredicate
     {
-        protected override string Command { get { return "within"; } }
-        public GPWithin(params object[] items) : base(items) { }
+        public GraphPredicateList(IEnumerable<object> items) : base()
+        {
+            if (items.Count() < 1)
+                throw new ArgumentException("Must have at least one item");
+            List<string> itemStrings = new List<string>();
+            foreach (var item in items)
+                itemStrings.Add(GraphQuery.GetObjectString(item));
+            Predicate = Command + "(" + string.Join(", ", itemStrings) + ")";
+        }
     }
 
-    public class GPWithout : GraphPredicate
+    public class GPWithin : GraphPredicateList
+    {
+        protected override string Command { get { return "within"; } }
+        public GPWithin(IEnumerable<object> items) : base(items) { }
+    }
+
+    public class GPWithout : GraphPredicateList
     {
         protected override string Command { get { return "without"; } }
-        public GPWithout(params object[] items) : base(items) { }
+        public GPWithout(IEnumerable<object> items) : base(items) { }
     }
 }
