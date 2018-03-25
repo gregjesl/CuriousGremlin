@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.Query.Objects;
@@ -48,6 +49,36 @@ namespace CuriousGremlin.Query.CRTP
             var properties = JObject.FromObject(edge).ToObject<Dictionary<string, object>>();
             properties.Remove(nameof(edge.EdgeLabel));
             return AddEdge(edge.EdgeLabel, direction).AddProperties(properties.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value));
+        }
+
+        public override Query AddProperty(string key, object value)
+        {
+            object parsedValue;
+            if (value.GetType().Equals(typeof(JArray)))
+                parsedValue = (value as JArray).ToObject<object[]>();
+            else
+                parsedValue = value;
+            if (typeof(Array).IsAssignableFrom(parsedValue.GetType()) || (value is IList && value.GetType().IsGenericType))
+            {
+                bool isFirst = true;
+                foreach (var item in parsedValue as IEnumerable)
+                {
+                    if (isFirst)
+                    {
+                        base.AddProperty(key, item);
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        Steps.Add("property(list, '" + Sanitize(key) + "', " + GetObjectString(item) + ")");
+                    }
+                }
+            }
+            else
+            {
+                base.AddProperty(key, value);
+            }
+            return this as Query;
         }
 
         /// <summary>

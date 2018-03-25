@@ -15,7 +15,7 @@ namespace CuriousGremlin.Query.CRTP
 
         protected ElementQueryTemplate() : base() { }
 
-        public Query AddProperty(string key, object value)
+        public virtual Query AddProperty(string key, object value)
         {
             Steps.Add("property('" + Sanitize(key) + "', " + GetObjectString(value) + ")");
             return this as Query;

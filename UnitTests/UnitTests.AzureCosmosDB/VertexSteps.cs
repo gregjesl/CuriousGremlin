@@ -130,5 +130,33 @@ namespace UnitTests.AzureCosmosDB
                 Assert.AreEqual(client.Execute(VertexQuery.All().HasLabel("two").OutE().OtherV()).Result[0].label, "three");
             }
         }
+
+        [TestMethod]
+        public void Steps_Vertex_AddV()
+        {
+            using (var client = TestDatabase.GetClient("steps_vertex_addV"))
+            {
+                var query = VertexQuery.Create(new SerializationTestObject());
+                var output = client.Execute(query).Result;
+                var obj = output[0].Deserialize<SerializationTestObject>();
+            }
+        }
+
+        internal class SerializationTestObject : IVertexObject, IEdgeObject
+        {
+            public string VertexLabel { get { return "test_serialization"; } }
+            public string EdgeLabel { get { return "test_edge_serialization"; } }
+            public string testString = "test o'mally";
+            public bool testBool = true;
+            public float testFloat = 1.2f;
+            public double testDouble = 1.4;
+            public decimal testDecimal = 1.6m;
+            public int testInt = 11;
+            public long testLong = 111;
+            public string testNull = null;
+            public DateTime testDateTime = new DateTime(2011, 05, 25, 10, 0, 0);
+            public TimeSpan testRandom = new TimeSpan(11, 11, 11);
+            public string[] testList = { "a", "b", "c" };
+        }
     }
 }
