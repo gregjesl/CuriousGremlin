@@ -8,7 +8,9 @@ namespace CuriousGremlin.Client
     public class CuriousGremlinClient : GraphClient, IDisposable
     {
         protected GremlinClient client;
+        internal CuriousGremlinClientPool pool;
 
+#region Constructors
         protected CuriousGremlinClient() { }
 
         public CuriousGremlinClient(string hostname)
@@ -41,29 +43,25 @@ namespace CuriousGremlin.Client
             client = new GremlinClient(gremlinServer);
         }
 
-        public CuriousGremlinClient(string endpoint, int port, string database, string collection, string authKey)
+        public CuriousGremlinClient(GremlinClientParameters parameters)
         {
-            var gremlinServer = new GremlinServer(endpoint, port, enableSsl: true,
-                                                username: "/dbs/" + database + "/colls/" + collection,
-                                                password: authKey);
+            GremlinServer gremlinServer;
+            if (string.IsNullOrEmpty(parameters.Endpoint))
+                throw new ArgumentNullException(nameof(parameters.Endpoint));
+            if (string.IsNullOrEmpty(parameters.Password))
+            {
+                if (string.IsNullOrEmpty(parameters.Username))
+                    gremlinServer = new GremlinServer(parameters.Endpoint, parameters.Port, parameters.EnableSSL);
+                else
+                    gremlinServer = new GremlinServer(parameters.Endpoint, parameters.Port, parameters.EnableSSL, parameters.Username);
+            }
+            else
+            {
+                gremlinServer = new GremlinServer(parameters.Endpoint, parameters.Port, parameters.EnableSSL, parameters.Username, parameters.Password);
+            }
             client = new GremlinClient(gremlinServer);
         }
-
-        public static CuriousGremlinClient AzureCosmosDBClient(string endpoint, string database, string collection, string authKey)
-        {
-            return AzureCosmosDBClient(endpoint, 443, database, collection, authKey);
-        }
-
-        public static CuriousGremlinClient AzureCosmosDBClient(string endpoint, int port, string database, string collection, string authKey)
-        {
-            return new CuriousGremlinClient(
-                endpoint,
-                port,
-                true,
-                "/dbs/" + database + "/colls/" + collection,
-                authKey
-                );
-        }
+#endregion
 
         public override async Task<IEnumerable<object>> Execute(string query)
         {
@@ -72,6 +70,10 @@ namespace CuriousGremlin.Client
 
         public virtual void Dispose()
         {
+            if(pool != null)
+            {
+                
+            }
             client.Dispose();
         }
     }
