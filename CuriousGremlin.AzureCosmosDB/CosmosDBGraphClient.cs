@@ -6,13 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Graphs;
 using Microsoft.Azure.Documents.Client;
-using CuriousGremlin.Query;
+using CuriousGremlin;
 using Newtonsoft.Json;
-using CuriousGremlin.Query.Objects;
+using CuriousGremlin.Objects;
+using CuriousGremlin.Client;
 
 namespace CuriousGremlin.AzureCosmosDB
 {
-    public class GraphClient : IDisposable
+    public class CosmosDBGraphClient : CuriousGremlinClient, IDisposable
     {
         private static GraphClientPool Pool;
 
@@ -29,7 +30,7 @@ namespace CuriousGremlin.AzureCosmosDB
             Pool = null;
         }
 
-        public static async Task<GraphClient> FromPool()
+        public static async Task<CosmosDBGraphClient> FromPool()
         {
             if (Pool == null)
                 throw new NullReferenceException("The client pool has not been insantiated");
@@ -40,46 +41,47 @@ namespace CuriousGremlin.AzureCosmosDB
         internal GraphClientPool pool;
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-        private DocumentClient client;
+        private new DocumentClient client;
         private DocumentCollection graph;
 
-        public GraphClient(string endpoint, string authKey)
+        public CosmosDBGraphClient(string endpoint, string authKey) : base()
         {
             client = new DocumentClient(new Uri(endpoint), authKey);
         }
 
-        internal GraphClient(GraphClientPool pool)
+        internal CosmosDBGraphClient(GraphClientPool pool)
         {
             this.pool = pool;
             client = new DocumentClient(new Uri(pool.Endpoint), pool.AuthKey);
         }
 
-        ~GraphClient()
+        ~CosmosDBGraphClient()
         {
-            if(IsOpen)
+            if (IsOpen)
                 Dispose();
         }
 
         public async Task Open(string database, string graph)
         {
-            if(!IsOpen)
+            if (!IsOpen)
             {
                 this.graph = await client.ReadDocumentCollectionAsync("/dbs/" + database + "/colls/" + graph);
                 this.IsOpen = true;
             }
         }
 
-        public virtual void Dispose()
-        { 
+        public override void Dispose()
+        {
             if (pool != null)
                 pool.ReturnToPool(this);
             else
             {
                 IsOpen = false;
                 client.Dispose();
+                base.Dispose();
             }
         }
-#region Database Operations
+        #region Database Operations
         public async Task CreateDatabaseAsync(string id)
         {
             await client.CreateDatabaseAsync(new Database { Id = id });
@@ -94,9 +96,9 @@ namespace CuriousGremlin.AzureCosmosDB
         {
             await client.DeleteDatabaseAsync("/dbs/" + id);
         }
-#endregion
+        #endregion
 
-#region Collection Operations
+        #region Collection Operations
         public async Task CreateDocumentCollectionAsync(string database, string collection)
         {
             await client.CreateDocumentCollectionAsync("/dbs/" + database, new DocumentCollection { Id = collection });
@@ -111,10 +113,10 @@ namespace CuriousGremlin.AzureCosmosDB
         {
             await client.DeleteDocumentCollectionAsync("/dbs/" + database + "/colls/" + collection);
         }
-#endregion
+        #endregion
 
-#region Queries
-        public async Task<FeedResponse<object>> Execute(string queryString)
+        #region Queries
+        public override async Task<IEnumerable<object>> Execute(string queryString)
         {
             if (!IsOpen)
                 throw new Exception("Client must be opened prior to executing a query");
@@ -126,53 +128,13 @@ namespace CuriousGremlin.AzureCosmosDB
             await semaphore.WaitAsync();
             try
             {
-                return await query.ExecuteNextAsync<dynamic>();
+                return(await query.ExecuteNextAsync<dynamic>();
             }
             finally
             {
                 semaphore.Release();
             }
         }
-
-        public async Task<List<T>> Execute<T>(ITraversalQuery<GraphQuery, T> query)
-        {
-            var results = await Execute(query.ToString());
-            var resultList = new List<T>();
-            var objList = new List<object>();
-            if (results.Count == 0)
-                return resultList;
-            foreach(var item in results)
-            {
-                objList.Add(item);
-            }
-            if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JArray))
-            {
-                foreach (Newtonsoft.Json.Linq.JArray item in objList)
-                {
-                    resultList.Add(item.ToObject<T>());
-                }
-            }
-            else if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JObject))
-            {
-                foreach(Newtonsoft.Json.Linq.JObject item in objList)
-                {
-                    resultList.Add(item.ToObject<T>());
-                }
-            }
-            else
-            {
-                foreach (T item in objList)
-                {
-                    resultList.Add(item);
-                }
-            }
-            return resultList;
-        }
-
-        public async Task Execute(TerminalQuery<GraphClient> query)
-        {
-            await Execute(query.ToString());
-        }
-#endregion
+        #endregion
     }
 }

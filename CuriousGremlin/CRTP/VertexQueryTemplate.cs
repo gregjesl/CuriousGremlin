@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using CuriousGremlin.Query.Objects;
+using CuriousGremlin.Objects;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 
-namespace CuriousGremlin.Query.CRTP
+namespace CuriousGremlin.CRTP
 {
     public class VertexQueryTemplate<From, Query> : ElementQueryTemplate<GraphVertex, From, Query>
         where Query : VertexQueryTemplate<From, Query>

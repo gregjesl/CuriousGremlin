@@ -2,50 +2,43 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Query", "Query\Query.csproj", "{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCosmosDB", "AzureCosmosDB\AzureCosmosDB.csproj", "{9D348F8F-5F34-45FE-A583-6202833E3E67}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{C5A71BE6-2590-4B00-9150-8078DEA4715D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.AzureCosmosDB", "UnitTests\UnitTests.AzureCosmosDB\UnitTests.AzureCosmosDB.csproj", "{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9BB80DF4-F633-4223-A879-AABE47B55A5B}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.Query", "UnitTests\UnitTests.Query\UnitTests.Query.csproj", "{2F12193A-84DA-481B-AFA5-3A90AABC139A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuriousGremlin", "CuriousGremlin\CuriousGremlin.csproj", "{70282F19-2C93-4FA0-BA6F-489190B66478}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuriousGremlin.AzureCosmosDB.UnitTests", "CuriousGremlin.AzureCosmosDB.UnitTests\CuriousGremlin.AzureCosmosDB.UnitTests.csproj", "{5C91C369-FAEA-42B0-BAC3-7175168F63B5}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuriousGremlin.UnitTests", "CuriousGremlin.UnitTests\CuriousGremlin.UnitTests.shproj", "{AE92E226-3436-4465-BFA4-7BBB34DC6989}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuriousGremlin.AzureCosmosDB", "CuriousGremlin.AzureCosmosDB\CuriousGremlin.AzureCosmosDB.csproj", "{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		CuriousGremlin.UnitTests\CuriousGremlin.UnitTests.projitems*{ae92e226-3436-4465-bfa4-7bbb34dc6989}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CBCD4E11-F348-43A3-BE60-5A9DE504A92C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D348F8F-5F34-45FE-A583-6202833E3E67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F12193A-84DA-481B-AFA5-3A90AABC139A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F12193A-84DA-481B-AFA5-3A90AABC139A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F12193A-84DA-481B-AFA5-3A90AABC139A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F12193A-84DA-481B-AFA5-3A90AABC139A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70282F19-2C93-4FA0-BA6F-489190B66478}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70282F19-2C93-4FA0-BA6F-489190B66478}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70282F19-2C93-4FA0-BA6F-489190B66478}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70282F19-2C93-4FA0-BA6F-489190B66478}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{6F6C9978-87CA-4EAD-8DD6-D31714291BD9} = {C5A71BE6-2590-4B00-9150-8078DEA4715D}
-		{2F12193A-84DA-481B-AFA5-3A90AABC139A} = {C5A71BE6-2590-4B00-9150-8078DEA4715D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {55E17BCA-C4EE-430B-A84F-88694FF7B3DF}
