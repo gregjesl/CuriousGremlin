@@ -13,46 +13,17 @@ using CuriousGremlin.Client;
 
 namespace CuriousGremlin.AzureCosmosDB
 {
-    public class CosmosDBGraphClient : CuriousGremlinClient, IDisposable
+    public class CosmosDBGraphClient : IGraphClient, IDisposable
     {
-        private static GraphClientPool Pool;
-
-        public static void CreatePool(string endpoint, string authKey, string database, string graph)
-        {
-            Pool = new GraphClientPool(endpoint, authKey, database, graph);
-        }
-
-        public static void DisposePool()
-        {
-            if (Pool == null)
-                throw new NullReferenceException("The client pool has not been insantiated");
-            Pool.Dispose();
-            Pool = null;
-        }
-
-        public static async Task<CosmosDBGraphClient> FromPool()
-        {
-            if (Pool == null)
-                throw new NullReferenceException("The client pool has not been insantiated");
-            return await Pool.GetClient();
-        }
-
-        public bool IsOpen { get; private set; } = false;
-        internal GraphClientPool pool;
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        public bool IsOpen { get; protected set; } = false;
 
-        private new DocumentClient client;
+        private DocumentClient client;
         private DocumentCollection graph;
 
         public CosmosDBGraphClient(string endpoint, string authKey) : base()
         {
             client = new DocumentClient(new Uri(endpoint), authKey);
-        }
-
-        internal CosmosDBGraphClient(GraphClientPool pool)
-        {
-            this.pool = pool;
-            client = new DocumentClient(new Uri(pool.Endpoint), pool.AuthKey);
         }
 
         ~CosmosDBGraphClient()
@@ -70,16 +41,10 @@ namespace CuriousGremlin.AzureCosmosDB
             }
         }
 
-        public override void Dispose()
+        public virtual void Dispose()
         {
-            if (pool != null)
-                pool.ReturnToPool(this);
-            else
-            {
-                IsOpen = false;
-                client.Dispose();
-                base.Dispose();
-            }
+            IsOpen = false;
+            client.Dispose();
         }
         #region Database Operations
         public async Task CreateDatabaseAsync(string id)
@@ -116,7 +81,7 @@ namespace CuriousGremlin.AzureCosmosDB
         #endregion
 
         #region Queries
-        public override async Task<IEnumerable<object>> Execute(string queryString)
+        public async Task<IEnumerable<object>> Execute(string queryString)
         {
             if (!IsOpen)
                 throw new Exception("Client must be opened prior to executing a query");
@@ -128,7 +93,7 @@ namespace CuriousGremlin.AzureCosmosDB
             await semaphore.WaitAsync();
             try
             {
-                return(await query.ExecuteNextAsync<dynamic>();
+                return await query.ExecuteNextAsync<dynamic>();
             }
             finally
             {

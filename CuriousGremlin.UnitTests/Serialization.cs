@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text.RegularExpressions;
-using CuriousGremlin.Query;
-using CuriousGremlin.Query.Objects;
+using CuriousGremlin;
+using CuriousGremlin.Objects;
 using Newtonsoft.Json.Linq;
 
 namespace Query.UnitTests

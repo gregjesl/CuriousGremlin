@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
-using CuriousGremlin;
+using System.Text;
 
-namespace CuriousGremlin
+namespace CuriousGremlin.Client
 {
-    public abstract class GraphClient
+    public static class GraphClientExtensions
     {
-        public abstract Task<IEnumerable<object>> Execute(string query);
-
-        public async Task<List<T>> Execute<T>(ITraversalQuery<GraphQuery, T> query)
+        public static async Task<IEnumerable<T>> Execute<T>(this IGraphClient client, TraversalQuery<GraphQuery, T> query)
         {
-            var results = await Execute(query.ToString());
+            var results = await client.Execute(query.ToString());
             var resultList = new List<T>();
             var objList = new List<object>();
 
@@ -20,7 +18,7 @@ namespace CuriousGremlin
             {
                 objList.Add(item);
             }
-            if(objList.Count == 0)
+            if (objList.Count == 0)
                 return resultList;
             if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JArray))
             {
@@ -46,9 +44,9 @@ namespace CuriousGremlin
             return resultList;
         }
 
-        public async Task Execute(TerminalQuery<GraphClient> query)
+        public static async Task Execute(this IGraphClient client, TerminalQuery<GraphQuery> query)
         {
-            await Execute(query.ToString());
+            await client.Execute(query.ToString());
         }
     }
 }

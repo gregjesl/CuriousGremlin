@@ -1,33 +1,41 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CuriousGremlin.AzureCosmosDB;
-using CuriousGremlin.Query;
+using CuriousGremlin;
+using CuriousGremlin.Client;
 using System;
 
 namespace UnitTests.AzureCosmosDB
 {
+    /*
     [TestClass]
     public class ElementManipulation
     {
         [TestMethod]
         public void AzureCosmosDB_GraphClientPool()
         {
-            using (GraphClient setupClient = new GraphClient("https://localhost:8081/",
-                "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="))
-            {
-                setupClient.CreateDatabaseIfNotExistsAsync("test_db").Wait();
-                setupClient.CreateDocumentCollectionIfNotExistsAsync("test_db", "test_collection").Wait();
-            }
-
-            GraphClientPool pool = new GraphClientPool(
+            var parameters = GremlinClientParameters.AzureCosmosDBClient(
                     "https://localhost:8081/",
                     "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
                     "test_db",
                     "test_collection"
                     );
 
+            using(var client = new CosmosDBGraphClient())
+
+            using (CosmosDBGraphClient client = new CosmosDBGraphClient("https://localhost:8081/",
+                "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="))
+            {
+                setupClient.CreateDatabaseIfNotExistsAsync("test_db").Wait();
+                setupClient.CreateDocumentCollectionIfNotExistsAsync("test_db", "test_collection").Wait();
+            }
+
+            
+
+            CuriousGremlinClientPool pool = new CuriousGremlinClientPool(parameters);
+
             try
             { 
-                using (GraphClient client = pool.GetClient().Result)
+                using (GraphClient client = pool.GetClient())
                 {
                     
                     // Kill it with fire
@@ -90,4 +98,5 @@ namespace UnitTests.AzureCosmosDB
             }
         }
     }
+    */
 }

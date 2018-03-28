@@ -13,7 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)GraphClientPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Steps.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TestDatabase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VertexSteps.cs" />
   </ItemGroup>
 </Project>

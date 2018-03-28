@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CuriousGremlin.AzureCosmosDB;
-using CuriousGremlin.Query;
+using CuriousGremlin;
 using System;
 
 namespace UnitTests.AzureCosmosDB
@@ -12,7 +12,7 @@ namespace UnitTests.AzureCosmosDB
         public void AzureCosmosDB_CreateAndDeleteDatabase()
         {
             const string db_name = "create_and_delete";
-            GraphClient client = new GraphClient("https://localhost:8081/",
+            CosmosDBGraphClient client = new CosmosDBGraphClient("https://localhost:8081/",
                 "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
 
             using (client)
@@ -34,7 +34,7 @@ namespace UnitTests.AzureCosmosDB
         public void AzureCosmosDB_CreateAndDeleteIfNotExistsDatabase()
         {
             const string db_name = "create_and_delete_if_not_exists";
-            GraphClient client = new GraphClient("https://localhost:8081/",
+            CosmosDBGraphClient client = new CosmosDBGraphClient("https://localhost:8081/",
                 "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
 
             using (client)
@@ -59,7 +59,7 @@ namespace UnitTests.AzureCosmosDB
         {
             const string name = "create_and_delete_collection";
             string db_name = name + "_db";
-            GraphClient client = new GraphClient("https://localhost:8081/",
+            CosmosDBGraphClient client = new CosmosDBGraphClient("https://localhost:8081/",
                 "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
 
             using (client)
@@ -85,7 +85,7 @@ namespace UnitTests.AzureCosmosDB
         {
             const string name = "create_and_delete_if_not_exists_collection";
             string db_name = name + "_db";
-            GraphClient client = new GraphClient("https://localhost:8081/",
+            CosmosDBGraphClient client = new CosmosDBGraphClient("https://localhost:8081/",
                 "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
 
             using (client)

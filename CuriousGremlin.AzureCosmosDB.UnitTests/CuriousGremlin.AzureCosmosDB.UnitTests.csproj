@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CuriousGremlin.AzureCosmosDB\CuriousGremlin.AzureCosmosDB.csproj" />
     <ProjectReference Include="..\CuriousGremlin\CuriousGremlin.csproj" />
   </ItemGroup>
 
