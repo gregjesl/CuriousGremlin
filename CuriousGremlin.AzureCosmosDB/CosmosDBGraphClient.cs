@@ -21,7 +21,7 @@ namespace CuriousGremlin.AzureCosmosDB
         private DocumentClient client;
         private DocumentCollection graph;
 
-        public CosmosDBGraphClient(string endpoint, string authKey) : base()
+        public CosmosDBGraphClient(string endpoint, string authKey)
         {
             client = new DocumentClient(new Uri(endpoint), authKey);
         }

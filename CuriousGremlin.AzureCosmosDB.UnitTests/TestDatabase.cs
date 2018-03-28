@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin.AzureCosmosDB;
 using CuriousGremlin;
 using CuriousGremlin.Client;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.AzureCosmosDB
+namespace CuriousGremlin.UnitTests
 {
-    class TestDatabase : CosmosDBGraphClient, IDisposable
+    [TestClass]
+    public class TestDatabase : CosmosDBGraphClient, IDisposable
     {
         public static readonly string db_name = "test_db";
 

@@ -6,7 +6,7 @@ using CuriousGremlin;
 using CuriousGremlin.Objects;
 using Newtonsoft.Json.Linq;
 
-namespace Query.UnitTests
+namespace CuriousGremlin.UnitTests
 {
     [TestClass]
     public class Serialization

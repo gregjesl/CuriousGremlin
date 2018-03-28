@@ -9,7 +9,7 @@ using CuriousGremlin.Predicates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CuriousGremlin.Client;
 
-namespace UnitTests.AzureCosmosDB
+namespace CuriousGremlin.UnitTests
 {
     [TestClass]
     public class Steps
