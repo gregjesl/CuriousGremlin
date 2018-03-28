@@ -9,9 +9,11 @@ namespace CuriousGremlin.Client
 {
     public class GraphClientPool : IGraphClient, IDisposable
     {
+        public static GraphClientPool Pool;
+
         protected bool PoolIsOpen = false;
         protected SemaphoreSlim PoolSemaphore;
-        protected List<IGraphClient> Pool;
+        protected List<IGraphClient> ClientPool;
         protected Func<IGraphClient> ClientFactory = null;
 
         public int PoolSize
@@ -23,9 +25,9 @@ namespace CuriousGremlin.Client
                 PoolSemaphore.Wait();
                 try
                 {
-                    if (Pool is null)
+                    if (ClientPool is null)
                         return 0;
-                    return Pool.Count;
+                    return ClientPool.Count;
                 }
                 finally
                 {
@@ -38,9 +40,9 @@ namespace CuriousGremlin.Client
 
         public GraphClientPool(Func<IGraphClient> clientFactory)
         {
-            Pool = new List<IGraphClient>();
+            ClientPool = new List<IGraphClient>();
             ClientFactory = clientFactory;
-            Pool.Add(clientFactory.Invoke());
+            ClientPool.Add(clientFactory.Invoke());
             PoolSemaphore = new SemaphoreSlim(1, 1);
             PoolIsOpen = true;
         }
@@ -61,10 +63,10 @@ namespace CuriousGremlin.Client
             await PoolSemaphore.WaitAsync();
             try
             {
-                if (Pool.Count > 0)
+                if (ClientPool.Count > 0)
                 {
-                    client = Pool[0];
-                    Pool.Remove(client);
+                    client = ClientPool[0];
+                    ClientPool.Remove(client);
                 }
             }
             finally
@@ -92,7 +94,7 @@ namespace CuriousGremlin.Client
             await PoolSemaphore.WaitAsync();
             try
             {
-                Pool.Add(client);
+                ClientPool.Add(client);
             }
             finally
             {
@@ -107,12 +109,12 @@ namespace CuriousGremlin.Client
             PoolSemaphore.Wait();
             try
             {
-                foreach (var client in Pool)
+                foreach (var client in ClientPool)
                 {
                     if (client.GetType().GetInterfaces().Contains(typeof(IDisposable)))
                         (client as IDisposable).Dispose();
                 }
-                Pool.Clear();
+                ClientPool.Clear();
                 PoolIsOpen = false;
             }
             finally
