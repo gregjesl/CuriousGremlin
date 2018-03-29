@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using CuriousGremlin;
 using CuriousGremlin.Objects;
-using CuriousGremlin.Predicates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CuriousGremlin.Client;
 
@@ -53,7 +52,7 @@ namespace CuriousGremlin.UnitTests
             {
                 client.Execute(VertexQuery.Create("test")).Wait();
                
-                var query = VertexQuery.All().Aggregate("x").Where(new GPWithout(new List<object>() { "x" }));
+                var query = VertexQuery.All().Aggregate("x").Where(GraphPredicate.Without(new List<object>() { "x" }));
 
                 Assert.AreEqual(client.Execute(query).Result.Count(), 0);
             }
@@ -298,8 +297,8 @@ namespace CuriousGremlin.UnitTests
                 Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", "not_value").Count()).Result.First(), 0L);
                 Assert.AreEqual(client.Execute(VertexQuery.All().Has("foo", "key", "value").Count()).Result.First(), 1L);
                 Assert.AreEqual(client.Execute(VertexQuery.All().Has("not_foo", "key", "value").Count()).Result.First(), 0L);
-                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", new GPWithin(new List<object>() { "value" })).Count()).Result.First(), 1L);
-                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", new GPWithout(new List<object>() { "value" })).Count()).Result.First(), 0L);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", GraphPredicate.Within(new List<object>() { "value" })).Count()).Result.First(), 1L);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Has("key", GraphPredicate.Without(new List<object>() { "value" })).Count()).Result.First(), 0L);
             }
         }
 
@@ -367,7 +366,7 @@ namespace CuriousGremlin.UnitTests
                 client.Execute(VertexQuery.Create("foo").AddProperty("age", 30)).Wait();
                 Assert.AreEqual(client.Execute(VertexQuery.All().Values("age").Is(30).Count()).Result.First(), 1);
                 Assert.AreEqual(client.Execute(VertexQuery.All().Values("age").Is(40).Count()).Result.First(), 0);
-                Assert.AreEqual(client.Execute(VertexQuery.All().Values("age").Is(new GPBetween(25, 35)).Count()).Result.First(), 1);
+                Assert.AreEqual(client.Execute(VertexQuery.All().Values("age").Is(GraphPredicate.Inside(25, 35)).Count()).Result.First(), 1);
             }
         }
 
@@ -815,7 +814,7 @@ namespace CuriousGremlin.UnitTests
                 client.Execute(VertexQuery.All().HasLabel("one").AddEdge("to", DirectionStep.To(VertexQuery.Find("two")))).Wait();
                 client.Execute(VertexQuery.All().HasLabel("two").AddEdge("to", DirectionStep.To(VertexQuery.Find("three")))).Wait();
 
-                var query = VertexQuery.All().HasLabel("one").As("a").Both().Both().Where(new GPNotEqual("a"));
+                var query = VertexQuery.All().HasLabel("one").As("a").Both().Both().Where(GraphPredicate.NotEqualTo("a"));
                 var result = client.Execute(query).Result;
                 Assert.AreEqual(result.Count(), 1);
                 Assert.AreEqual(result.First().label, "three");

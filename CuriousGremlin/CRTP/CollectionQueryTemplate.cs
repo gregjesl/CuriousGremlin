@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using CuriousGremlin.Objects;
-using CuriousGremlin.Predicates;
+using CuriousGremlin;
 
 namespace CuriousGremlin.CRTP
 {

@@ -7,7 +7,7 @@ using CuriousGremlin.AzureCosmosDB;
 using CuriousGremlin;
 using CuriousGremlin.Client;
 using CuriousGremlin.Objects;
-using CuriousGremlin.Predicates;
+using CuriousGremlin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CuriousGremlin.UnitTests

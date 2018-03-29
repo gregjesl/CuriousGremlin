@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using CuriousGremlin.Predicates;
+using CuriousGremlin;
 using CuriousGremlin.Objects;
 using Newtonsoft.Json.Linq;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CuriousGremlin.Predicates;
+using CuriousGremlin;
 using CuriousGremlin.Objects;
 using CuriousGremlin.CRTP;
 

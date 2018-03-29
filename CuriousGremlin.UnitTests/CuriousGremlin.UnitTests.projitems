@@ -9,6 +9,7 @@
     <Import_RootNamespace>CuriousGremlin.UnitTests</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Predicates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Steps.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VertexSteps.cs" />
