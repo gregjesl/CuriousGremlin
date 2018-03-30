@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 using Microsoft.Azure.Documents;
 using System.Threading;
@@ -20,6 +20,8 @@ namespace CuriousGremlin.AzureCosmosDB
 
         private DocumentClient client;
         private DocumentCollection graph;
+
+        protected CosmosDBGraphClient() { }
 
         public CosmosDBGraphClient(string endpoint, string authKey)
         {
@@ -81,7 +83,7 @@ namespace CuriousGremlin.AzureCosmosDB
         #endregion
 
         #region Queries
-        public async Task<IEnumerable<object>> Execute(string queryString)
+        public async Task<IEnumerable> Execute(string queryString)
         {
             if (!IsOpen)
                 throw new Exception("Client must be opened prior to executing a query");

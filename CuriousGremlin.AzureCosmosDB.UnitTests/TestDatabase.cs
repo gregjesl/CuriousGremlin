@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CuriousGremlin.UnitTests
 {
-    [TestClass]
     public class TestDatabase : CosmosDBGraphClient, IDisposable
     {
         public static readonly string db_name = "test_db";

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,12 +10,37 @@ namespace CuriousGremlin.Client
 {
     public class GraphClientPool : IGraphClient, IDisposable
     {
-        public static GraphClientPool Pool;
+        public static GraphClientPool Pool = null;
 
         protected bool PoolIsOpen = false;
         protected SemaphoreSlim PoolSemaphore;
         protected List<IGraphClient> ClientPool;
         protected Func<IGraphClient> ClientFactory = null;
+
+        public static void CreatePool(Func<IGraphClient> clientFactory)
+        {
+            Pool = new GraphClientPool(clientFactory);
+        }
+
+        public static void DisposePool()
+        {
+            Pool.Dispose();
+            Pool = null;
+        }
+
+        public static async Task<IEnumerable<T>> ExecuteOnPool<T>(TraversalQuery<GraphQuery, T> query)
+        {
+            if (Pool is null)
+                throw new InvalidOperationException("Client pool has not been created");
+            return await Pool.Execute(query);
+        }
+
+        public static async Task ExecuteOnPool(TerminalQuery<GraphQuery> query)
+        {
+            if (Pool is null)
+                throw new InvalidOperationException("Client pool has not been created");
+            await Pool.Execute(query);
+        }
 
         public int PoolSize
         {
@@ -53,7 +79,7 @@ namespace CuriousGremlin.Client
                 Dispose();
         }
 
-        public async Task<IEnumerable<object>> Execute(string query)
+        public async Task<IEnumerable> Execute(string query)
         {
             if (!PoolIsOpen)
                 throw new InvalidOperationException("Pool has not been opened");

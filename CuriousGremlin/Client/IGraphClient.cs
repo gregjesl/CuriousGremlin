@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 
 namespace CuriousGremlin.Client
 {
     public interface IGraphClient
     {
-        Task<IEnumerable<object>> Execute(string query);
+        Task<IEnumerable> Execute(string query);
     }
 }
