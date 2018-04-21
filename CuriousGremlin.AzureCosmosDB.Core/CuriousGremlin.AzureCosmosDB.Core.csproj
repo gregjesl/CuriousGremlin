@@ -12,4 +12,6 @@
     <ProjectReference Include="..\CuriousGremlin\CuriousGremlin.csproj" />
   </ItemGroup>
 
+  <Import Project="..\CuriousGremlin.AzureCosmosDB\CuriousGremlin.AzureCosmosDB.projitems" Label="Shared" />
+
 </Project>

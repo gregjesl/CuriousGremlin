@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,17 +21,19 @@ namespace CuriousGremlin.Client
             }
             if (objList.Count == 0)
                 return resultList;
-            if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JArray))
+            if (objList[0].GetType().FullName == typeof(Newtonsoft.Json.Linq.JArray).FullName)
             {
-                foreach (Newtonsoft.Json.Linq.JArray item in objList)
+                foreach (dynamic item in objList)
                 {
+                    // item is Newtonsoft.Json.Linq.JArray
                     resultList.Add(item.ToObject<T>());
                 }
             }
-            else if (objList[0].GetType() == typeof(Newtonsoft.Json.Linq.JObject))
+            else if (objList[0].GetType().FullName == typeof(Newtonsoft.Json.Linq.JObject).FullName)
             {
-                foreach (Newtonsoft.Json.Linq.JObject item in objList)
+                foreach (dynamic item in objList)
                 {
+                    // item is Newtonsoft.Json.Linq.JObject
                     resultList.Add(item.ToObject<T>());
                 }
             }

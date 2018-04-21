@@ -32,11 +32,14 @@ namespace CuriousGremlin.Objects
         }
 
         public static List<T> Deserialize<T>(IEnumerable<GraphVertex> vertices, string name = "value")
+            where T: IVertexObject
         {
             List<T> result = new List<T>();
             foreach(GraphVertex vertex in vertices)
             {
-                result.Add(vertex.Deserialize<T>());
+                var item = vertex.Deserialize<T>();
+                item.ID = vertex.id;
+                result.Add(item);
             }
             return result;
         }

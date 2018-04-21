@@ -9,15 +9,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuriousGremlin", "CuriousGremlin\CuriousGremlin.csproj", "{70282F19-2C93-4FA0-BA6F-489190B66478}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuriousGremlin.AzureCosmosDB.UnitTests", "CuriousGremlin.AzureCosmosDB.UnitTests\CuriousGremlin.AzureCosmosDB.UnitTests.csproj", "{5C91C369-FAEA-42B0-BAC3-7175168F63B5}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuriousGremlin.UnitTests", "CuriousGremlin.UnitTests\CuriousGremlin.UnitTests.shproj", "{AE92E226-3436-4465-BFA4-7BBB34DC6989}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuriousGremlin.AzureCosmosDB", "CuriousGremlin.AzureCosmosDB\CuriousGremlin.AzureCosmosDB.csproj", "{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuriousGremlin.UnitTests.Framework", "CuriousGremlin.UnitTests.Framework\CuriousGremlin.UnitTests.Framework.csproj", "{B5004592-C42F-4DD1-9697-02028922BE9C}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuriousGremlin.AzureCosmosDB", "CuriousGremlin.AzureCosmosDB\CuriousGremlin.AzureCosmosDB.shproj", "{DF0A0396-1C84-4A13-9516-C455BBDD23E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuriousGremlin.AzureCosmosDB.Framework", "CuriousGremlin.AzureCosmosDB.Framework\CuriousGremlin.AzureCosmosDB.Framework.csproj", "{17EEBE41-6930-4BB4-9180-778B33F3F888}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuriousGremlin.AzureCosmosDB.Core", "CuriousGremlin.AzureCosmosDB.Core\CuriousGremlin.AzureCosmosDB.Core.csproj", "{DC409397-D406-427B-9FC7-877A0D719395}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		CuriousGremlin.AzureCosmosDB\CuriousGremlin.AzureCosmosDB.projitems*{17eebe41-6930-4bb4-9180-778b33f3f888}*SharedItemsImports = 4
 		CuriousGremlin.UnitTests\CuriousGremlin.UnitTests.projitems*{ae92e226-3436-4465-bfa4-7bbb34dc6989}*SharedItemsImports = 13
+		CuriousGremlin.UnitTests\CuriousGremlin.UnitTests.projitems*{b5004592-c42f-4dd1-9697-02028922be9c}*SharedItemsImports = 4
+		CuriousGremlin.AzureCosmosDB\CuriousGremlin.AzureCosmosDB.projitems*{df0a0396-1c84-4a13-9516-c455bbdd23e3}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,14 +35,18 @@ Global
 		{70282F19-2C93-4FA0-BA6F-489190B66478}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70282F19-2C93-4FA0-BA6F-489190B66478}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70282F19-2C93-4FA0-BA6F-489190B66478}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C91C369-FAEA-42B0-BAC3-7175168F63B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC3B0CBA-A3DA-4D09-8973-30C17757C7B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5004592-C42F-4DD1-9697-02028922BE9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5004592-C42F-4DD1-9697-02028922BE9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5004592-C42F-4DD1-9697-02028922BE9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5004592-C42F-4DD1-9697-02028922BE9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17EEBE41-6930-4BB4-9180-778B33F3F888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17EEBE41-6930-4BB4-9180-778B33F3F888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17EEBE41-6930-4BB4-9180-778B33F3F888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17EEBE41-6930-4BB4-9180-778B33F3F888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC409397-D406-427B-9FC7-877A0D719395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC409397-D406-427B-9FC7-877A0D719395}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC409397-D406-427B-9FC7-877A0D719395}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC409397-D406-427B-9FC7-877A0D719395}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

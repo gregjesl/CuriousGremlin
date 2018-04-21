@@ -7,5 +7,6 @@ namespace CuriousGremlin.Objects
     public interface IEdgeObject
     {
         string EdgeLabel { get; }
+        string ID { set; }
     }
 }

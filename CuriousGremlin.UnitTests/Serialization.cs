@@ -126,6 +126,7 @@ namespace CuriousGremlin.UnitTests
 
     class SerializationTestObject : IVertexObject, IEdgeObject
     {
+        public string ID { set; get; }
         public string VertexLabel { get { return "test_serialization"; } }
         public string EdgeLabel { get { return "test_edge_serialization"; } }
         public string testString = "test o'mally";

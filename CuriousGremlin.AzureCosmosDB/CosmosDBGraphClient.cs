@@ -71,9 +71,33 @@ namespace CuriousGremlin.AzureCosmosDB
             await client.CreateDocumentCollectionAsync("/dbs/" + database, new DocumentCollection { Id = collection });
         }
 
+        public async Task CreateDocumentCollectionAsync(string database, string collection, string PartitionKey)
+        {
+            await client.CreateDocumentCollectionAsync("/dbs/" + database, new DocumentCollection
+            {
+                Id = collection,
+                PartitionKey = new PartitionKeyDefinition
+                {
+                    Paths = new System.Collections.ObjectModel.Collection<string> { PartitionKey }
+                }
+            });
+        }
+
         public async Task CreateDocumentCollectionIfNotExistsAsync(string database, string collection)
         {
             await client.CreateDocumentCollectionIfNotExistsAsync("/dbs/" + database, new DocumentCollection { Id = collection });
+        }
+
+        public async Task CreateDocumentCollectionIfNotExistsAsync(string database, string collection, string PartitionKey)
+        {
+            await client.CreateDocumentCollectionIfNotExistsAsync("/dbs/" + database, new DocumentCollection
+            {
+                Id = collection,
+                PartitionKey = new PartitionKeyDefinition
+                {
+                    Paths = new System.Collections.ObjectModel.Collection<string> { PartitionKey }
+                }
+            });
         }
 
         public async Task DeleteCollectionAsync(string database, string collection)

@@ -28,11 +28,14 @@ namespace CuriousGremlin.Objects
         }
 
         public static List<T> Deserialize<T>(IEnumerable<GraphEdge> edges)
+            where T: IEdgeObject
         {
             List<T> result = new List<T>();
             foreach(GraphEdge edge in edges)
             {
-                result.Add(edge.Deserialize<T>());
+                var item = edge.Deserialize<T>();
+                item.ID = edge.id;
+                result.Add(item);
             }
             return result;
         }

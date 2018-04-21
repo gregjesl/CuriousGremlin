@@ -5,12 +5,16 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace CuriousGremlin.Client
 {
     public class GraphClientPool : IGraphClient, IDisposable
     {
         public static GraphClientPool Pool = null;
+
+        public int NumRetries = 2;
 
         protected bool PoolIsOpen = false;
         protected SemaphoreSlim PoolSemaphore;
@@ -110,7 +114,23 @@ namespace CuriousGremlin.Client
                     throw new Exception("Unable to create a client using the client factory");
             }
 
-            var result = await client.Execute(query);
+            IEnumerable result = null;
+
+            for(int i = 0; i < NumRetries; i++)
+            {
+                try
+                {
+                    result = await client.Execute(query);
+                    break;
+                }
+                catch (SocketException)
+                {
+                    Trace.Write("Socket exception handled");
+                }
+            }
+
+            if (result is null)
+                throw new Exception("Could not execute query");
 
             // If the pool is closed, then exit
             if (!PoolIsOpen)
