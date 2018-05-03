@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization;
+using System.Reflection;
 
 namespace CuriousGremlin.Objects
 {
@@ -22,10 +26,30 @@ namespace CuriousGremlin.Objects
                     object propertyValue = item[value] is string ? ((string)item[value]).Replace(@"\'", @"'") : item[value];
                     values.Add(propertyValue);
                 }
-                if(values.Count > 1)
+
+                // Check the destination member
+                PropertyInfo objProp = null;
+                if (Attribute.GetCustomAttribute(typeof(T), typeof(DataContractAttribute)) != null)
+                {
+                    objProp = typeof(T)
+                        .GetProperties()
+                        .Where(p => p.GetCustomAttributes(true).Where(a => a is DataMemberAttribute).Select(a => a as DataMemberAttribute).Where(a => a.Name == property.Key).Any())
+                        .FirstOrDefault();
+                }
+                if(objProp is null)
+                {
+                    objProp = typeof(T).GetProperties().Where(p => p.Name == property.Key).FirstOrDefault();
+                }
+                if (objProp is null)
+                    continue;
+                if (objProp.PropertyType != typeof(string) && objProp.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
+                {
                     dictionary.Add(property.Key, values);
+                }
                 else
+                {
                     dictionary.Add(property.Key, values[0]);
+                }
             }
             var jobject = JObject.FromObject(dictionary);
             return jobject.ToObject<T>();
