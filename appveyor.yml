@@ -10,35 +10,6 @@ platform:
 - x86
 - x64
 
-for:
-  - 
-    matrix:
-      only:
-        - configuration: Debug
-    environment:
-      config: Debug
-
-  - 
-    matrix:
-      only:
-        - configuration: Release
-    environment:
-      config: Release
-
-  - 
-    matrix:
-      only:
-        - platform: x86
-    environment:
-      plat_arch: x86
-
-  - 
-    matrix:
-      only:
-        - platform: x64
-    environment:
-      plat_arch: x64
-
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
@@ -51,7 +22,7 @@ before_build:
 - cmd: nuget restore
 
 build_script:
-  - MSBuild.exe CuriousGremlin.sln /p:Configuration=%config% /p:Platform=%plat_arch% /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - MSBuild.exe CuriousGremlin.sln /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 before_test:
 - ps: Invoke-WebRequest -Uri 'https://aka.ms/cosmosdb-emulator' -OutFile 'cosmos-db.msi'
