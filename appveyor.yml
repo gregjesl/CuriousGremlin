@@ -30,14 +30,14 @@ for:
       only:
         - platform: x86
     environment:
-        plat: x86
+      plat: x86
 
   -
     matrix:
       only:
         - platform: x64
     environment:
-        plat: x64
+      plat: x64
 
 dotnet_csproj:
   patch: true
