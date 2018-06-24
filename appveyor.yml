@@ -21,7 +21,7 @@ dotnet_csproj:
 before_build:
 - cmd: nuget restore
 
-build:
+build_script:
   - ps: MSBuild.exe CuriousGremlin.sln /p:Configuration=%configuration% /p:Platform=%configuration% /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 before_test:
