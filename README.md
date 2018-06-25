@@ -1,12 +1,19 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/2i07jnv3pxll8r5u/branch/master?svg=true)](https://ci.appveyor.com/project/gregjesl/curiousgremlin/branch/master)
+
 # CuriousGremlin
-CuriousGremlin is a collection of .Net libraries for generating strongly-typed Gremlin queries, executing queries using Azure CosmosDB, and parsing GraphSON results.
+CuriousGremlin is an alternative to [Gremlin.Net](http://tinkerpop.apache.org/docs/current/reference/#gremlin-DotNet) that offers:
+- Strongly-typed Gremlin queries
+- Automatic mapping between C# classes and graph objects (Vertices and Edges)
+- Graph client pooling
+- Azure CosmosDB support
+- .NET Framework and .NET Core support
 
 ## Quickstart
 1. Generate a query:
 ```C#
-using CuriousGremlin.Query;
+using CuriousGremlin;
 
-var query = GraphQuery.AddVertex("label_name").Property("key_name", "value");
+var query = VertexQuery.Create("label_name").Property("key_name", "value");
 ```
 2. Execute the query:
 ```C#
@@ -21,7 +28,7 @@ using(client)
 ```
 3. Manipulate results
 ```C#
-using CuriousGremlin.GraphSON;
+using CuriousGremlin.Objects;
 ...
 foreach(GraphVertex item in result)
 {
@@ -31,6 +38,9 @@ foreach(GraphVertex item in result)
 ```
 
 ## Organization
-1. [Query](Query) - A library for building strongly-typed Gremlin queries.
-2. [AzureCosmosDB](AzureCosmosDB) - A library for creating Gremlin clients for Azure CosmosDB
-3. [UnitTests](UnitTests) - Unit tests for the project
+1. [CuriousGremlin](CuriousGremlin) - .NET Standard library for strongly-typed Gremlin queries
+2. [CuriousGremlin.AzureCosmosDB] - A shared library containing a client for Azure CosmosDB used in the following two projects. 
+3. [CuriousGremlin.AzureCosmosDB.Framework](CuriousGremlin.AzureCosmosDB.Framework) - .NET Framework library for interfacing with Azure CosmosDB (using the Gremlin.Net NuGet package)
+4. [CuriousGremlin.AzureCosmosDB.Core](CuriousGremlin.AzureCosmosDB.Core) - .NET Core library for interfacing with Azure CosmosDB (uses Microsoft Azure CosmosDB NuGet package)
+5. [CuriousGremlin.UnitTests] - Shared library containing unit tests
+6. [CuriousGremlin.UnitTests.Framework](CuriousGremlin.UnitTests.Framework) - Implementation of unit tests using the [Azure CosmosDB emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
