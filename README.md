@@ -39,7 +39,7 @@ foreach(GraphVertex item in result)
 
 ## Organization
 1. [CuriousGremlin](CuriousGremlin) - .NET Standard library for strongly-typed Gremlin queries
-2. [CuriousGremlin.AzureCosmosDB] - A shared library containing a client for Azure CosmosDB used in the following two projects. 
+2. [CuriousGremlin.AzureCosmosDB](CuriousGremlin.AzureCosmosDB) - A shared library containing a client for Azure CosmosDB used in the following two projects. 
 3. [CuriousGremlin.AzureCosmosDB.Framework](CuriousGremlin.AzureCosmosDB.Framework) - .NET Framework library for interfacing with Azure CosmosDB (using the Gremlin.Net NuGet package)
 4. [CuriousGremlin.AzureCosmosDB.Core](CuriousGremlin.AzureCosmosDB.Core) - .NET Core library for interfacing with Azure CosmosDB (uses Microsoft Azure CosmosDB NuGet package)
 5. [CuriousGremlin.UnitTests] - Shared library containing unit tests

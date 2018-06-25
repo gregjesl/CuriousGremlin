@@ -15,14 +15,30 @@ Examples of all of the available steps can been found in the [unit tests](../Cur
 ### Adding edges
 Edges can be added in the following manner:
 ```C#
-VertexQuery.All()
+var insertEdgeQuery = VertexQuery.All()
     .HasLabel("foo")
     .AddEdge("to", DirectionStep.To(VertexQuery.Find("bar")))
-    .AddProperty("key", "value")
+    .AddProperty("key", "value");
 ```
 In this example, any vertex that has the label "foo" (found via `VertexQuery.All().HasLabel("foo")`) will be connected to all vertices with the label `bar` (found via `VertexQuery.Find("bar")`).  The new edges will have the label "to" and a property with a key of "key" and a value of "value". 
 
 The direction step class can be used to map to (via `.To()`) or from (via `.From()`) a vertex or vertices.  The arguement of `To` and `From` is either the vertex ID of the vertex or a vertex traversal (as in the example above). 
+
+### Sub-Queries
+Strongly-typed sub-queries can be created by first creating the base query:
+```C#
+var baseQuery = VertexQuery.All().HasLabel("user");
+```
+Then, sub-queries can be created:
+```C#
+var ageQuery = baseQuery.CreateSubQuery().Values("age").Is(30);
+var nameQuery = baseQuery.CreateSubQuery().Values("name").Is("steve")
+```
+These sub-queries can then be used together:
+```C#
+// Return vertices that have a label of "user", an age of 30, and a name of "steve"
+var query = baseQuery.And(ageQuery, nameQuery);
+```
 
 ### Create if not exists
 A common traversal can often be "If this object exists, return it.  If it does not, create and return it.".  Here is how that is accomplished in CuriousGremlin:
